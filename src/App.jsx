@@ -1,59 +1,137 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { configured, supabase, loadClients, loadClientRecords } from './lib/supabase'
 
-const people = [
- ['C001','Arun','New investor','Explore'],['C002','Anu','First SIP','Guide'],['C003','Meera','Regular SIP investor','Guide'],
+const sample = [
+ ['C001','Arun','New explorer','Explore'],['C002','Anu','First SIP','Guide'],['C003','Meera','Regular SIP investor','Guide'],
  ['C004','Dev','Failed SIP','Resolve'],['C005','Fathima','Paused SIP','Resolve'],['C006','Rahul','MF intermediate','Inform'],
  ['C007','Lakshmi','MF to equity explorer','Explore'],['C008','Vikram','Active equity trader','Inform'],['C009','Kiran','F&O beginner','Educate'],
  ['C010','Suresh','Experienced F&O trader','Inform'],['C011','Nisha','Commodity trader','Inform'],['C012','Thomas','Trader and investor','Guide'],
  ['C013','Priya','SIP and insurance','Guide'],['C014','George','Retirement planning','Guide'],['C015','Rehan','NRI prospect','Explore'],
  ['C016','Divya','Multi-product wealth client','Guide'],['C017','Joseph','Digital-to-branch journey','Assist'],['C018','Sneha','Inactive customer','Reconnect'],
- ['C019','Manoj','Open service complaint','Resolve'],['C020','Isha','Learner; opted out','Respect preference']
+ ['C019','Manoj','Open service complaint','Resolve'],['C020','Isha','Learner; opted out','Respect preferences']
 ]
-const notes = {
- C001:'Customer is exploring foundational financial concepts; no products should be presumed.',
- C003:'Regular investing history may support a progress story after verifying source records.',
- C004:'A failed SIP takes priority over any optional product communication.',
- C008:'Market and research context requires authorised, current, approved source content.',
- C012:'Trading and long-term investment activities can coexist in one relationship.',
- C014:'A declared retirement goal may support a guided, customer-led planning journey.',
- C019:'An open complaint calls for a service-first experience, not promotion.',
- C020:'Optional outbound communication is suppressed where permission is withheld.'
+const preview = sample.map(([client_id,alias,persona_scenario,starting_mode])=>({client_id,alias:alias+' (fictional)',persona_scenario,starting_mode,profile:{region:'Not loaded'}}))
+const domainLabels = {
+ product_subscriptions:'Products',holdings_snapshot:'Holdings',transactions:'Transactions',
+ digital_platform_events:'Platform activity',engagement_tool_events:'Engagement tools',communication_events:'Communications',
+ human_touchpoints:'Branch & RM',service_cases:'Service cases',goals_preferences:'Goals & preferences',
+ consent_preferences:'Consent rules',customer_states:'Derived states',story_contexts:'Story context',
+ story_decisions:'Story decisions',decision_audit:'Decision audit',unified_events:'Unified timeline',
+ opportunities:'Opportunities',content_interactions:'Content engagement'
 }
-function Icon({name}) {return <span aria-hidden="true" className="icon">{name}</span>}
-export default function App() {
- const [query,setQuery]=useState('')
- const [selected,setSelected]=useState('C012')
- const [view,setView]=useState('overview')
- const visible=useMemo(()=>people.filter(p=>p.join(' ').toLowerCase().includes(query.toLowerCase())),[query])
- const client=people.find(p=>p[0]===selected)||people[0]
+const formatDate = v => v ? new Date(v).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}) : 'Not recorded'
+const money = n => typeof n==='number' ? '₹'+n.toLocaleString('en-IN',{maximumFractionDigits:0}) : '—'
+const titleCase = v => String(v || 'Unknown').replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase())
+const byDomain = (rows,domain) => rows.filter(r=>r.domain===domain).map(r=>r.payload)
+const latest = (rows,domain) => byDomain(rows,domain)[0]
+const sortEvents = rows => byDomain(rows,'unified_events').sort((a,b)=>String(b.event_at||'').localeCompare(String(a.event_at||'')))
+const restricted = p => p?.marketing_permission===false
+function Alert({children}) {return <div className="foundation-alert">{children}</div>}
+function Login({onLogin,error,working}) {
+ const [email,setEmail]=useState('');const [password,setPassword]=useState('')
+ return <div className="loginPage"><div className="loginCard">
+ <div className="brand"><div className="brand-symbol">G.</div><div><strong>Geojit</strong><small>WEALTH STORY / POC 2.0</small></div></div>
+ <div className="eyebrow">PRIVATE REVIEW ENVIRONMENT</div><h1>Welcome to the<br/><i>intelligence lab.</i></h1>
+ <p>Sign in with an approved Supabase demonstration account. Only fictional client records are available.</p>
+ <form onSubmit={e=>{e.preventDefault();onLogin(email,password)}}>
+ <label>Email address<input type="email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="reviewer@example.com"/></label>
+ <label>Password<input type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="Your demo password"/></label>
+ <button className="primaryAction" disabled={working}>{working?'Signing in…':'Sign in →'}</button>
+ </form>{error&&<Alert>{error}</Alert>}
+ <p className="micro">Ask the project administrator to create your reviewer account in Supabase Authentication. Registration is not publicly available from this app.</p>
+ </div></div>
+}
+function Evidence({records}){
+ const groups=Object.entries(domainLabels).map(([id,label])=>({id,label,rows:byDomain(records,id)})).filter(x=>x.rows.length)
+ return <div><div className="eyebrow">CROSS-SYSTEM DATA</div><h3 className="serif subheading">Many sources. One customer context.</h3><p className="supportText">All records are fictional and linked by the same synthetic client ID. Counts are based on actual imported rows.</p>
+ <div className="domain-grid">{groups.map(g=><div className="domain-card" key={g.id}><strong>{g.rows.length}</strong><span>{g.label}</span></div>)}</div>
+ <div className="sourceHeader">Sample source evidence</div>
+ {groups.filter(g=>!['unified_events','story_contexts','story_decisions','decision_audit'].includes(g.id)).slice(0,9).map(g=><details key={g.id} className="evidenceDetail"><summary>{g.label}<span>{g.rows.length} records</span></summary><pre>{JSON.stringify(g.rows.slice(0,3),null,2)}</pre></details>)}
+ </div>
+}
+function Timeline({records}){
+ const events=sortEvents(records)
+ return <div><div className="eyebrow">UNIFIED EVENT STREAM</div><h3 className="serif subheading">The relationship over time.</h3><p className="supportText">Events from products, platforms, human touchpoints and communications, ordered by event time. Observed actions are not proof of customer intent.</p>
+ {events.length?<div className="event-list">{events.slice(0,60).map((e,i)=><div className="event" key={e.unified_event_id||i}>
+ <div className="eventRail"><i/></div><div><span className="eventDate">{formatDate(e.event_at)}</span><h4>{e.event_label||titleCase(e.event_type)}</h4><p>{titleCase(e.event_category)} · Source {e.source_id||'not specified'} · Evidence {titleCase(e.evidence_type)}</p>
+ <small>{e.do_not_treat_as_suitability_signal?'Not a suitability signal': 'Review permitted purpose before any use'}</small></div></div>)}</div>:<Alert>No unified events have been loaded for this customer.</Alert>}
+ {events.length>60&&<p className="micro">Showing 60 of {events.length} events for clarity.</p>}</div>
+}
+function Story({records}){
+ const story=latest(records,'story_contexts'),decision=latest(records,'story_decisions'),state=latest(records,'customer_states'),services=byDomain(records,'service_cases')
+ const open=services.some(s=>s.suppress_optional_promotions&&s.status!=='resolved'),noMarketing=restricted(state)
+ return <div><div className="eyebrow">STORY CONTEXT & DECISION</div><h3 className="serif subheading">A narrative grounded in evidence.</h3>
+ <p className="supportText">This is the original pre-approved synthetic story from the dataset—not a live AI response. OpenAI generation will be connected in the next phase.</p>
+ {story?<div className="story-card">
+ <div className="story-edition">MY WEALTH STORY · FICTIONAL EDITION</div>
+ <h2>{story.headline}</h2><p className="storyNarrative">{story.narrative}</p>
+ <div className="story-separator"/><div className="eyebrow">ONE RELEVANT OBSERVATION</div><p>{story.portfolio_or_attention_hint||'No suitable context available.'}</p>
+ <div className="actionSummary"><span>Suggested next step</span><strong>{story.next_action}</strong></div>
+ </div>:<Alert>No story context has been imported for this client.</Alert>}
+ <div className="trace-box"><h4>Why this story?</h4><p>{story?.why_this_story||decision?.winning_reason||'No decision trace available.'}</p>
+ <div className="trace-stat"><span>Primary priority</span><b>{titleCase(decision?.priority)}</b></div>
+ <div className="trace-stat"><span>Optional outbound</span><b>{open||noMarketing?'Suppressed':titleCase(decision?.optional_outbound_decision)}</b></div>
+ <div className="trace-stat"><span>Service notices</span><b>Independently governed</b></div></div>
+ {(open||noMarketing)&&<Alert>{open?'Service comes first: optional promotional outreach is suppressed.':'Customer preference: optional marketing outreach is withheld.'}</Alert>}
+ </div>
+}
+export default function App(){
+ const [session,setSession]=useState(null),[authLoading,setAuthLoading]=useState(configured),[authError,setAuthError]=useState('')
+ const [clients,setClients]=useState(configured?[]:preview),[records,setRecords]=useState([]),[loading,setLoading]=useState(configured)
+ const [error,setError]=useState(''),[selected,setSelected]=useState('C012'),[query,setQuery]=useState(''),[tab,setTab]=useState('overview')
+ useEffect(()=>{
+  if(!supabase) return
+  let active=true
+  supabase.auth.getSession().then(({data,error})=>{if(active){setSession(data?.session??null);setAuthError(error?.message||'');setAuthLoading(false)}})
+  const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,s)=>{if(active){setSession(s);setAuthLoading(false)}})
+  return ()=>{active=false;subscription.unsubscribe()}
+ },[])
+ useEffect(()=>{
+  if(!configured||!session){if(configured){setClients([]);setRecords([]);setLoading(false)}return}
+  let active=true;setLoading(true);setError('')
+  loadClients().then(data=>{if(active){setClients(data);setSelected(old=>data.some(c=>c.client_id===old)?old:data[0]?.client_id??'')}}).catch(e=>{if(active)setError(e.message)}).finally(()=>{if(active)setLoading(false)})
+  return ()=>{active=false}
+ },[session])
+ useEffect(()=>{
+  if(!configured||!session||!selected)return
+  let active=true;setLoading(true);setRecords([]);setError('')
+  loadClientRecords(selected).then(data=>{if(active)setRecords(data)}).catch(e=>{if(active)setError(e.message)}).finally(()=>{if(active)setLoading(false)})
+  return ()=>{active=false}
+ },[session,selected])
+ const filtered=useMemo(()=>clients.filter(c=>(c.client_id+' '+c.alias+' '+c.persona_scenario).toLowerCase().includes(query.toLowerCase())),[clients,query])
+ const client=clients.find(c=>c.client_id===selected),state=latest(records,'customer_states'),holdings=byDomain(records,'holdings_snapshot'),products=byDomain(records,'product_subscriptions'),services=byDomain(records,'service_cases')
+ const value=holdings.reduce((sum,h)=>sum+(Number(h.market_value_inr)||0),0)
+ const openService=services.some(s=>s.status!=='resolved'&&s.status!=='closed')
+ async function login(email,password){setAuthLoading(true);setAuthError('');const {error}=await supabase.auth.signInWithPassword({email,password});if(error)setAuthError(error.message);setAuthLoading(false)}
+ if(configured&&authLoading&&!session)return <div className="loadingPage">Checking reviewer access…</div>
+ if(configured&&!session)return <Login onLogin={login} error={authError} working={authLoading}/>
  return <div className="shell">
-   <aside className="sidebar">
-    <div className="brand"><div className="brand-symbol">G<span>.</span></div><div><strong>Geojit</strong><small>WEALTH STORY / POC 2.0</small></div></div>
-    <div className="side-heading">WORKSPACE</div>
-    <div className="menu-item active"><Icon name="◫"/> Customer intelligence</div>
-    <div className="menu-item muted"><Icon name="◇"/> Story studio <em>Next</em></div>
-    <div className="menu-item muted"><Icon name="◷"/> Unified event timeline <em>Next</em></div>
-    <div className="side-bottom"><span className="status-dot"/> Synthetic environment<div className="tiny">No live customer data or AI connected</div></div>
-   </aside>
-   <main className="main">
-    <header className="topline"><div>INTELLIGENCE LAB <span>/ Foundation release</span></div><div className="environment">FICTIONAL DATA ONLY</div></header>
-    <section className="heading"><div className="eyebrow">WELCOME TO POC 2.0</div><h1>One customer.<br/><i>A richer understanding.</i></h1><p>Explore how product, behavioural and relationship signals can eventually become one clear, meaningful financial narrative.</p></section>
-    <div className="layout">
-     <section className="client-panel"><div className="panel-title"><div><h2>Client universe</h2><p>20 deliberately different customer scenarios</p></div><span className="count">20</span></div>
-      <label className="search"><span>⌕</span><input aria-label="Search fictional customers" placeholder="Search clients or scenarios" value={query} onChange={e=>setQuery(e.target.value)}/></label>
-      <div className="client-list">{visible.length?visible.map(p=><button key={p[0]} className={'client '+(selected===p[0]?'selected':'')} onClick={()=>{setSelected(p[0]);setView('overview')}}><span className="avatar">{p[1].slice(0,1)}</span><span className="client-identity"><strong>{p[1]}</strong><small>{p[2]}</small></span><span className="client-id">{p[0]}</span></button>):<p className="noresult">No fictional clients match that search.</p>}</div>
-     </section>
-     <section className="detail">
-      <div className="detail-top"><span className="eyebrow">CLIENT CONTEXT / {client[0]}</span><span className="outline-pill">Illustrative scenario</span></div>
-      <h2>{client[1]}'s relationship</h2><p className="lead">{client[2]}</p>
-      <div className="tabs" role="tablist" aria-label="Client information"><button role="tab" aria-selected={view==='overview'} className={view==='overview'?'active':''} onClick={()=>setView('overview')}>Overview</button><button role="tab" aria-selected={view==='evidence'} className={view==='evidence'?'active':''} onClick={()=>setView('evidence')}>Data foundation</button></div>
-      {view==='overview'?<><div className="focus-card"><span className="eyebrow">FIRST INTELLIGENCE HYPOTHESIS</span><h3>{notes[client[0]]||'Understand the current relationship before selecting a relevant next experience.'}</h3><div className="divider"/><div className="hint"><span className="hint-circle">i</span><span>Scenario guidance is static until the actual 20-client dataset and governance rules are connected.</span></div></div>
-      <div className="data-grid"><div><span>Experience priority</span><strong>{client[3]}</strong></div><div><span>Data status</span><strong>Awaiting import</strong></div><div><span>Generated story</span><strong>Not enabled</strong></div></div>
-      </>:<><div className="focus-card"><span className="eyebrow">DATA UNIVERSE / UPCOMING INTEGRATION</span><h3>Multiple systems. One governed customer context.</h3><p className="feature-desc">Products, holdings, transactions, digital behaviour, channel engagement, RM and branch visits, declared goals, service and consent will be linked through a customer ID and an auditable event timeline.</p><div className="divider"/><div className="hint"><span className="hint-circle">i</span><span>Only synthetic client labels are in this release. Database records and derived decisions are not yet connected.</span></div></div></>}
-      <div className="next"><div><span className="eyebrow">NEXT MILESTONE</span><strong>Connect Supabase and import the full synthetic universe</strong><p>Then validate customer evidence before adding OpenAI-powered storytelling.</p></div><span>→</span></div>
-     </section>
-    </div>
-    <footer>Geojit Wealth Story · Concept prototype · No financial advice, personalised recommendations or live integrations</footer>
-   </main>
-  </div>
+ <aside className="sidebar">
+ <div className="brand"><div className="brand-symbol">G<span>.</span></div><div><strong>Geojit</strong><small>WEALTH STORY / POC 2.0</small></div></div>
+ <div className="side-heading">INTELLIGENCE WORKSPACE</div><div className="menu-item active"><span className="icon">◫</span> Customer intelligence</div>
+ <div className="menu-item muted"><span className="icon">◇</span> AI story generation <em>Next</em></div>
+ <div className="side-bottom"><span className="status-dot"/> {configured?'Supabase connected':'Local preview mode'}<div className="tiny">{configured?'Authenticated synthetic dataset':'Configure Netlify Supabase variables to activate live data'}</div>{session&&<button className="signout" onClick={()=>supabase.auth.signOut()}>Sign out</button>}</div>
+ </aside><main className="main">
+ <header className="topline"><div>INTELLIGENCE LAB <span>/ Data foundation</span></div><div className="environment">SYNTHETIC DATA ONLY</div></header>
+ <section className="heading"><div className="eyebrow">THE RELATIONSHIP INTELLIGENCE EXPERIMENT</div><h1>One customer.<br/><i>Many connected moments.</i></h1><p>Explore how product, behavioural, channel and human interactions become a coherent, explainable customer story.</p></section>
+ {!configured&&<Alert><b>Preview mode:</b> The live Supabase connection has not been configured. The 20 client labels are placeholders; no imported data or story is shown.</Alert>}
+ {error&&<Alert><b>Data loading issue:</b> {error}. Confirm the SQL import, reviewer permissions and Netlify environment variables.</Alert>}
+ <div className="layout">
+ <section className="client-panel"><div className="panel-title"><div><h2>Client universe</h2><p>{configured?'Live synthetic records from Supabase':'20 illustrative client scenarios'}</p></div><span className="count">{clients.length}</span></div>
+ <label className="search"><span>⌕</span><input aria-label="Search clients" placeholder="Search clients or scenarios" value={query} onChange={e=>setQuery(e.target.value)}/></label>
+ <div className="client-list">{filtered.map(c=><button key={c.client_id} className={'client '+(selected===c.client_id?'selected':'')} onClick={()=>{setSelected(c.client_id);setTab('overview')}}><span className="avatar">{c.alias.replace(' (fictional)','').slice(0,1)}</span><span className="client-identity"><strong>{c.alias.replace(' (fictional)','')}</strong><small>{c.persona_scenario}</small></span><span className="client-id">{c.client_id}</span></button>)}
+ {!filtered.length&&<p className="noresult">{loading?'Loading…':'No matching clients.'}</p>}</div></section>
+ <section className="detail">{client?<><div className="detail-top"><span className="eyebrow">CUSTOMER CONTEXT / {client.client_id}</span><span className="outline-pill">Fictional client</span></div>
+ <h2>{client.alias.replace(' (fictional)','')}'s relationship</h2><p className="lead">{client.persona_scenario} · {client.profile?.region||'Location unavailable'}</p>
+ <div className="tabs" role="tablist" aria-label="Customer information">{[['overview','Overview'],['evidence','Data sources'],['timeline','Timeline'],['story','Wealth Story']].map(([v,label])=><button key={v} role="tab" aria-selected={tab===v} className={tab===v?'active':''} onClick={()=>setTab(v)}>{label}</button>)}</div>
+ {loading?<p className="supportText">Loading customer records…</p>:tab==='overview'?<><div className="focus-card"><span className="eyebrow">DERIVED CUSTOMER STATE</span>
+ <h3>{state?.story_type?titleCase(state.story_type):'The intelligence state is awaiting database import.'}</h3><p className="supportText">Priority: <b>{titleCase(state?.primary_priority||client.starting_mode)}</b> · Goal: {titleCase(state?.goal_type)} · Relationship confidence: {titleCase(state?.relationship_confidence)}</p>
+ <div className="divider"/><div className="hint"><span className="hint-circle">i</span><span>Data from Geojit accounts is not a complete picture of the customer's external assets or needs. No inferred intent is a suitability decision.</span></div></div>
+ <div className="data-grid"><div><span>Known products</span><strong>{products.length||'—'}</strong></div><div><span>Visible holdings</span><strong>{holdings.length?money(value):'—'}</strong></div><div><span>Unified events</span><strong>{byDomain(records,'unified_events').length||'—'}</strong></div></div>
+ {openService&&<Alert>An open service issue exists. Review its status before optional promotional content.</Alert>}
+ <button className="next navNext" onClick={()=>setTab('story')}><div><span className="eyebrow">NEXT</span><strong>See the evidence-grounded Wealth Story</strong><p>Follow the selected customer context and governance decision.</p></div><span>→</span></button>
+ </>:tab==='evidence'?<Evidence records={records}/>:tab==='timeline'?<Timeline records={records}/>:<Story records={records}/>}
+ </>:<div className="focus-card"><h3>{loading?'Loading customers…':'No customer data available'}</h3><p>Run the supplied Supabase SQL import to populate the synthetic dataset.</p></div>}</section></div>
+ <footer>Geojit Wealth Story · Demonstration only · No real customer data, live market research, financial advice or outbound messaging</footer>
+ </main></div>
 }
