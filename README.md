@@ -1,6 +1,41 @@
-# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.6
+# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.7 — Customer Wealth Story Experience (fictional preview)
+
+The internal Relationship Intelligence Lab, AI story-generation, editorial approval, subscription management and optional email dry-run are now complemented by an **actual customer-facing reading experience**, accessible only inside the authenticated reviewer POC.
+
+### What the customer-facing preview includes
+
+- **Premium Geojit-aligned interface:** calm editorial composition, responsive mobile/desktop layout, carefully restrained green surfaces, Radio Canada Big and accessible focus treatment. Brand asset and exact Figma component sign-off remain outstanding.
+- **Reviewer-controlled persona switching:** preview any of the 20 **fictional clients**, with a clearly visible banner stating this is a *reviewer simulation* and **not** a real customer login.
+- **Independent edition selection:** Daily Trading Brief, Weekly Investment Story and Monthly Wealth Journey, each with its own content rhythm and preferences.
+- **Published content only:** reads `poc_story_editions` with `stage='published_in_app'`. Draft candidates, reviewed editions and approvals not yet published are never displayed as customer stories.
+- **A meaningful story experience:** displays the latest published edition with its title, date, narrative and contextual note; lets the reader explore the explanation at their own pace.
+- **Explainable context:** from the stored `evidence_trace` of an AI-generated story, shows only cited synthetic source observations (not raw account tables), their topic and date limitations. Older editions lacking a trace are transparently identified.
+- **Guided exploration:** allows readers to explore the meaning of activity, stated goals or RM touchpoints without inventing account performance, recommendations or service actions.
+- **Preferences:** independent subscribe/pause/unsubscribe controls, daily trader delivery-window preference and explicit explanation that in-app availability and optional emails are separate.
+- **Engagement:** an explicit **Mark as read · demo** action records a fictional `in_app_view_demo` event in the existing Supabase event ledger, available to Wealth Story Studio. Opening the preview does not silently count as a read.
+
+### Reviewer walkthrough for management
+
+1. Sign in to the existing Netlify POC and open **Wealth Story Studio → Story Production**.
+2. Choose **Thomas (C012) / Weekly Investment Story**. Create a candidate with OpenAI, review its source evidence, mark reviewed, tick the editorial checklist, approve and publish in-app.
+3. Click **Preview as customer**. The new customer view shows Thomas's latest **published** weekly story and a source-context path.
+4. Explore **What shaped it** and **Explore a little further**; confirm it does not claim external holdings, performance, goals or suitability where unknown.
+5. Click **Mark as read · demo**. Return to Marketing Studio and inspect the in-app engagement count/event.
+6. Open **Your preferences** and pause the weekly edition; confirm the customer can still read the published story and the optional email eligibility becomes withheld.
+7. Switch to a trader such as **Vikram (C008)** and choose Daily Trading Brief. The app must show an honest empty state if no approved current brief exists, rather than inventing market calls.
+8. Return to **Delivery & Engagement**: the existing email preview remains non-sending, but now provides a **Preview as customer** handoff into the authenticated fictional reading experience.
+
+### Data and security boundary
+
+The POC **does not provide customer authentication**, real deep links, individual row-level customer entitlements, a real outbound email provider, secure live portfolio APIs, approved external research feeds or production-grade customer consent. All customer switching and preference editing happen **under the signed-in reviewer account** using synthetic records and broad POC RLS. Never use this setup with real customer data or distribute the reviewer link as though it provides customer-only access.
+
+**No new SQL migration or Netlify secret is required for POC 2.7.** All customer reading, subscription and engagement interactions reuse the existing synthetic `poc_story_editions`, `poc_edition_subscriptions` and `poc_studio_events` tables.
+
+Future production scope: authenticated client deep links; a clear content-validity and customer-access layer; true customer-consent capture and event auditing; approved Geojit brand assets and mail templates; and measurable customer-value/ROI instrumentation.
 
 ## POC 2.6 — Consent-aware email delivery readiness (simulation only)
 
