@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase, loadClientRecords } from './lib/supabase'
+import { evaluateDelivery } from './lib/deliveryEligibility.js'
 
 export const EDITIONS = [
   { id:'daily_trading', label:'Daily Trading Brief', cadence:'Trading days', description:'Trading context and approved, valid research only.', icon:'↗' },
@@ -100,6 +101,12 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const visibleGeneration=generationResult?.clientId===selected&&generationResult?.editionType===type?generationResult:null
  const visibleEvidence=evidencePreview.clientId===selected&&evidencePreview.editionType===type?evidencePreview:{status:'loading'}
  const storyTrace=currentEdition?.evidence_trace?.version==='evidence_v2_5'?currentEdition.evidence_trace:null
+ const selectedEvidenceReady=visibleEvidence?.status==='ready';
+ const deliveryDecision=evaluateDelivery({
+   clientId:selected,editionType:type,subscription:sub,edition:currentEdition,events,
+   serviceBlocked:!selectedEvidenceReady||!!visibleEvidence.evidence?.service_first||['C004','C019'].includes(selected),
+   permissionBlocked:!selectedEvidenceReady||!!visibleEvidence.evidence?.optional_outbound_withheld
+ });
  const lastEvent=events.find(e=>e.client_id===selected&&e.edition_type===type&&e.event_type==='email_delivery_simulated')
  const inApp=events.filter(e=>e.event_type==='in_app_view_demo').length
  const eligible = subscriptions.filter(s=>s.status==='subscribed')
@@ -215,25 +222,52 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
    setBusy(false)
  }
  async function recordEvent(edition,event_type){
-   if(!persisted||!edition)return
+   if(!persisted||!edition||busy)return
    setBusy(true);setError('');setNotice('')
-   if(edition.stage!=='published_in_app'){setError('Publish the approved edition in-app before recording engagement or delivery.');setBusy(false);return}
-   if(event_type==='email_delivery_simulated'){
-     if(sub?.status!=='subscribed'){setError('Email simulation blocked: this customer is not subscribed to this edition.');setBusy(false);return}
-     if(selected==='C020'||['C004','C019'].includes(selected)){setError('Email simulation blocked by fictional customer preferences or service-first safeguards.');setBusy(false);return}
-     const records=await loadClientRecords(selected).catch(()=>[])
-     if(safeContext(records,type,client).blocked){setError('Email simulation blocked by customer context.');setBusy(false);return}
-   }
-   const {error:writeError}=await supabase.from('poc_studio_events').insert({client_id:selected,edition_type:type,edition_id:edition.id,event_type,channel:event_type==='email_delivery_simulated'?'email':'in_app',details:{simulation:true}})
-   if(writeError)setError(writeError.message);else{setNotice(event_type==='email_delivery_simulated'?'Simulated email delivery recorded. No email was actually sent.':'Simulated in-app reading event recorded.');await refresh()}
-   setBusy(false)
+   try{
+     if(edition.stage!=='published_in_app')throw Error('Publish a reviewed edition in-app before recording an engagement event.')
+     if(event_type==='email_delivery_simulated'){
+       // Re-read current fictional preferences and delivery history at the point of action.
+       // This is still only a demo (real delivery would require an atomic server-side decision).
+       const [sResult,eResult,lResult]=await Promise.all([
+        supabase.from('poc_edition_subscriptions').select('*').eq('client_id',selected).eq('edition_type',type).single(),
+        supabase.from('poc_story_editions').select('*').eq('id',edition.id).eq('client_id',selected).eq('edition_type',type).single(),
+        supabase.from('poc_studio_events').select('*').eq('client_id',selected).eq('edition_type',type).eq('event_type','email_delivery_simulated').order('created_at',{ascending:false}).limit(100)
+       ])
+       if(sResult.error||eResult.error||lResult.error)throw Error('Could not verify the latest fictional delivery eligibility. No event was recorded.')
+       const records=await loadClientRecords(selected)
+       const context=safeContext(records,type,client)
+       const decision=evaluateDelivery({
+        clientId:selected,editionType:type,subscription:sResult.data,edition:eResult.data,
+        events:lResult.data,serviceBlocked:context.blocked||['C004','C019'].includes(selected),
+        permissionBlocked:context.blocked||selected==='C020'
+       })
+       if(!decision.eligible)throw Error('Optional delivery withheld: '+decision.blockers.join(' '))
+       const {error:writeError}=await supabase.from('poc_studio_events').insert({
+        client_id:selected,edition_type:type,edition_id:edition.id,event_type,
+        channel:'email',details:{simulation:true,policy:decision.policy_version,checks:decision.checks,
+         evaluated_at:new Date().toISOString(),delivery_window:decision.delivery_window}
+       })
+       if(writeError)throw Error(writeError.message)
+       setNotice('Eligible dry-run delivery recorded with decision evidence. No email was sent.')
+     }else if(event_type==='in_app_view_demo'){
+       const {error:writeError}=await supabase.from('poc_studio_events').insert({
+         client_id:selected,edition_type:type,edition_id:edition.id,event_type,channel:'in_app',
+         details:{simulation:true,action:'explicit_demo_view'}
+       })
+       if(writeError)throw Error(writeError.message)
+       setNotice('In-app reading was recorded as a fictional demo event.')
+     }
+     await refresh()
+   }catch(e){setError(e.message||'Simulation failed. Nothing was sent.')}
+   finally{setBusy(false)}
  }
  const pipeline = [['Candidates',editions.filter(e=>e.stage==='candidate').length],['Reviewed',editions.filter(e=>e.stage==='reviewed').length],['Approved',editions.filter(e=>e.stage==='approved').length],['Published in-app',editions.filter(e=>e.stage==='published_in_app').length]]
  const generatedCount=countUnique(editions)
  return <div className="wsStudio">
-   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.5.2 · Auth diagnostics</div></div>
+   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.6 · Delivery readiness</div></div>
    <section className="wsStudioIntro"><div className="eyebrow">GEOJIT WEALTH STORY STUDIO</div><h1>One relationship.<br/><span>Multiple meaningful editions.</span></h1><p>Manage the fictional subscription lifecycle, editorial workflow, in-app availability and optional email eligibility for 20 synthetic customers.</p></section>
-   <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>POC 2.2 can create AI-assisted drafts for review when an OpenAI API key is configured. Subscription, approval and delivery states remain demonstration-only; no emails are sent.</span></div>
+   <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>AI-assisted drafts can be reviewed and published in-app. The email module is a gated dry run: no emails, customer data exports or outbound messaging are enabled.</span></div>
    {error&&<div role="alert" className="wsError">{error}</div>}
    {notice&&<div role="status" className="wsSuccess">{notice}</div>}
    <div className="wsKpiGrid">
@@ -321,13 +355,18 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      <section className="wsSurface"><div className="eyebrow">DELIVERY CENTRE</div><h2>Delivery is a separate decision.</h2><p>Email is deliberately not connected. The actions below only record simulated delivery or in-app engagement events.</p>
        <div className="wsFormRow"><label>Client<select value={selected} onChange={e=>setSelected(e.target.value)}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{displayName(c)} · {c.client_id}</option>)}</select></label><label>Edition<select value={type} onChange={e=>setType(e.target.value)}>{EDITIONS.map(e=><option key={e.id} value={e.id}>{e.label}</option>)}</select></label></div>
        <div className="wsDeliveryCheck"><div><span>Subscription</span><Chip tone={sub?.status==='subscribed'?'success':'neutral'}>{sub?.status||'No preference'}</Chip></div><div><span>Edition state</span><Chip>{currentEdition?.stage?.replaceAll('_',' ')||'No edition prepared'}</Chip></div><div><span>Last email simulation</span><b>{formatDate(lastEvent?.created_at)}</b></div></div>
+       <div className="wsSendReadiness">
+         <div className="wsEvidenceHeader"><div><div className="eyebrow">DELIVERY DECISION · DRY RUN</div><h3>Is this edition eligible for email?</h3></div><Chip tone={deliveryDecision.eligible?'success':'warning'}>{deliveryDecision.eligible?'Eligible for simulation':'Withheld'}</Chip></div>
+         <div className="wsDecisionChecks">{deliveryDecision.checks.map(check=><div key={check.name} className={check.pass?'pass':'blocked'}><span>{check.pass?'✓':'×'}</span><div><b>{check.name}</b>{!check.pass&&<small>{check.detail}</small>}</div></div>)}</div>
+         <p className="wsSmall">Demonstration rules only. Source status, customer consent, approved templates, exchange holidays and send frequency require production governance and server-side enforcement.</p>
+       </div>
        <div className="wsEmailPreview"><div className="eyebrow">EMAIL PREVIEW · NON-SENDING DEMO</div><h3>One safe invitation into the authenticated story</h3>
        <div className="wsEmailFrame"><div className="wsEmailHeader"><span>From</span><b>Geojit · Wealth Story (illustration)</b></div>
          <div className="wsEmailHeader"><span>Subject</span><b>Your Wealth Story is ready to explore</b></div>
          <div className="wsEmailBody"><div className="wsEmailLogo">WEALTH STORY</div><h4>A new chapter is here.</h4><p>Hello {displayName(client)},</p><p>Your latest {EDITION_LABELS[type]?.toLowerCase()} can be explored securely when you sign in to your account.</p><div className="wsEmailCta">View Wealth Story · Demo only</div><small>No private holdings, prices, account values or sensitive financial details appear in this email preview.</small></div>
        </div><p className="wsSmall">This preview is not an actual sendable template. Verified links, required footer, unsubscribe, legal entity details and email compliance must be configured before live delivery.</p></div>
-       <div className="wsActions"><button className="wsPrimary" type="button" disabled={!persisted||busy||currentEdition?.stage!=='published_in_app'||sub?.status!=='subscribed'||['C020','C004','C019'].includes(selected)} onClick={()=>recordEvent(currentEdition,'email_delivery_simulated')}>Simulate email delivery →</button><button type="button" disabled={!persisted||busy||currentEdition?.stage!=='published_in_app'} onClick={()=>recordEvent(currentEdition,'in_app_view_demo')}>Mark in-app viewed (demo)</button></div>
-       <div className="wsCallout">A simulated email is never sent to an address. The production system must re-check explicit consent, send eligibility, content validity, frequency limits and unsubscribe status at send time.</div>
+       <div className="wsActions"><button className="wsPrimary" type="button" disabled={!persisted||busy||!deliveryDecision.eligible} onClick={()=>recordEvent(currentEdition,'email_delivery_simulated')}>Record eligible email dry-run →</button><button type="button" disabled={!persisted||busy||currentEdition?.stage!=='published_in_app'} onClick={()=>recordEvent(currentEdition,'in_app_view_demo')}>Mark in-app viewed (demo)</button></div>
+       <div className="wsCallout">Email is never sent to an address. The dry-run gate rechecks the fictional subscription, customer context, edition freshness, duplicate history and cadence before recording an event. Real delivery remains disabled.</div>
      </section>
      <aside className="wsSurface"><div className="eyebrow">OPERATIONAL EVENT LEDGER</div><h2>What happened in the POC?</h2>{events.length?<div className="wsRecentEvents">{events.slice(0,20).map(e=><div key={e.id}><b>{e.event_type.replaceAll('_',' ')}</b><span>{e.client_id} · {EDITION_LABELS[e.edition_type]||e.edition_type} · {formatDate(e.created_at)}</span></div>)}</div>:<Empty title="No activity events recorded">Simulate an in-app view or email delivery after publishing an edition.</Empty>}</aside></div>}
    {!persisted&&<div className="wsMigrationHint"><strong>Studio preview mode</strong><p>The subscription table values are illustrative defaults. To activate persistent story, subscription and activity records, run <code>supabase/migrations/20261122_002_story_studio.sql</code> in Supabase SQL Editor, then refresh the page.</p></div>}
