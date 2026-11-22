@@ -208,3 +208,15 @@
 .wsDecisionChecks b{display:block;font-size:11px;color:var(--ds-text-primary)}
 .wsDecisionChecks small{display:block;margin-top:5px;font-size:10px;line-height:1.5;color:var(--ds-text-secondary)}
 @media(max-width:650px){.wsSendReadiness{padding:14px}.wsDecisionChecks{grid-template-columns:1fr}}
+
+/* POC 2.7.1 — customer value editorial gate and figure provenance */
+.wsEditorialOverview{padding:19px;background:var(--ds-surface-white);border:1px solid var(--ds-border-primary);border-radius:12px;margin:18px 0}
+.wsEditorialLayers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.wsEditorialLayers>div{border-radius:10px;background:var(--ds-surface-green);padding:13px;min-width:0}
+.wsEditorialLayers b{font-size:11px;color:var(--ds-text-primary)}
+.wsEditorialLayers p{font-size:12px!important;color:var(--ds-text-secondary);line-height:1.7!important;margin:7px 0 0!important}
+.wsEditorialFigures{display:grid;gap:7px;margin-top:8px}
+.wsEditorialFigures span{font-size:11px;color:var(--ds-text-primary)}
+.wsEditorialFigures strong{font-weight:700}
+.wsEditorialFigures small{display:block;margin-top:3px;font-size:10px;color:var(--ds-text-secondary)}
+@media(max-width:650px){.wsEditorialLayers{grid-template-columns:1fr}.wsEditorialOverview{padding:13px}}
