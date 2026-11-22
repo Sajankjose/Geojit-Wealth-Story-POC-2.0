@@ -52,6 +52,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const [search,setSearch]=useState('')
  const [filter,setFilter]=useState('all')
  const [draft,setDraft]=useState(null)
+ const [aiBusy,setAiBusy]=useState(false)
  const refresh=useCallback(async()=>{
    if(!supabase){setPersisted(false);setSubscriptions(initialSubscriptions(clients));return}
    try{
@@ -113,6 +114,34 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
    }catch(e){setError(e.message||String(e))}
    setBusy(false)
  }
+ async function generateAIDraft(){
+   if(!persisted||!client||busy||aiBusy)return
+   setAiBusy(true);setNotice('');setError('')
+   try{
+     const {data:{session},error:sessionError}=await supabase.auth.getSession()
+     if(sessionError||!session?.access_token)throw Error('Your reviewer session is unavailable. Sign in again.')
+     const res=await fetch('/.netlify/functions/generate-wealth-story',{
+       method:'POST',
+       headers:{'content-type':'application/json','authorization':'Bearer '+session.access_token},
+       body:JSON.stringify({client_id:selected,edition_type:type})
+     })
+     const result=await res.json().catch(()=>({error:'The AI server returned an invalid response.'}))
+     if(!res.ok)throw Error(result.error||'AI generation failed')
+     if(!result?.synthetic||result?.candidate?.generation_method!=='openai_draft'||result?.candidate?.stage!=='candidate')throw Error('AI draft did not pass the expected format check.')
+     const {data,error:writeError}=await supabase.from('poc_story_editions').insert({
+       client_id:selected,edition_type:type,
+       title:result.candidate.title,body:result.candidate.body,
+       decision_note:result.candidate.decision_note,stage:'candidate',
+       generation_method:'openai_draft',
+       evidence_count:result.candidate.evidence_count||0
+     }).select().single()
+     if(writeError)throw Error(writeError.message+(writeError.message.includes('generation_method')?' — Run the POC 2.2 SQL migration in Supabase.':''))
+     setDraft(data)
+     await refresh()
+     setNotice('An AI-assisted fictional draft was saved as a candidate. A reviewer must validate facts before approval or in-app publication; nothing was emailed.')
+   }catch(e){setError(e?.message||'AI generation is unavailable. Check Netlify Functions configuration.')}
+   finally{setAiBusy(false)}
+ }
  async function updateStage(edition,stage){
    if(!persisted||!edition)return
    setBusy(true);setError('');setNotice('')
@@ -137,9 +166,9 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const pipeline = [['Candidates',editions.filter(e=>e.stage==='candidate').length],['Reviewed',editions.filter(e=>e.stage==='reviewed').length],['Approved',editions.filter(e=>e.stage==='approved').length],['Published in-app',editions.filter(e=>e.stage==='published_in_app').length]]
  const generatedCount=countUnique(editions)
  return <div className="wsStudio">
-   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.1 · Simulated operations</div></div>
+   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.2 · AI draft preparation</div></div>
    <section className="wsStudioIntro"><div className="eyebrow">GEOJIT WEALTH STORY STUDIO</div><h1>One relationship.<br/><span>Multiple meaningful editions.</span></h1><p>Manage the fictional subscription lifecycle, editorial workflow, in-app availability and optional email eligibility for 20 synthetic customers.</p></section>
-   <div className="wsNotice"><strong>No real delivery or AI generation</strong><span>All subscribers, generated editions and engagement events in this POC are simulated. Real consent, review, research validation and secure delivery are required before production.</span></div>
+   <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>POC 2.2 can create AI-assisted drafts for review when an OpenAI API key is configured. Subscription, approval and delivery states remain demonstration-only; no emails are sent.</span></div>
    {error&&<div role="alert" className="wsError">{error}</div>}
    {notice&&<div role="status" className="wsSuccess">{notice}</div>}
    <div className="wsKpiGrid">
@@ -175,10 +204,11 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      </aside></div>}
    {tab==='production'&&<div className="wsStudioGrid">
      <section className="wsSurface"><div className="eyebrow">STORY STUDIO</div><h2>Prepare an evidence-led edition.</h2>
-       <p>Choose a client and an edition, then create a candidate from existing fictional story context. No OpenAI call is made.</p>
+       <p>Choose a client and edition, then prepare a grounded AI-assisted draft or use the existing synthetic template. AI drafts are never automatically approved or sent.</p>
        <div className="wsFormRow"><label>Client<select value={selected} onChange={e=>{setSelected(e.target.value);setDraft(null)}}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{displayName(c)} · {c.client_id}</option>)}</select></label><label>Edition<select value={type} onChange={e=>{setType(e.target.value);setDraft(null)}}>{EDITIONS.map(e=><option key={e.id} value={e.id}>{e.label}</option>)}</select></label></div>
-       <div className="wsActions"><button type="button" className="wsPrimary" disabled={!persisted||busy} onClick={generateCandidate}>Prepare story candidate →</button><button type="button" onClick={()=>onOpenClient(selected,'story')}>View source story</button></div>
-       {currentEdition?<div className="wsDraft"><div className="wsDraftTop"><span>Latest {EDITION_LABELS[currentEdition.edition_type]} candidate</span><Chip tone={currentEdition.stage==='published_in_app'?'success':'neutral'}>{currentEdition.stage.replaceAll('_',' ')}</Chip></div><h3>{currentEdition.title}</h3><p>{currentEdition.body}</p><details><summary>Why was this prepared?</summary><p>{currentEdition.decision_note}</p></details>
+       <div className="wsActions"><button type="button" className="wsPrimary" disabled={!persisted||busy||aiBusy} onClick={generateAIDraft}>{aiBusy?'Generating AI draft…':'Generate with AI →'}</button><button type="button" disabled={!persisted||busy||aiBusy} onClick={generateCandidate}>Use synthetic template</button><button type="button" onClick={()=>onOpenClient(selected,'story')}>Inspect source story</button></div>
+       <div className="wsAiHelp"><b>AI creates a candidate, not a customer communication.</b> Netlify checks the reviewer session, selects synthetic context, invokes OpenAI server-side and rejects unsafe claims. Read and verify the output before using the existing review steps. If the AI key is not configured, the synthetic-template option remains available.</div>
+       {currentEdition?<div className="wsDraft"><div className="wsDraftTop"><span>Latest {EDITION_LABELS[currentEdition.edition_type]} edition · {currentEdition.generation_method==='openai_draft'?'AI-assisted draft':'Synthetic template'}</span><Chip tone={currentEdition.stage==='published_in_app'?'success':'neutral'}>{currentEdition.stage.replaceAll('_',' ')}</Chip></div><h3>{currentEdition.title}</h3><p>{currentEdition.body}</p><details><summary>Why was this prepared?</summary><p>{currentEdition.decision_note}</p></details>
          <div className="wsActions"><button disabled={!persisted||busy||currentEdition.stage!=='candidate'} onClick={()=>updateStage(currentEdition,'reviewed')}>Mark reviewed</button><button disabled={!persisted||busy||currentEdition.stage!=='reviewed'} onClick={()=>updateStage(currentEdition,'approved')}>Approve (demo)</button><button className="wsPrimary" disabled={!persisted||busy||currentEdition.stage!=='approved'} onClick={()=>updateStage(currentEdition,'published_in_app')}>Publish in-app (demo)</button></div>
        </div>:<Empty title="No prepared edition yet">Create a fictional candidate to begin the review and publication workflow.</Empty>}
        <div className="wsEditionLedger"><div className="eyebrow">PREPARED EDITION REGISTER</div><h3>Who has a story, and where is it in the workflow?</h3>
