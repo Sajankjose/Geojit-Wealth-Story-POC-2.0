@@ -1,6 +1,43 @@
-# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7.1
+# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7.2
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.7.2 — Wealth Intelligence & Journey Engine (synthetic demonstration)
+
+**Core idea:** A Wealth Story should explain what happened in the market, what happened in a customer's investments, why the two may differ, and what the longer-term wealth journey reveals—without disclosing behavioural tracking or inventing real financial data.
+
+### Built in this release
+
+- **Deterministic financial intelligence:** `src/lib/wealthIntelligence.js` contains explicit, reproducible, synthetic weekly portfolio valuations, external cash flows, two-asset allocation figures and a **fictional broad-equity benchmark proxy** across seven dated weeks ending 20 November 2026.
+- **All twenty fictional clients:** deterministic customer-ID-based illustrative inputs, including Thomas C012 (₹5.42L latest fictional portfolio value with ₹3.24L equity and ₹2.18L mutual funds), and a purely fictional explicitly tagged goal case for George C014. Never use these as actual holdings or market prices.
+- **Weekly return:** calculates a Modified Dietz-*style* estimate as `(ending value - starting value - external net flows) / (starting value + 0.5 × external net flows)`. The midpoint assumption is only for this demonstration. A production TWR/XIRR requires actual dated cash flows, account coverage, valuation frequency and approved calculations.
+- **Like-for-like period:** computes the fictional benchmark-proxy change for the same end dates and shows the difference in **percentage points** (not rupees, not percentage growth in benchmark-relative wealth).
+- **Explainable limitations:** shows change in value, external net contributions and change excluding flows; explicitly states that without instrument-level valuations and attribution a performance gap **cannot** reliably be explained by a specific stock, fund, sector or investing decision. The invented broad-equity proxy is **not a validated matched benchmark** for a mixed-product portfolio.
+- **Wealth journey:** an SVG value timeline, contributions over the illustrated period, a clear disclaimer distinguishing contributions from investment returns, and a goal-progress indicator only for the explicitly tagged fictional goal case. No unconfirmed goal or risk profile is inferred.
+- **Contextual tool exploration:** three interactive handoff concepts—investment review, goal planning and RM conversation. They show the intended experience and disclose that no live Geojit tool or CRM request is connected.
+- **Customer experience:** new **Your financial picture** section in the existing `src/CustomerExperience.jsx`; the latest published story includes a gentle link to the richer view. Story reading, subscription editing, customer preview and in-app events remain intact.
+- **AI story connection:** the Netlify function receives a **non-numeric, explicitly fictional** finance-explainer context and stores the demo intelligence version in the generated edition trace. The LLM still cannot manufacture values or write digits, percentages or prices; the financial engine owns numerical calculations.
+- **Automated tests:** `tests/wealth-intelligence.test.mjs` validates the cash-flow method, synthetic fixture determinism, all twenty customer datasets, out-of-scope/malformed records, goal opt-in and the non-attribution guardrails. These run with the existing regression suite in GitHub Actions.
+
+### Walkthrough (no new environment variables or SQL)
+
+1. Let GitHub's main-branch changes deploy to Netlify, then sign in with the existing synthetic reviewer account.
+2. Open **Customer Experience → Thomas (C012) → Weekly Investment Story → Your financial picture**.
+3. Study the **illustrative** portfolio value, weekly cash-flow-adjusted return, hypothetical market proxy and return difference. Open **How was this calculated?** to see the assumptions.
+4. Compare opening and closing values, cash flows, and the resulting illustrative change excluding contributions. Inspect the seven-week SVG valuation journey.
+5. Explore **Explore my investments**, **Explore a goal**, and **Speak with Geojit**. These are informational mock handoffs, not active product links.
+6. Switch between **Thomas** and **George**; George has an explicitly tagged fictional goal scenario. Other customers show a respectful no-declared-goal state.
+7. Return to **Wealth Story Studio** to generate a new customer-first AI edition. The AI can provide a qualitative explanation of market/portfolio concepts but may not fabricate or calculate specific financial outcomes.
+
+**No actual weekly market movements, NSE/SEBI research, NAV histories, real portfolios, holdings attribution, benchmark suitability, P&L, financial advice or customer-consent records have been integrated.** All displayed POC 2.7.2 percentages are invented fixture-derived demonstration calculations, not real or independently verified market performance. This customer-facing area is a reviewer-only synthetic simulation and should never be exposed as a live client financial dashboard.
+
+### Next production integration priorities
+
+1. Controlled data contracts for **client-specific historical portfolio valuations and timestamped cash flows** (equity, MF, Smartfolios, F&O and exclusions), with validated calculation service and data provenance.
+2. **Approved and dated benchmark series** chosen to match portfolio composition and measurement methods; market/research feeds with publication timestamp, expiry and compliance review.
+3. **Holdings-level contribution / attribution** where calculations and product coverage permit, or honest suppression of the 'why' conclusion.
+4. **Goal engine** with explicit customer-entered goals, assumptions and scenario versioning—not inferred intentions.
+5. Approved internal **tool handoffs** with authenticated access, customer controls, minimal data sharing and measurable useful outcomes.
 
 ## POC 2.7.1 — Geojit Wealth Story editorial intelligence
 
