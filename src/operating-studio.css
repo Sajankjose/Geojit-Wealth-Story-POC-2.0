@@ -191,3 +191,8 @@
 .wsTraceItem p{font-size:12px!important;line-height:1.6!important;margin:7px 0!important;color:var(--ds-text-primary)!important}
 .wsTraceItem small{font-size:10px;color:var(--ds-text-secondary);overflow-wrap:anywhere}
 @media(max-width:700px){.wsEvidencePanel{padding:14px}.wsEvidenceList{grid-template-columns:1fr;max-height:360px}.wsEvidenceHeader{display:block}.wsEvidenceHeader>span{display:inline-block;margin:5px 0 8px}}
+
+/* POC 2.5.2: guided recovery for reviewer and evidence diagnostics */
+.wsRetryEvidence{display:inline-flex;margin-top:12px;border:1px solid var(--ds-border-action);background:white;border-radius:8px;padding:9px 12px;color:var(--ds-primary-action-pressed);font-size:11px;font-weight:650;min-height:40px;align-items:center}
+.wsRetryEvidence:hover:not(:disabled){background:var(--ds-surface-green)}
+.wsRetryEvidence:disabled{opacity:.5;cursor:not-allowed}
