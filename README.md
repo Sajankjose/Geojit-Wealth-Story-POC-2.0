@@ -2,6 +2,22 @@
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
 
+## POC 2.5.2 — Reviewer authentication diagnostics
+
+The previous generic `REVIEWER_CHECK_FAILED` response prevented us from distinguishing an expired Supabase reviewer session from a Netlify-to-Supabase network issue.
+
+This patch retains **server-side Supabase user validation** (never trusts a browser-provided flag), retries a transient auth network failure once, and returns safe, stage-specific codes:
+
+- `AUTH_SESSION_REJECTED`: the reviewer bearer token was rejected (401/403). Use **Refresh reviewer session & retry**, or sign out/in.
+- `AUTH_TIMEOUT` / `AUTH_UPSTREAM_UNREACHABLE`: Netlify could not contact Supabase Auth. Confirm the correct Supabase project URL in the Netlify server/function variables.
+- `AUTH_UPSTREAM_HTTP`: Supabase Auth returned an unexpected HTTP code (displayed, but no secret or response body is exposed).
+- `AUTH_RESPONSE_INVALID` / `AUTH_USER_MISSING`: unexpected validation response; inspect Netlify Function logs.
+- `CLIENT_READ_FAILED` / `RECORDS_READ_FAILED`: the caller authenticated but could not retrieve permitted client data.
+
+The Studio adds **Refresh reviewer session & retry** and a dedicated **Retry evidence check** action. These do not modify subscription settings, SQL data or API secrets. No migration is needed.
+
+**Testing:** After Netlify deploys the new code, open Thomas (C012) in Story Production. Use **Check AI connection** and observe the precise code. Only if it reports `AUTH_SESSION_REJECTED` should sign-in refresh be the first response; a 502 network/configuration error needs a server-side check. A successful server-key diagnostic alone does not verify AI completion.
+
 ## POC 2.5.1 — evidence retrieval hotfix
 
 After the POC 2.5 release, both **Check AI connection / evidence preview** and **Generate with AI** could fail with generic server messages. The underlying failure was not disclosed to reviewers because the server's GET catch treated data retrieval errors as reviewer authentication errors.
