@@ -1,6 +1,57 @@
-# Geojit Wealth Story — Customer Intelligence POC 2.0
+# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.1
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.1 — Wealth Story Operating Studio (November 2026)
+
+This phase adds a **Marketing / Relationship Operations workspace** while preserving the original 20-client intelligence views, Supabase authentication, source evidence, timeline and prewritten story context.
+
+### Working modules
+
+- **Overview:** unique subscribed customers, fictionally prepared editions, in-app publications and recorded simulated engagement, with edition-level subscribers for daily, weekly and monthly.
+- **Subscription Centre:** per-client and per-edition statuses `subscribed`, `paused`, `unsubscribed`. All values are fictional and editable for testing after migration.
+- **Story Production:** prepare a **non-AI synthetic template candidate** from existing `poc_records`, review, mark approved and publish in-app through distinct manual demo actions. No model key is connected.
+- **Delivery & Engagement:** checks an edition's fictional subscription, publication and service-first status before recording an **email delivery simulation**. Absolutely **no email is actually sent**. In-app reading is recorded only via an explicit demo action.
+- **POC audit:** recent fictional delivery / engagement events. Approval and publication states persist in the database.
+
+Three independent optional editions:
+1. Daily Trading Brief — on trading days; only approved, current market data in production.
+2. Weekly Investment Story — investing habit, relationship context and learning.
+3. Monthly Wealth Journey — long-term goals, milestones and planning.
+
+A customer may subscribe to multiple editions. In-app access is independent from optional email subscription. Mandatory transactional, risk, regulatory and essential service communications are out of scope and must remain independently governed.
+
+### Activate persistence (one short Supabase SQL query)
+
+Run `supabase/migrations/20261122_002_story_studio.sql` using **Supabase → SQL Editor → New query → Run** in the *same project* containing the 20 fictional clients.
+
+The migration:
+- Creates `poc_edition_subscriptions`, `poc_story_editions`, `poc_studio_events`.
+- Seeds up to **60 fictional subscription rows** (20 clients × 3 editions); rerunning does not overwrite existing preference changes.
+- Enables RLS, allowing authenticated POC reviewers to read and update **synthetic-only** operational records.
+- Does **not** change `poc_clients`, `poc_records`, `poc_catalog`, Netlify environment variables or existing authentication.
+
+Verify:
+```sql
+select count(*) as clients from public.poc_clients; -- 20
+select count(*) as subscription_rows from public.poc_edition_subscriptions; -- 60
+select edition_type,status,count(*) from public.poc_edition_subscriptions group by 1,2 order by 1,2;
+```
+
+Until the SQL migration is applied, the Studio displays **explicit preview mode** with illustrative subscription rows, while persistent actions are disabled. After it is run, refresh Netlify to activate saved subscriptions, story candidates, approval steps and simulated activity records.
+
+### Suggested management walkthrough
+
+1. Open **Wealth Story Studio → Overview**: compare active subscribers across daily/weekly/monthly editions; do not double-count clients.
+2. Open **Subscription Centre**: select Thomas (C012), see multiple subscriptions, pause one edition, and confirm other editions remain unaffected.
+3. Open **Story Production**: select Meera (C003), prepare a weekly investment candidate, mark reviewed, approve (demo), and publish in-app (demo).
+4. Open **Delivery & Engagement**: for that approved/published edition, simulate eligible email delivery and mark an in-app view. Review the simulated event ledger.
+5. Select **Dev (C004)** or **Manoj (C019)**: optional delivery is withheld where service-first priority applies. Select **Isha (C020)** to demonstrate opt-out. Real-world permissions are not recorded.
+6. Open the original **Customer intelligence** workspace to review the 20-client profiles, evidence and relationship timeline. Data remains intact.
+
+**Security disclaimer:** The authenticated RLS write permissions are intentionally broad for this synthetic-only POC and are *not* a production role/consent model. Actual Geojit customers require role-based entitlements, customer-owned consent, server-side eligibility, dual control, audit logs, unsubscribes and data protection reviews. Do not upload real data or enable real messages on this schema.
+
+**Upcoming phase:** Add a Netlify server-side OpenAI narrative function with strictly filtered Story Context Packages, structured output, claim validation and review gates. Integrate an approved email service only after explicit consent, compliance and delivery governance are implemented.
 
 ## UI/UX refinement — pre-AI phase (November 2026)
 
