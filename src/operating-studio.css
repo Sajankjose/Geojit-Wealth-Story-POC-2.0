@@ -145,3 +145,18 @@
 .wsEmailCta{background:var(--ds-primary-action);color:white;display:inline-block;padding:11px 19px;border-radius:8px;font-size:12px;font-weight:650;margin:17px 0 21px}
 .wsEmailBody small{display:block;font-size:11px;color:var(--ds-text-secondary);line-height:1.6}
 @media(max-width:600px){.wsEmailBody{padding:20px 16px}.wsEmailBody h4{font-size:21px}.wsAiDiagnostic{display:grid}.wsReviewChecklist label{font-size:11px}}
+
+/* POC 2.4 — make generation progress, errors and provenance impossible to miss */
+.wsGenerationResult{display:flex;align-items:flex-start;gap:13px;margin:16px 0 10px;padding:16px 17px;border-radius:12px;border:1px solid var(--ds-border-primary);background:var(--ds-surface-green)}
+.wsGenerationResult.isFailed{background:var(--ds-error-light);border-color:#E8BDBD}
+.wsGenerationResult.isSaved{background:var(--ds-success-light);border-color:#AFD8CE}
+.wsGenerationResult.isGenerating{background:#EBEEFB;border-color:#C4CFED}
+.wsGenerationIndicator{font-size:19px;font-weight:700;line-height:1.3;color:var(--ds-primary-action)}
+.wsGenerationResult.isFailed .wsGenerationIndicator{color:var(--ds-error)}
+.wsGenerationResult strong{display:block;font-size:13px;color:var(--ds-text-primary)}
+.wsGenerationResult p{margin:5px 0 0!important;font-size:12px;line-height:1.65!important;color:var(--ds-text-secondary)}
+.wsGenerationResult small{font-size:11px;line-height:1.6;display:block;margin-top:7px;color:#8F3838}
+.wsDraftProvenance{display:flex;gap:7px 12px;align-items:center;flex-wrap:wrap;padding:9px 0 14px;border-bottom:1px solid var(--ds-border-primary);margin-bottom:15px}
+.wsDraftProvenance span{font-size:9px;letter-spacing:.6px;font-weight:700;color:var(--ds-text-tertiary)}
+.wsDraftProvenance b{font-size:11px;color:var(--ds-text-primary);font-weight:650;margin-right:10px}
+@media(max-width:650px){.wsGenerationResult{padding:12px;gap:9px}.wsDraftProvenance{gap:5px 9px}.wsDraftProvenance b{font-size:10px}}
