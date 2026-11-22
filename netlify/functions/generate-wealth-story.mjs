@@ -10,23 +10,38 @@ const pick = (v,n=380) => typeof v === 'string' ? v.replace(/[\u0000-\u001f]/g,'
 function projectOrigin(input) {
  try {const u=new URL(input);return u.protocol==='https:'?u.origin:null} catch{return null}
 }
+class EvidenceError extends Error {
+ constructor(code,message){super(message);this.code=code}
+}
 async function loadCustomerEvidence(base,headers,client_id,edition_type){
- const clientQuery=new URL(base+'/rest/v1/poc_clients')
- clientQuery.searchParams.set('client_id','eq.'+client_id)
- clientQuery.searchParams.set('select','client_id,alias,persona_scenario,synthetic')
- clientQuery.searchParams.set('limit','1')
- const recordsQuery=new URL(base+'/rest/v1/poc_records')
- recordsQuery.searchParams.set('client_id','eq.'+client_id)
- recordsQuery.searchParams.set('domain','in.('+SOURCE_DOMAINS.join(',')+')')
- recordsQuery.searchParams.set('select','record_id,source_id,event_at,domain,payload')
- recordsQuery.searchParams.set('limit','500')
- const [cr,rr]=await Promise.all([
-  fetch(clientQuery,{headers,signal:AbortSignal.timeout(10000)}),
-  fetch(recordsQuery,{headers,signal:AbortSignal.timeout(10000)})
- ])
- const [clients,rows]=await Promise.all([jsonOrThrow(cr),jsonOrThrow(rr)])
- if(!clients?.[0]||clients[0].synthetic!==true)return null
- const evidence=selectEvidence(rows,clients[0],edition_type)
+ const clientQuery=new URL(base+'/rest/v1/poc_clients');
+ clientQuery.searchParams.set('client_id','eq.'+client_id);
+ clientQuery.searchParams.set('select','client_id,alias,persona_scenario,synthetic');
+ clientQuery.searchParams.set('limit','1');
+ // Read the same columns and simple client filter as the previously working
+ // Customer Intelligence screen. Apply the allowlist in the pure evidence layer.
+ const recordsQuery=new URL(base+'/rest/v1/poc_records');
+ recordsQuery.searchParams.set('client_id','eq.'+client_id);
+ recordsQuery.searchParams.set('select','record_id,client_id,domain,source_id,event_at,payload');
+ recordsQuery.searchParams.set('order','record_id.asc');
+ recordsQuery.searchParams.set('limit','1000');
+ let cr,rr;
+ try {
+  [cr,rr]=await Promise.all([
+   fetch(clientQuery,{headers,signal:AbortSignal.timeout(12000)}),
+   fetch(recordsQuery,{headers,signal:AbortSignal.timeout(12000)})
+  ]);
+ }catch(e){throw new EvidenceError('SUPABASE_NETWORK','Could not reach the fictional customer data service. Please retry.')}
+ if(!cr.ok)throw new EvidenceError('CLIENT_READ_FAILED','The server could not read the client profile (HTTP '+cr.status+').')
+ if(!rr.ok)throw new EvidenceError('RECORDS_READ_FAILED','The server could not read the customer event records (HTTP '+rr.status+').')
+ let clients,rows;
+ try {[clients,rows]=await Promise.all([cr.json(),rr.json()])}
+ catch {throw new EvidenceError('DATA_RESPONSE_INVALID','Customer data service returned an invalid response.')}
+ if(!Array.isArray(clients)||!Array.isArray(rows))throw new EvidenceError('DATA_SHAPE_INVALID','Customer data returned an unexpected format.')
+ if(!clients[0]||clients[0].synthetic!==true)return null;
+ let evidence;
+ try {evidence=selectEvidence(rows,clients[0],edition_type)}
+ catch(e){throw new EvidenceError('EVIDENCE_SELECTION_FAILED','Evidence selection could not process the synthetic records.')}
  return {client:clients[0],evidence}
 }
 const responseSchema={
@@ -81,7 +96,10 @@ export default async function handler(request) {
     return send(200,{ok:true,synthetic:true,client_id:selectedId,edition_type:selectedType,evidence:trace.evidence})
    }
    return send(200,{function_ready:true,reviewer_authenticated:true,openai_key_configured:Boolean(openaiKey),model:process.env.OPENAI_MODEL||'gpt-4.1-mini',actual_generation_tested:false})
-  }catch{return send(502,{error:'Reviewer validation failed or Supabase is unreachable'})}
+  }catch(e){
+   if(e instanceof EvidenceError)return fail(502,e.code,e.message,true)
+   return fail(502,'REVIEWER_CHECK_FAILED','Reviewer authentication check failed or timed out. Sign out and in again; retry.',true)
+  }
  }
  if(!openaiKey)return fail(503,'OPENAI_NOT_CONFIGURED','OpenAI API key is missing from Netlify Functions. Check OPENAI_API_KEY and redeploy.')
  let payload
@@ -159,7 +177,8 @@ export default async function handler(request) {
    disclaimer:'Synthetic internal review draft. Not approved, published, or emailed.'
   })
  }catch(e){
-  // Never reveal credentials or raw response bodies.
+  // Never reveal credentials, tokens, or raw upstream responses.
+  if(e instanceof EvidenceError)return fail(502,e.code,e.message,true)
   const msg=String(e?.message||'')
   if(/quota|billing|insufficient_quota/i.test(msg))return fail(503,'OPENAI_QUOTA','OpenAI API billing or quota needs attention.')
   if(/authentication|invalid api key|incorrect api key|unauthorized/i.test(msg))return fail(503,'OPENAI_AUTH','OpenAI API key could not be authenticated.')
