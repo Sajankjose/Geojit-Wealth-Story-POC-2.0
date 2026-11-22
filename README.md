@@ -2,6 +2,20 @@
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
 
+## POC 2.5.1 — evidence retrieval hotfix
+
+After the POC 2.5 release, both **Check AI connection / evidence preview** and **Generate with AI** could fail with generic server messages. The underlying failure was not disclosed to reviewers because the server's GET catch treated data retrieval errors as reviewer authentication errors.
+
+The patch:
+- Uses the same simple read pattern as the previously working Customer Intelligence screen (`poc_clients` and `poc_records`, with `record_id` ordering and a 1,000-record bound).
+- Performs source-domain allowlisting after retrieving the records, in the source-selection module.
+- Returns non-sensitive stage-specific codes: `CLIENT_READ_FAILED`, `RECORDS_READ_FAILED`, `DATA_RESPONSE_INVALID`, `EVIDENCE_SELECTION_FAILED`, `SUPABASE_NETWORK` or `REVIEWER_CHECK_FAILED`.
+- Displays the evidence-panel diagnostic adjacent to its content. The OpenAI key, Netlify variables, SQL migration and 20-client records are unchanged.
+
+**Verification:** GitHub's Vite build workflow passed. Browser-level authenticated evidence loading still needs confirmation.
+
+**Retest:** Wait until the latest Netlify deployment is Published, then open **Wealth Story Studio → Story Production → Thomas (C012) → Weekly Investment Story**. The evidence cards should populate. Then click **Generate with AI**. If an error remains, capture the exact code shown; do not share tokens or API keys.
+
 ## POC 2.5 — evidence-led narrative intelligence (November 2026)
 
 The first successful AI draft established end-to-end generation, but it mostly repeated product relationships. POC 2.5 upgrades the **server-side Story Context Package**, requires source references and gives Marketing a transparent review surface.
