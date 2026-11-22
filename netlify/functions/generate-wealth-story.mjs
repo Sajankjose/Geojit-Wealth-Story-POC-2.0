@@ -13,6 +13,32 @@ function projectOrigin(input) {
 class EvidenceError extends Error {
  constructor(code,message){super(message);this.code=code}
 }
+// Authenticate on the server for BOTH preview and generation. Never accept a client-side
+// boolean as proof of authentication. Return only safe status categories to the UI.
+async function validateReviewer(base,publishable,token){
+ let resp;
+ for(let attempt=0;attempt<2;attempt++){
+  try{
+   resp=await fetch(base+'/auth/v1/user',{
+    headers:{apikey:publishable,Authorization:'Bearer '+token},
+    signal:AbortSignal.timeout(10500),
+    cache:'no-store'
+   });
+   break;
+  }catch(e){
+   if(attempt===1)throw new EvidenceError(
+    /abort|time/i.test(String(e?.name||'')+' '+String(e?.message||''))?'AUTH_TIMEOUT':'AUTH_UPSTREAM_UNREACHABLE',
+    'Supabase authentication could not be contacted from Netlify. The browser may still display previously loaded client data.'
+   );
+  }
+ }
+ if(resp.status===401||resp.status===403)throw new EvidenceError('AUTH_SESSION_REJECTED','Supabase rejected this reviewer session. Refresh the session or sign in again.');
+ if(!resp.ok)throw new EvidenceError('AUTH_UPSTREAM_HTTP','Supabase authentication returned HTTP '+resp.status+'. Check the Netlify Supabase URL and publishable key.');
+ let user;
+ try {user=await resp.json()}catch{throw new EvidenceError('AUTH_RESPONSE_INVALID','Supabase returned an unreadable reviewer response.')}
+ if(!user||typeof user.id!=='string'||!user.id)throw new EvidenceError('AUTH_USER_MISSING','Supabase did not return a reviewer identity. Sign in again.');
+ return user;
+}
 async function loadCustomerEvidence(base,headers,client_id,edition_type){
  const clientQuery=new URL(base+'/rest/v1/poc_clients');
  clientQuery.searchParams.set('client_id','eq.'+client_id);
@@ -83,10 +109,7 @@ export default async function handler(request) {
  if(!supabaseUrl||!publishable)return send(503,{error:'Supabase server configuration missing'})
  if(request.method==='GET'){
   try{
-   const authResponse=await fetch(supabaseUrl+'/auth/v1/user',{headers:{apikey:publishable,Authorization:'Bearer '+token},signal:AbortSignal.timeout(8000)})
-   if(!authResponse.ok)return send(401,{error:'Reviewer session expired; sign in again'})
-   const reviewer=await jsonOrThrow(authResponse)
-   if(!reviewer?.id)return send(403,{error:'Reviewer authentication required'})
+   await validateReviewer(supabaseUrl,publishable,token)
    const params=new URL(request.url).searchParams
    const selectedId=params.get('client_id'),selectedType=params.get('edition_type')
    if(selectedId||selectedType){
@@ -97,8 +120,8 @@ export default async function handler(request) {
    }
    return send(200,{function_ready:true,reviewer_authenticated:true,openai_key_configured:Boolean(openaiKey),model:process.env.OPENAI_MODEL||'gpt-4.1-mini',actual_generation_tested:false})
   }catch(e){
-   if(e instanceof EvidenceError)return fail(502,e.code,e.message,true)
-   return fail(502,'REVIEWER_CHECK_FAILED','Reviewer authentication check failed or timed out. Sign out and in again; retry.',true)
+   if(e instanceof EvidenceError)return fail(e.code==='AUTH_SESSION_REJECTED'?401:502,e.code,e.message,e.code!=='AUTH_SESSION_REJECTED')
+   return fail(502,'AUTH_UNKNOWN','Reviewer verification encountered an unexpected error. Please inspect Netlify function logs.',true)
   }
  }
  if(!openaiKey)return fail(503,'OPENAI_NOT_CONFIGURED','OpenAI API key is missing from Netlify Functions. Check OPENAI_API_KEY and redeploy.')
@@ -108,10 +131,7 @@ export default async function handler(request) {
  if(!/^C\d{3}$/.test(client_id||'')||!SUPPORTED.has(edition_type))return send(400,{error:'Invalid client or edition'})
  const headers={'apikey':publishable,'Authorization':'Bearer '+token}
  try{
-  const userResponse=await fetch(supabaseUrl+'/auth/v1/user',{headers,signal:AbortSignal.timeout(8500)})
-  if(!userResponse.ok)return send(401,{error:'Reviewer session expired; sign in again'})
-  const user=await jsonOrThrow(userResponse)
-  if(!user.id||!user.email)return send(403,{error:'An authenticated reviewer is required'})
+  await validateReviewer(supabaseUrl,publishable,token)
   const bundle=await loadCustomerEvidence(supabaseUrl,headers,client_id,edition_type)
   if(!bundle)return fail(404,'CLIENT_NOT_FOUND','The fictional client was not found')
   const {client,evidence}=bundle
@@ -178,7 +198,7 @@ export default async function handler(request) {
   })
  }catch(e){
   // Never reveal credentials, tokens, or raw upstream responses.
-  if(e instanceof EvidenceError)return fail(502,e.code,e.message,true)
+  if(e instanceof EvidenceError)return fail(e.code==='AUTH_SESSION_REJECTED'?401:502,e.code,e.message,e.code!=='AUTH_SESSION_REJECTED')
   const msg=String(e?.message||'')
   if(/quota|billing|insufficient_quota/i.test(msg))return fail(503,'OPENAI_QUOTA','OpenAI API billing or quota needs attention.')
   if(/authentication|invalid api key|incorrect api key|unauthorized/i.test(msg))return fail(503,'OPENAI_AUTH','OpenAI API key could not be authenticated.')
