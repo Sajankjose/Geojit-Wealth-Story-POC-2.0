@@ -1,6 +1,62 @@
-# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7.2
+# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7.3
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.7.3 — Adaptive Wealth Creation Map and Genuine Guidance Gate
+
+**Foundation:** Proactive in understanding. Genuine in guidance. Respectful of every decision.
+
+The experience is guided by a hard principle: a missing Geojit subscription does **not** prove a financial gap, and a useful educational recommendation should remain helpful even when the customer buys nothing.
+
+### Customer experience
+
+- **Your Wealth Map** appears as a new tab in Customer Experience and as a direct handoff from a published Wealth Story.
+- Five customer-chosen dimensions: **Financial foundation, Financial protection, Growing wealth, Life goals, Review and adapt**. These are explorations, not grades or a required product checklist.
+- Each dimension shows **Known in Geojit / Declared in demo / Not assessed / Available to explore** as applicable, with explanations about unknown outside assets and non-inference. There is no overall financial health score, red "missing product" warning or assumption of need.
+- Every area provides **one useful question and an educational answer** before any product information. General information about MF, Smartfolios, insurance or PMS is optional and expands only after the reviewer deliberately chooses a relevant topic. It is **not a suitability assessment**, offer, transaction or product recommendation.
+- **Life goals** includes a deterministic client-controlled planning scenario with an explicit fictional target, existing savings, time horizon and a nominal growth assumption. It compares a user-chosen scenario with a 0% growth illustration. There is no projection of actual market performance and no recommendation that an investment is required. Calculation is in `src/lib/genuineGuidance.js`.
+- **Genuine Guidance Gate:** the UI can explain the customer benefit, customer-initiated topic selection, service-first restrictions, commercial neutrality and the absence of verified suitability. Neutral education remains available when a service issue exists, while optional product discovery is withheld.
+- **Not now** provides a real exit without tracking it as disinterest or non-compliance.
+
+### Marketing operations
+
+- The Studio has a **Guidance Insights** tab, reading `public.poc_guidance_events`. It counts distinct fictional customers, explicitly saved interests and explicitly requested follow-ups separately.
+- Viewing a map card or expanding educational text does **not** send or record a lead. The event ledger receives a record only when the reviewer presses **Save my interest · demo** or **Request more information · demo**.
+- Such records are **synthetic demonstration events**, not customer permission to contact, a real CRM opportunity, or evidence of investment suitability. Nothing is sent to customers, RMs or external systems.
+- The marketing panel handles the missing table gracefully until the optional migration below is run.
+
+### One required Supabase migration for saving interests
+
+Use **Supabase → SQL Editor** in your existing **synthetic 20-client POC** and run:
+`supabase/migrations/20261122_006_guidance_interests.sql`
+
+This adds an authenticated, synthetic-only `poc_guidance_events` table with event type, client ID, topic, explicit-action markers and creation timestamp. **It does not change your existing clients, valuations, stories, subscription records, Netlify API keys or any previous migration.**
+
+Verification:
+```sql
+SELECT COUNT(*) FROM public.poc_guidance_events;
+```
+Initially **0 rows**. Rows appear only when a reviewer explicitly records an interest in the fictional customer preview.
+
+### Management demonstration
+
+1. Sign in to the deployed Wealth Story app and open **Customer Experience → Thomas (C012) → Your Wealth Map**.
+2. Explore *Growing wealth*: the map acknowledges a limited Geojit investment context without assuming total assets or an undisclosed financial gap.
+3. Expand Mutual Fund or Smartfolios educational information. Explain the Genuine Guidance Gate. Then click **Not now**; the app creates no demo interest record.
+4. Explore **Life goals**: adjust the target, horizon, existing savings and hypothetical growth. Show why a client-controlled goal scenario is more genuine than a model-inferred product pitch.
+5. Click **Save my interest · demo**. In **Wealth Story Studio → Guidance Insights**, refresh and verify the explicit choice is visible.
+6. For a fictional service-first case, show how optional product information requests are withheld while neutral education remains available.
+7. If you want to demonstrate intent to speak with someone, choose a specific educational topic and click **Request more information · demo**. Check that the Studio distinguishes this from an interest-only action and openly states no actual RM contact was made.
+
+### Limits and production safeguards
+
+- All valuations, client labels and interaction data are fictional; any "Known in Geojit" state refers only to mock in-scope data.
+- The goal planner is nominal and excludes inflation, fees, taxes, shocks and suitability; do not use the scenario as a personal contribution prescription.
+- Product information is generic and does **not** imply personalised suitability or eligibility. PMS and other regulated products require additional eligibility and risk/compliance gates before live presentation.
+- The POC RLS permits all signed-in fictional reviewers to access the synthetic dataset. **Do not use for real clients**. Production requires customer-scoped RLS, actual consent and audit records, server-side eligibility and policy enforcement, regulatory review and opt-out processing.
+- Genuine guidance should be evaluated for **customer benefit and commercial neutrality**, and commercial ROI should be measured by genuine incremental outcomes—not simply clicks or generated lead counts.
+
+**Next:** build a stronger needs-discovery conversation for each map area, connect approved Geojit planning tools and add measurement of customer benefit with an experiment/control cohort before real distribution.
 
 ## POC 2.7.2 — Wealth Intelligence & Journey Engine (synthetic demonstration)
 
