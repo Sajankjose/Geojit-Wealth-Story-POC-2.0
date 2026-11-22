@@ -166,7 +166,9 @@ export default async function handler(request) {
     if(openaiResp.status===400)return fail(502,'MODEL_REQUEST_REJECTED','The model request was rejected. Check the configured model and Responses API compatibility.')
     return fail(502,'MODEL_UPSTREAM_ERROR','OpenAI did not complete the request ('+openaiResp.status+'). Try again or check Netlify Function logs.',true)
   }
-  const answer=await jsonOrThrow(openaiResp)
+  let answer
+  try {answer=await openaiResp.json()}
+  catch {return fail(502,'OPENAI_RESPONSE_INVALID','OpenAI returned an unreadable response. Please retry.',true)}
   const output=(answer.output||[]).flatMap(x=>x.type==='message'?(x.content||[]):[]).filter(x=>x.type==='output_text').map(x=>x.text).join('')
   let draft;try{draft=JSON.parse(output)}catch{return fail(502,'MODEL_OUTPUT_INVALID','The model did not produce a complete structured draft. Please retry.',true)}
   const usableIds=new Set(evidence.selected.map(x=>x.id))
