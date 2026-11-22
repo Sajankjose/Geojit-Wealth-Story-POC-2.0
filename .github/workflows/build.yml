@@ -16,5 +16,7 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+      - name: Test synthetic AI generation function
+        run: node --test tests/ai-generation.test.mjs
       - name: Build Vite application
         run: npm run build
