@@ -30,7 +30,7 @@ function Alert({children}) {return <div className="foundation-alert">{children}<
 function Login({onLogin,error,working}) {
  const [email,setEmail]=useState('');const [password,setPassword]=useState('')
  return <div className="loginPage"><div className="loginCard">
- <div className="brand"><div className="brand-symbol" aria-hidden="true">G.</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
+ <div className="brand"><div className="brand-symbol" aria-hidden="true">WS</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
  <div className="eyebrow">PRIVATE REVIEW ENVIRONMENT</div><h1>Welcome to the<br/><i>intelligence lab.</i></h1>
  <p>Sign in with an approved Supabase demonstration account. Only fictional client records are available.</p>
  <form onSubmit={e=>{e.preventDefault();onLogin(email,password)}}>
@@ -107,7 +107,7 @@ export default function App(){
  if(configured&&!session)return <Login onLogin={login} error={authError} working={authLoading}/>
  return <div className="shell">
  <aside className="sidebar">
- <div className="brand"><div className="brand-symbol" aria-hidden="true">G<span>.</span></div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
+ <div className="brand"><div className="brand-symbol" aria-hidden="true">WS</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
  <div className="side-heading">REVIEW WORKSPACE</div><div className="menu-item active"><span className="icon">◫</span> Customer intelligence</div>
  <div className="menu-item muted"><span className="icon">◇</span> AI story generation <em>Next</em></div>
  <div className="side-bottom"><span className="status-dot"/> {configured?'Supabase connected':'Local preview mode'}<div className="tiny">{configured?'Authenticated synthetic dataset':'Configure Netlify Supabase variables to activate live data'}</div>{session&&<button className="signout" onClick={()=>supabase.auth.signOut()}>Sign out</button>}</div>
