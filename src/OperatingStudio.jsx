@@ -53,6 +53,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const [filter,setFilter]=useState('all')
  const [draft,setDraft]=useState(null)
  const [aiBusy,setAiBusy]=useState(false)
+ const [generationResult,setGenerationResult]=useState(null)
  const [aiStatus,setAiStatus]=useState(null)
  const [diagnosticBusy,setDiagnosticBusy]=useState(false)
  const [reviewChecks,setReviewChecks]=useState({})
@@ -74,6 +75,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const sub= subscriptions.find(s=>s.client_id===selected&&s.edition_type===type)
  const editionRows=editions.filter(e=>e.client_id===selected)
  const currentEdition=editionRows.find(e=>e.edition_type===type)
+ const visibleGeneration=generationResult?.clientId===selected&&generationResult?.editionType===type?generationResult:null
  const lastEvent=events.find(e=>e.client_id===selected&&e.edition_type===type&&e.event_type==='email_delivery_simulated')
  const inApp=events.filter(e=>e.event_type==='in_app_view_demo').length
  const eligible = subscriptions.filter(s=>s.status==='subscribed')
@@ -136,7 +138,9 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  }
  async function generateAIDraft(){
    if(!persisted||!client||busy||aiBusy)return
+   const requestClient=selected,requestEdition=type
    setAiBusy(true);setNotice('');setError('')
+   setGenerationResult({clientId:requestClient,editionType:requestEdition,status:'generating',startedAt:new Date().toISOString()})
    try{
      const {data:{session},error:sessionError}=await supabase.auth.getSession()
      if(sessionError||!session?.access_token)throw Error('Your reviewer session is unavailable. Sign in again.')
@@ -146,7 +150,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
        body:JSON.stringify({client_id:selected,edition_type:type})
      })
      const result=await res.json().catch(()=>({error:'The AI server returned an invalid response.'}))
-     if(!res.ok)throw Error(result.error||'AI generation failed')
+     if(!res.ok){const failure=new Error(result.error||'AI generation failed');failure.code=result.code||('HTTP_'+res.status);throw failure}
      if(!result?.synthetic||result?.candidate?.generation_method!=='openai_draft'||result?.candidate?.stage!=='candidate')throw Error('AI draft did not pass the expected format check.')
      const {data,error:writeError}=await supabase.from('poc_story_editions').insert({
        client_id:selected,edition_type:type,
@@ -158,9 +162,13 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      if(writeError)throw Error(writeError.message+(writeError.message.includes('generation_method')?' — Run the POC 2.2 SQL migration in Supabase.':''))
      setDraft(data)
      await refresh()
+     setGenerationResult({clientId:requestClient,editionType:requestEdition,status:'saved',model:result.model,editionId:data.id,completedAt:new Date().toISOString()})
      setNotice('An AI-assisted fictional draft was saved as a candidate. A reviewer must validate facts before approval or in-app publication; nothing was emailed.')
-   }catch(e){setError(e?.message||'AI generation is unavailable. Check Netlify Functions configuration.')}
-   finally{setAiBusy(false)}
+   }catch(e){
+     const msg=e?.message||'AI generation is unavailable. Check Netlify Functions configuration.'
+     setGenerationResult({clientId:requestClient,editionType:requestEdition,status:'failed',message:msg,code:e?.code||'REQUEST_FAILED',completedAt:new Date().toISOString()})
+     setError('')
+   }finally{setAiBusy(false)}
  }
  async function updateStage(edition,stage){
    if(!persisted||!edition)return
@@ -225,13 +233,20 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      </aside></div>}
    {tab==='production'&&<div className="wsStudioGrid">
      <section className="wsSurface"><div className="eyebrow">STORY STUDIO</div><h2>Prepare an evidence-led edition.</h2>
-       <p>Choose a client and edition, then prepare a grounded AI-assisted draft or use the existing synthetic template. AI drafts are never automatically approved or sent.</p>
+       <p>Choose a client and edition, then prepare a grounded AI-assisted draft or use the existing synthetic template. AI drafts are never automatically approved or sent. A previously saved template may remain visible if generation fails.</p>
        <div className="wsFormRow"><label>Client<select value={selected} onChange={e=>{setSelected(e.target.value);setDraft(null)}}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{displayName(c)} · {c.client_id}</option>)}</select></label><label>Edition<select value={type} onChange={e=>{setType(e.target.value);setDraft(null)}}>{EDITIONS.map(e=><option key={e.id} value={e.id}>{e.label}</option>)}</select></label></div>
        <div className="wsAiDiagnostic"><button type="button" onClick={checkAIStatus} disabled={!persisted||diagnosticBusy}>{diagnosticBusy?'Checking server configuration…':'Check AI connection'}</button>
        {aiStatus&&<div role="status" className={aiStatus.error?'wsAiDiagnosticError':'wsAiDiagnosticStatus'}>{aiStatus.error?<span>{aiStatus.error}</span>:<><strong>{aiStatus.openai_key_configured?'Server key detected':'Server key not detected'}</strong><span>Reviewer authenticated · Model: {aiStatus.model} · Live model response not yet tested</span></>}</div>}</div>
        <div className="wsActions"><button type="button" className="wsPrimary" disabled={!persisted||busy||aiBusy} onClick={generateAIDraft}>{aiBusy?'Generating AI draft…':'Generate with AI →'}</button><button type="button" disabled={!persisted||busy||aiBusy} onClick={generateCandidate}>Use synthetic template</button><button type="button" onClick={()=>onOpenClient(selected,'story')}>Inspect source story</button></div>
+       {visibleGeneration&&<div className={'wsGenerationResult '+(visibleGeneration.status==='failed'?'isFailed':visibleGeneration.status==='saved'?'isSaved':'isGenerating')} role="status" aria-live="polite">
+         <span className="wsGenerationIndicator" aria-hidden="true">{visibleGeneration.status==='generating'?'◌':visibleGeneration.status==='saved'?'✓':'!'}</span>
+         <div><strong>{visibleGeneration.status==='generating'?'Preparing AI story draft…':visibleGeneration.status==='saved'?'AI story generated and saved':'AI generation could not complete'}</strong>
+           <p>{visibleGeneration.status==='generating'?'Checking synthetic client context and requesting an AI draft. The existing edition below is unchanged until a new draft is saved.':visibleGeneration.status==='saved'?('New AI-assisted candidate saved in Supabase'+(visibleGeneration.model?' · '+visibleGeneration.model:'')+'. Review its evidence and approve separately.'):(visibleGeneration.message||'An error occurred.')}</p>
+           {visibleGeneration.status==='failed'&&<small>Error category: {visibleGeneration.code}. The earlier saved story below has not changed. You can retry after correcting the issue.</small>}
+         </div>
+       </div>}
        <div className="wsAiHelp"><b>AI creates a candidate, not a customer communication.</b> Netlify checks the reviewer session, selects synthetic context, invokes OpenAI server-side and rejects unsafe claims. Read and verify the output before using the existing review steps. If the AI key is not configured, the synthetic-template option remains available.</div>
-       {currentEdition?<div className="wsDraft"><div className="wsDraftTop"><span>Latest {EDITION_LABELS[currentEdition.edition_type]} edition · {currentEdition.generation_method==='openai_draft'?'AI-assisted draft':'Synthetic template'}</span><Chip tone={currentEdition.stage==='published_in_app'?'success':'neutral'}>{currentEdition.stage.replaceAll('_',' ')}</Chip></div><h3>{currentEdition.title}</h3><p>{currentEdition.body}</p><details><summary>Why was this prepared?</summary><p>{currentEdition.decision_note}</p></details>
+       {currentEdition?<div className="wsDraft"><div className="wsDraftProvenance"><span>STORY SOURCE</span><b>{currentEdition.generation_method==='openai_draft'?'AI-generated candidate':'Synthetic template · Not generated by AI'}</b><span>CREATED</span><b>{formatDate(currentEdition.created_at)}</b><span>EDITORIAL STATE</span><b>{currentEdition.stage.replaceAll('_',' ')}</b></div><div className="wsDraftTop"><span>Latest {EDITION_LABELS[currentEdition.edition_type]} edition · {currentEdition.generation_method==='openai_draft'?'AI-assisted draft':'Synthetic template'}</span><Chip tone={currentEdition.stage==='published_in_app'?'success':'neutral'}>{currentEdition.stage.replaceAll('_',' ')}</Chip></div><h3>{currentEdition.title}</h3><p>{currentEdition.body}</p><details><summary>Why was this prepared?</summary><p>{currentEdition.decision_note}</p></details>
          <div className="wsReviewChecklist"><div className="eyebrow">EDITORIAL QUALITY GATE · DEMO</div>
            <p>Before approving this edition, verify the source records and read every claim. These are reviewer attestations in this browser session, not a production approval audit.</p>
            <label><input type="checkbox" checked={!!reviewChecks[currentEdition.id]?.sources} onChange={e=>toggleReview('sources',e.target.checked)}/> Source evidence and dates reviewed</label>
