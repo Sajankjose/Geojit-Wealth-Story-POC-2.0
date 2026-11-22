@@ -1,5 +1,6 @@
 import { SOURCE_DOMAINS, selectEvidence } from './lib/story-evidence.mjs'
 import { planStory,validateEditorialDraft } from './lib/story-editorial.mjs'
+import { fixtureIntelligence } from '../../src/lib/wealthIntelligence.js'
 // Wealth Story POC 2.2 — server-only OpenAI story draft endpoint.
 // Authenticated reviewers, synthetic records, no real emails or service-role credentials.
 const SUPPORTED = new Set(['daily_trading','weekly_investing','monthly_wealth'])
@@ -94,6 +95,7 @@ const guidelines=[
  'For service-first context, centre useful service resolution and avoid marketing promotions. For optional outbound suppression, do not suggest optional email.',
  'Daily trading lacks verified live prices, current research and valid calls. Do not pretend live information exists or imply a specific trade.',
  'No return claims, prices, portfolio valuation, advice, guarantees, financial forecasts, unsolicited sales, urgency or suitability assertions.',
+ 'A separate synthetic calculation module exists for interactive market/portfolio/journey illustrations. It is NOT a verified investment statement, approved market research or a live price source. You may explain the generic concept of separating contributions from returns and matching benchmarks, but must never imply that any particular real event or numerical result happened.',
  'Do not use digits, currency values, dates, percentages or URLs in customer-facing prose. Do not say Geojit knows all of the customer assets.',
  'Keep the headline under 90 characters, narrative 45–85 words, contextual perspective under 160 characters, next step under 130 characters.',
  'The why_this_story field is INTERNAL: explain the choice of story theme and why it is useful, listing caveats; customer-facing fields may NOT mention source monitoring.',
@@ -139,6 +141,7 @@ export default async function handler(request) {
   if(!bundle)return fail(404,'CLIENT_NOT_FOUND','The fictional client was not found')
   const {client,evidence,records}=bundle
   const storyPlan=planStory(evidence,records,edition_type)
+  const intelligence=fixtureIntelligence(client_id)
   if(!evidence.selected.length)return fail(422,'NO_USABLE_EVIDENCE','No attributable synthetic observations are available for this edition. Inspect source records first.')
   const context={
    synthetic:true,client_alias:pick(client.alias,55),
@@ -148,7 +151,15 @@ export default async function handler(request) {
       observation:x.observation,observed_at:x.observed_at,
       freshness:x.freshness,evidence_kind:x.evidence_kind,caution:x.caution})),
    caveats:evidence.caveats,
-   editorial_plan:{angle:storyPlan.angle,guidance:storyPlan.guidance,customer_voice:storyPlan.customer_voice,reader_value:storyPlan.reader_value,figures_available:storyPlan.figures_available}
+   editorial_plan:{angle:storyPlan.angle,guidance:storyPlan.guidance,customer_voice:storyPlan.customer_voice,reader_value:storyPlan.reader_value,figures_available:storyPlan.figures_available},
+   portfolio_and_market_explainer:{
+     synthetic_only:true,
+     illustrative_date:intelligence?.as_of||null,
+     explains:'Financial analysis is a separately computed illustrative POC. It is not real portfolio performance or a real market report.',
+     potential_customer_value:'Help the reader distinguish portfolio movement, net contributions and investment performance. A broad market proxy may not match the investment mix.',
+     attribution_available:false,
+     source_verified_live:false
+   }
   }
   const openaiResp=await fetch('https://api.openai.com/v1/responses',{
    method:'POST',
@@ -200,7 +211,7 @@ export default async function handler(request) {
      title:draft.headline,body:[draft.narrative,draft.context_hint].join('\n\n'),
      decision_note:'AI-assisted fictional draft. '+draft.why_this_story+' Suggested next step: '+draft.next_step,
      evidence_count:draft.evidence_ids.length,
-     evidence_trace:{version:'evidence_v2_5',model:process.env.OPENAI_MODEL||'gpt-4.1-mini',selected:evidence.selected,used_ids:draft.evidence_ids,source_counts:evidence.source_counts,source_record_count:evidence.source_record_count,caveats:evidence.caveats,service_first:evidence.service_first,optional_outbound_withheld:evidence.optional_outbound_withheld,editorial:{version:'story_framework_v2_7_1',angle:storyPlan.angle,chapter:draft.narrative,perspective:draft.context_hint,next_step:draft.next_step,verified_figures:storyPlan.figures,figures_available:storyPlan.figures_available,figure_policy:storyPlan.figure_policy,reader_value:storyPlan.reader_value}},
+     evidence_trace:{version:'evidence_v2_5',model:process.env.OPENAI_MODEL||'gpt-4.1-mini',selected:evidence.selected,used_ids:draft.evidence_ids,source_counts:evidence.source_counts,source_record_count:evidence.source_record_count,caveats:evidence.caveats,service_first:evidence.service_first,optional_outbound_withheld:evidence.optional_outbound_withheld,editorial:{version:'story_framework_v2_7_1',angle:storyPlan.angle,chapter:draft.narrative,perspective:draft.context_hint,next_step:draft.next_step,verified_figures:storyPlan.figures,figures_available:storyPlan.figures_available,figure_policy:storyPlan.figure_policy,reader_value:storyPlan.reader_value},intelligence_demo:{version:intelligence?.version||null,as_of:intelligence?.as_of||null,synthetic_only:true,live_market_data:false,linked_experience:'Your financial picture'}},
      generation_method:'openai_draft',stage:'candidate'
    },
    guards:{service_first:evidence.service_first,optional_outbound_withheld:evidence.optional_outbound_withheld,live_market_data:false},
