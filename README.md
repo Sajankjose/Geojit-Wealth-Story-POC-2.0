@@ -1,6 +1,68 @@
-# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7
+# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7.1
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.7.1 — Geojit Wealth Story editorial intelligence
+
+**Product rule:** A Wealth Story should help a customer understand their money better—not remind them how much Geojit knows about them.
+
+The prior narrative displayed tool usage, transactions, RM meeting details and analyst-style third-person conclusions. POC 2.7.1 introduces a customer-first editorial structure across the server, Marketing Studio and customer preview.
+
+### Four-layer chapter
+
+1. **Your chapter** — one meaningful, clear and human observation; directly addresses *you*, never analyses the customer in third person.
+2. **Your financial picture** — up to three dated, clearly scoped, source-verified financial figures. These are selected and formatted by deterministic application code, **not created or calculated by the LLM**.
+3. **A perspective worth considering** — one piece of relevant guidance without inferring motive, risk appetite, suitability or personal financial needs.
+4. **Your next step** — one optional, low-pressure educational or review action, not a product sales pitch.
+
+The editorial logic is in `netlify/functions/lib/story-editorial.mjs`. The new prompt explicitly excludes surveillance-style phrasing (clicks, digital engagement, tracking, RM meeting details), third-person narrations and unsupported financial claims. The server rejects restricted or invented language. If evidence is too weak to justify a helpful story, it should not manufacture a milestone.
+
+### Financial metric gate
+
+The POC accepts only explicit numeric metric records with ALL of the following properties:
+- a defined, allowlisted `metric_type` or `metric_key`;
+- numeric `value`, `currency='INR'`;
+- `verified=true` and `source_verified=true` on the **synthetic POC record**, not an AI assertion;
+- an explicit `as_of` or `valuation_at` no more than 30 days old, and a record ID and source ID;
+- `scope='geojit'` or `scope='geojit_accounts'`.
+
+Invalid, stale, unverified and externally scoped values are omitted. The source module never sums holdings, estimates portfolio performance, infers goals or manufactures missing numbers. All such checks are *demonstration contracts*, NOT actual financial verification or production valuation rules.
+
+### Optional fictional figures for management demo
+
+For a more visual Thomas chapter, run the **OPTIONAL** SQL file
+`supabase/migrations/20261122_005_optional_illustrative_figures.sql` in the same **synthetic-only** Supabase POC project.
+
+It inserts four clearly tagged `DEMO_VALUATION` fixture records using `ON CONFLICT DO NOTHING`:
+- Thomas (C012): fictional equity value ₹3,24,000, mutual fund value ₹2,18,000, combined fictional current value ₹5,42,000 (all as of 20 November 2026).
+- George (C014): fictional mutual fund value ₹9,68,000, dated 20 November 2026.
+
+These are **intentionally invented, internally consistent POC demonstration figures**; they do not represent a real customer or a live pricing feed. Existing source records and subscriptions are not altered. Regenerate a *new* AI edition after running the optional seed so the server can save a fresh verified-figure snapshot with its trace; previously generated editions do not change.
+
+### Marketing review and customer preview
+
+- Marketing Studio now shows the chapter, figures and source details, perspective and next step, plus a **customer value/privacy** review checkbox. Publication of new customer-facing content is restricted to editions generated with the 2.7.1 framework.
+- The customer experience renders the same four-layer chapter and a calm **About this update** explanation rather than showing raw behavioural evidence cards or internal source record IDs.
+- Older stories, even if already published in the fictional environment, remain preserved in the Studio but are **held from the updated customer preview** until they are regenerated/reviewed, avoiding continued display of the surveillance-style narrative.
+- If verified figures are unavailable, no numerical value is shown; the customer still gets the helpful narrative and perspective. There is no hidden AI-estimated return or account value.
+- Existing AI key, login, editorial source trace, per-edition subscriptions, dry-run delivery and explicit engagement logging remain intact.
+- This release does **not** send emails, provide real customer login, add a live research feed or establish real client data access.
+
+### POC 2.7.1 demo checklist
+
+1. Deploy the latest GitHub code. Sign in and open **Wealth Story Studio → Story Production**.
+2. For Thomas (C012), inspect the source observations and click **Generate with AI**. The new candidate should now address Thomas as *you*, have a useful perspective and avoid talking about tools, page visits and tracked RM meetings.
+3. Optional: run the **005 fictional figures SQL** and regenerate Thomas to include the three illustrative valuation cards. Do not present these as true financial data.
+4. Complete all four editorial review checks, mark Reviewed → Approved → Published in-app.
+5. Click **Preview as customer** and open Weekly Investment Story. Verify the four-layer chapter, figure provenance, guidance and one optional next step.
+6. Open **About this update**: it should explain personalisation in ordinary language, not list behavioural source IDs. Internal evidence trace remains available in Story Studio.
+7. Confirm that the existing pre-2.7.1 story is preserved internally but not displayed as current customer content.
+8. Test a daily trader and a service-priority scenario. The existing research/consent restrictions still apply.
+9. No extra Supabase migration is needed for the editorial framework. The optional 005 SQL only supplies illustrative financial figures.
+
+Automated CI runs `tests/story-editorial.test.mjs`, the existing OpenAI generation regression tests and the dry-run delivery eligibility tests before building.
+
+**Before production:** replace synthetic validation flags with financial data source contracts, pricing/corporate-action rules, cross-product duplication handling, real entitlements, a controlled financial calculations service, privacy reviews and compliance-approved editorial/legal disclaimers. Financial metrics and their freshness must be governed independently of text generation.
 
 ## POC 2.7 — Customer Wealth Story Experience (fictional preview)
 
