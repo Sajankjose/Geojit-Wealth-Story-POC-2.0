@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { configured, supabase, loadClients, loadClientRecords } from './lib/supabase'
+import OperatingStudio from './OperatingStudio.jsx'
 
 const sample = [
  ['C001','Arun','New explorer','Explore'],['C002','Anu','First SIP','Guide'],['C003','Meera','Regular SIP investor','Guide'],
@@ -78,7 +79,7 @@ function Story({records}){
 export default function App(){
  const [session,setSession]=useState(null),[authLoading,setAuthLoading]=useState(configured),[authError,setAuthError]=useState('')
  const [clients,setClients]=useState(configured?[]:preview),[records,setRecords]=useState([]),[loading,setLoading]=useState(configured)
- const [error,setError]=useState(''),[selected,setSelected]=useState('C012'),[query,setQuery]=useState(''),[tab,setTab]=useState('overview')
+ const [error,setError]=useState(''),[selected,setSelected]=useState('C012'),[query,setQuery]=useState(''),[tab,setTab]=useState('overview'),[workspace,setWorkspace]=useState('intelligence')
  useEffect(()=>{
   if(!supabase) return
   let active=true
@@ -108,11 +109,13 @@ export default function App(){
  return <div className="shell">
  <aside className="sidebar">
  <div className="brand"><div className="brand-symbol" aria-hidden="true">WS</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
- <div className="side-heading">REVIEW WORKSPACE</div><div className="menu-item active"><span className="icon">◫</span> Customer intelligence</div>
- <div className="menu-item muted"><span className="icon">◇</span> AI story generation <em>Next</em></div>
+ <div className="side-heading">REVIEW WORKSPACE</div><button type="button" className={"menu-item wsSideNav "+(workspace==="intelligence"?"active":"")} onClick={()=>setWorkspace("intelligence")}><span className="icon">◫</span> Customer intelligence</button>
+ <button type="button" className={"menu-item wsSideNav "+(workspace==="studio"?"active":"")} onClick={()=>setWorkspace("studio")}><span className="icon">◇</span> Wealth Story Studio <em>2.1</em></button>
+ <div className="menu-item muted"><span className="icon">✳</span> Live AI narration <em>Next</em></div>
  <div className="side-bottom"><span className="status-dot"/> {configured?'Supabase connected':'Local preview mode'}<div className="tiny">{configured?'Authenticated synthetic dataset':'Configure Netlify Supabase variables to activate live data'}</div>{session&&<button className="signout" onClick={()=>supabase.auth.signOut()}>Sign out</button>}</div>
  </aside><main className="main">
- <header className="topline"><div className="breadcrumb">WEALTH STORY <span>/</span> CUSTOMER INTELLIGENCE <span>/</span> POC 2.0</div><div className="environment"><span className="environmentDot"/> SYNTHETIC DATA ONLY</div></header>
+ <header className="topline"><div className="breadcrumb">WEALTH STORY <span>/</span> {workspace==="studio"?"OPERATING STUDIO":"CUSTOMER INTELLIGENCE"} <span>/</span> POC 2.1</div><div className="environment"><span className="environmentDot"/> SYNTHETIC DATA ONLY</div></header>
+ {workspace==="studio"?<OperatingStudio clients={clients} onBack={()=>setWorkspace("intelligence")} onOpenClient={(clientId,view)=>{setSelected(clientId);setTab(view||"overview");setWorkspace("intelligence")}}/>:<>
  <section className="heading"><div className="eyebrow">CUSTOMER RELATIONSHIP INTELLIGENCE</div><h1>A clearer picture of<br/><i>every customer journey.</i></h1><p>Bring together product relationships, transactions, digital behaviour and human interactions to understand what matters next.</p></section>
  {!configured&&<Alert><b>Preview mode:</b> The live Supabase connection has not been configured. The 20 client labels are placeholders; no imported data or story is shown.</Alert>}
  {error&&<Alert><b>Data loading issue:</b> {error}. Confirm the SQL import, reviewer permissions and Netlify environment variables.</Alert>}
@@ -132,6 +135,7 @@ export default function App(){
  <button className="next navNext" onClick={()=>setTab('story')}><div><span className="eyebrow">NEXT</span><strong>See the evidence-grounded Wealth Story</strong><p>Follow the selected customer context and governance decision.</p></div><span>→</span></button>
  </>:tab==='evidence'?<Evidence records={records}/>:tab==='timeline'?<Timeline records={records}/>:<Story records={records}/>}
  </>:<div className="focus-card"><h3>{loading?'Loading customers…':'No customer data available'}</h3><p>Run the supplied Supabase SQL import to populate the synthetic dataset.</p></div>}</section></div>
+ </>}
  <footer><span>Geojit Wealth Story · Experience Lab</span><span>Fictional dataset · No investment recommendation · No live customer data or outbound messaging</span></footer>
  </main></div>
 }
