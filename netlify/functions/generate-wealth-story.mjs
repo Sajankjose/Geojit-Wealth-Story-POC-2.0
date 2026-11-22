@@ -2,6 +2,7 @@
 // Authenticated reviewers, synthetic records, no real emails or service-role credentials.
 const SUPPORTED = new Set(['daily_trading','weekly_investing','monthly_wealth'])
 const DOMAIN = new Set(['story_contexts','customer_states','service_cases','goals_preferences','product_subscriptions'])
+const fail = (status, code, error, retryable=false) => send(status,{ok:false,code,error,retryable})
 const send = (status, body) => new Response(JSON.stringify(body), {
  status, headers: { 'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff' }
 })
@@ -90,7 +91,7 @@ export default async function handler(request) {
    return send(200,{function_ready:true,reviewer_authenticated:true,openai_key_configured:Boolean(openaiKey),model:process.env.OPENAI_MODEL||'gpt-4.1-mini',actual_generation_tested:false})
   }catch{return send(502,{error:'Reviewer validation failed or Supabase is unreachable'})}
  }
- if(!openaiKey)return send(503,{error:'OpenAI API key is not configured in Netlify Functions'})
+ if(!openaiKey)return fail(503,'OPENAI_NOT_CONFIGURED','OpenAI API key is missing from Netlify Functions. Check OPENAI_API_KEY and redeploy.')
  let payload
  try{const raw=await request.text();if(raw.length>1600)return send(413,{error:'Request too large'});payload=JSON.parse(raw)}catch{return send(400,{error:'Invalid JSON'})}
  const {client_id,edition_type}=payload||{}
@@ -124,25 +125,34 @@ export default async function handler(request) {
    signal:AbortSignal.timeout(25000),
    body:JSON.stringify({
      model:process.env.OPENAI_MODEL||'gpt-4.1-mini',
-     store:false,temperature:0.3,max_output_tokens:700,
+     store:false,temperature:0.3,max_output_tokens:1150,
      instructions:guidelines,
      input:[{role:'user',content:[{type:'input_text',text:JSON.stringify(context)}]}],
      text:{format:{type:'json_schema',name:'wealth_story',strict:true,schema:responseSchema}}
    })
   })
+  if(!openaiResp.ok) {
+    const problem=await openaiResp.json().catch(()=>({}))
+    const errorCode=String(problem?.error?.code||'')
+    const errorType=String(problem?.error?.type||'')
+    if(openaiResp.status===401||/invalid_api_key|authentication/i.test(errorCode))return fail(503,'OPENAI_AUTH','The OpenAI API rejected the key configured on the server.')
+    if(openaiResp.status===429||/insufficient_quota/i.test(errorCode))return fail(503,'OPENAI_QUOTA','OpenAI billing, quota or rate limits prevented generation. Check OpenAI Platform usage and billing.',true)
+    if(openaiResp.status===400)return fail(502,'MODEL_REQUEST_REJECTED','The model request was rejected. Check the configured model and Responses API compatibility.')
+    return fail(502,'MODEL_UPSTREAM_ERROR','OpenAI did not complete the request ('+openaiResp.status+'). Try again or check Netlify Function logs.',true)
+  }
   const answer=await jsonOrThrow(openaiResp)
   const output=(answer.output||[]).flatMap(x=>x.type==='message'?(x.content||[]):[]).filter(x=>x.type==='output_text').map(x=>x.text).join('')
-  let draft;try{draft=JSON.parse(output)}catch{return send(502,{error:'Model did not return a valid structured draft'})}
+  let draft;try{draft=JSON.parse(output)}catch{return fail(502,'MODEL_OUTPUT_INVALID','The model did not produce a complete structured draft. Please retry.',true)}
   for(const k of ['headline','narrative','context_hint','next_step','why_this_story']){
-   if(typeof draft[k]!=='string'||!draft[k].trim())return send(502,{error:'Generated draft missing '+k})
+   if(typeof draft[k]!=='string'||!draft[k].trim())return fail(502,'MODEL_OUTPUT_MISSING','The AI response is missing '+k+'. Please retry.',true)
    draft[k]=draft[k].trim()
   }
-  if(draft.headline.length>130||draft.narrative.length>1100||draft.context_hint.length>350||draft.next_step.length>300)return send(422,{error:'Draft exceeds review length limits'})
+  if(draft.headline.length>130||draft.narrative.length>1100||draft.context_hint.length>350||draft.next_step.length>300)return fail(422,'DRAFT_TOO_LONG','Draft exceeded the editorial length limits. Please retry.',true)
   // Conservative deterministic safeguard. Reject numeric claims / links and misleading promises.
   const visible=[draft.headline,draft.narrative,draft.context_hint,draft.next_step].join(' ')
-  if(/\d|https?:\/\/|₹|%|\b(guarantee|risk.free|assured return|buy now|sell now)\b/i.test(visible))return send(422,{error:'AI draft failed conservative financial-content validation. Please retry or use the synthetic template.'})
+  if(/\d|https?:\/\/|₹|%|\b(guarantee|risk.free|assured return|buy now|sell now)\b/i.test(visible))return fail(422,'DRAFT_SAFEGUARD','The AI response contained a numerical or restricted claim. It was withheld for safety; try another draft or use the synthetic template.',true)
   return send(200,{
-   method:'openai_draft',model:process.env.OPENAI_MODEL||'gpt-4.1-mini',
+   ok:true,method:'openai_draft',model:process.env.OPENAI_MODEL||'gpt-4.1-mini',
    client_id,edition_type,synthetic:true,
    candidate:{
      title:draft.headline,body:[draft.narrative,draft.context_hint].join('\n\n'),
@@ -156,8 +166,9 @@ export default async function handler(request) {
  }catch(e){
   // Never reveal credentials or raw response bodies.
   const msg=String(e?.message||'')
-  if(/quota|billing|insufficient_quota/i.test(msg))return send(503,{error:'OpenAI API billing or quota needs attention'})
-  if(/authentication|invalid api key|incorrect api key|unauthorized/i.test(msg))return send(503,{error:'OpenAI API key could not be authenticated'})
-  return send(502,{error:'AI generation could not complete; review server configuration or try again'})
+  if(/quota|billing|insufficient_quota/i.test(msg))return fail(503,'OPENAI_QUOTA','OpenAI API billing or quota needs attention.')
+  if(/authentication|invalid api key|incorrect api key|unauthorized/i.test(msg))return fail(503,'OPENAI_AUTH','OpenAI API key could not be authenticated.')
+  if(/aborted|timeout|timed out/i.test(msg))return fail(504,'GENERATION_TIMEOUT','The generation request timed out. Please retry.',true)
+  return fail(502,'SERVER_GENERATION_ERROR','The server could not complete generation. Check Netlify Function logs if this persists.',true)
  }
 }
