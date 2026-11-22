@@ -160,3 +160,34 @@
 .wsDraftProvenance span{font-size:9px;letter-spacing:.6px;font-weight:700;color:var(--ds-text-tertiary)}
 .wsDraftProvenance b{font-size:11px;color:var(--ds-text-primary);font-weight:650;margin-right:10px}
 @media(max-width:650px){.wsGenerationResult{padding:12px;gap:9px}.wsDraftProvenance{gap:5px 9px}.wsDraftProvenance b{font-size:10px}}
+
+/* POC 2.5 — insight selection and auditable AI-draft comparison */
+.wsEvidencePanel{margin:20px 0 16px;border:1px solid var(--ds-border-primary);border-radius:14px;background:#FBFDFC;padding:19px}
+.wsEvidenceHeader{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.wsEvidenceHeader h3{font-size:17px;font-weight:650;letter-spacing:-.4px;margin:7px 0 8px;color:var(--ds-text-primary)}
+.wsEvidenceHeader>span{color:var(--ds-text-secondary);font-size:10px;border:1px solid var(--ds-border-primary);padding:7px 9px;border-radius:20px;white-space:nowrap}
+.wsEvidenceStats{display:flex;gap:9px;flex-wrap:wrap;margin:11px 0 15px}
+.wsEvidenceStats span{font-size:10px;color:var(--ds-text-secondary);background:var(--ds-surface-green);padding:9px 11px;border-radius:8px}
+.wsEvidenceStats b{color:var(--ds-text-primary);font-size:13px}
+.wsEvidenceList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-height:360px;overflow:auto}
+.wsEvidenceItem{border:1px solid var(--ds-border-primary);border-radius:10px;background:#fff;padding:13px;min-width:0}
+.wsEvidenceItemTop{display:flex;justify-content:space-between;align-items:baseline;gap:7px;flex-wrap:wrap}
+.wsEvidenceItemTop strong{font-size:11px;color:var(--ds-text-primary)}
+.wsEvidenceItemTop span{font-size:10px;color:var(--ds-text-secondary)}
+.wsEvidenceItem p{font-size:12px!important;line-height:1.65!important;color:var(--ds-text-primary)!important;margin:9px 0!important;overflow-wrap:anywhere}
+.wsEvidenceItem small{display:block;font-size:10px;color:var(--ds-text-secondary);overflow-wrap:anywhere}
+.wsEvidenceItem em{font-style:normal;display:block;font-size:10px;color:#6A6051;line-height:1.45;margin-top:7px}
+.wsEvidenceDisclaimer,.wsEvidenceWarning{font-size:11px!important;line-height:1.6!important;color:var(--ds-text-secondary)!important;margin:12px 0 0!important}
+.wsEvidenceWarning{background:var(--ds-warning-light);padding:12px;border-radius:9px}
+.wsStoryTrace{margin:18px 0 4px;border-top:1px solid var(--ds-border-primary);padding-top:15px}
+.wsStoryTrace>summary{color:var(--ds-primary-action-pressed);font-size:12px;font-weight:700;cursor:pointer}
+.wsTraceContent{margin-top:14px;display:grid;gap:8px}
+.wsTraceNote{font-size:11px;line-height:1.6;color:var(--ds-text-secondary);margin-bottom:5px}
+.wsTraceItem{background:#fff;border:1px solid var(--ds-border-primary);padding:13px;border-radius:10px}
+.wsTraceItem.cited{border-left:3px solid var(--ds-primary-action);background:#F0FBF7}
+.wsTraceItem>div{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.wsTraceItem b{font-size:11px;color:var(--ds-text-primary)}
+.wsTraceItem span{font-size:10px;color:var(--ds-text-secondary)}
+.wsTraceItem p{font-size:12px!important;line-height:1.6!important;margin:7px 0!important;color:var(--ds-text-primary)!important}
+.wsTraceItem small{font-size:10px;color:var(--ds-text-secondary);overflow-wrap:anywhere}
+@media(max-width:700px){.wsEvidencePanel{padding:14px}.wsEvidenceList{grid-template-columns:1fr;max-height:360px}.wsEvidenceHeader{display:block}.wsEvidenceHeader>span{display:inline-block;margin:5px 0 8px}}
