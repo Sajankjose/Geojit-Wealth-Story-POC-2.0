@@ -57,6 +57,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const [aiStatus,setAiStatus]=useState(null)
  const [diagnosticBusy,setDiagnosticBusy]=useState(false)
  const [reviewChecks,setReviewChecks]=useState({})
+ const [evidencePreview,setEvidencePreview]=useState({status:'idle',clientId:null,editionType:null})
  const refresh=useCallback(async()=>{
    if(!supabase){setPersisted(false);setSubscriptions(initialSubscriptions(clients));return}
    try{
@@ -70,12 +71,33 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
    }catch(e){setPersisted(false);setSubscriptions(initialSubscriptions(clients));setError('The POC 2.1 studio tables are not yet available. Run the new SQL migration in Supabase to enable persistent workflows. '+(e.message||''))}
  },[clients])
  useEffect(()=>{refresh()},[refresh])
+ useEffect(()=>{
+   if(!supabase||!persisted||!selected)return
+   let cancelled=false
+   const clientId=selected,edition=type
+   setEvidencePreview({status:'loading',clientId,editionType:edition})
+   async function load(){
+     try{
+       const {data:{session},error:sessionError}=await supabase.auth.getSession()
+       if(sessionError||!session?.access_token)throw Error('Reviewer session unavailable.')
+       const url='/.netlify/functions/generate-wealth-story?client_id='+encodeURIComponent(clientId)+'&edition_type='+encodeURIComponent(edition)
+       const res=await fetch(url,{headers:{authorization:'Bearer '+session.access_token}})
+       const data=await res.json().catch(()=>({}))
+       if(!res.ok)throw Error(data.error||'Could not load source evidence.')
+       if(!cancelled)setEvidencePreview({status:'ready',clientId,editionType:edition,evidence:data.evidence})
+     }catch(e){if(!cancelled)setEvidencePreview({status:'error',clientId,editionType:edition,message:e.message||'Evidence unavailable'})}
+   }
+   load()
+   return ()=>{cancelled=true}
+ },[selected,type,persisted])
  const client=clients.find(c=>c.client_id===selected)||clients[0]
  const subsFor=cid=>subscriptions.filter(s=>s.client_id===cid)
  const sub= subscriptions.find(s=>s.client_id===selected&&s.edition_type===type)
  const editionRows=editions.filter(e=>e.client_id===selected)
  const currentEdition=editionRows.find(e=>e.edition_type===type)
  const visibleGeneration=generationResult?.clientId===selected&&generationResult?.editionType===type?generationResult:null
+ const visibleEvidence=evidencePreview.clientId===selected&&evidencePreview.editionType===type?evidencePreview:{status:'loading'}
+ const storyTrace=currentEdition?.evidence_trace?.version==='evidence_v2_5'?currentEdition.evidence_trace:null
  const lastEvent=events.find(e=>e.client_id===selected&&e.edition_type===type&&e.event_type==='email_delivery_simulated')
  const inApp=events.filter(e=>e.event_type==='in_app_view_demo').length
  const eligible = subscriptions.filter(s=>s.status==='subscribed')
@@ -157,9 +179,10 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
        title:result.candidate.title,body:result.candidate.body,
        decision_note:result.candidate.decision_note,stage:'candidate',
        generation_method:'openai_draft',
+       evidence_trace:result.candidate.evidence_trace,
        evidence_count:result.candidate.evidence_count||0
      }).select().single()
-     if(writeError)throw Error(writeError.message+(writeError.message.includes('generation_method')?' — Run the POC 2.2 SQL migration in Supabase.':''))
+     if(writeError)throw Error(writeError.message+(writeError.message.includes('evidence_trace')?' — Run the POC 2.5 evidence-trace SQL migration in Supabase.':writeError.message.includes('generation_method')?' — Run the POC 2.2 SQL migration in Supabase.':''))
      setDraft(data)
      await refresh()
      setGenerationResult({clientId:requestClient,editionType:requestEdition,status:'saved',model:result.model,editionId:data.id,completedAt:new Date().toISOString()})
@@ -195,7 +218,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const pipeline = [['Candidates',editions.filter(e=>e.stage==='candidate').length],['Reviewed',editions.filter(e=>e.stage==='reviewed').length],['Approved',editions.filter(e=>e.stage==='approved').length],['Published in-app',editions.filter(e=>e.stage==='published_in_app').length]]
  const generatedCount=countUnique(editions)
  return <div className="wsStudio">
-   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.4 · Clear AI generation results</div></div>
+   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.5 · Evidence-led narrative</div></div>
    <section className="wsStudioIntro"><div className="eyebrow">GEOJIT WEALTH STORY STUDIO</div><h1>One relationship.<br/><span>Multiple meaningful editions.</span></h1><p>Manage the fictional subscription lifecycle, editorial workflow, in-app availability and optional email eligibility for 20 synthetic customers.</p></section>
    <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>POC 2.2 can create AI-assisted drafts for review when an OpenAI API key is configured. Subscription, approval and delivery states remain demonstration-only; no emails are sent.</span></div>
    {error&&<div role="alert" className="wsError">{error}</div>}
@@ -245,8 +268,28 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
            {visibleGeneration.status==='failed'&&<small>Error category: {visibleGeneration.code}. The earlier saved story below has not changed. You can retry after correcting the issue.</small>}
          </div>
        </div>}
+       <section className="wsEvidencePanel" aria-label="Source evidence selected for AI">
+         <div className="wsEvidenceHeader"><div><div className="eyebrow">EVIDENCE SELECTION · POC 2.5</div><h3>What can this story responsibly say?</h3></div><span>Source → Observation → Story</span></div>
+         {visibleEvidence.status==='loading'&&<p className="wsSmall">Selecting attributable customer records…</p>}
+         {visibleEvidence.status==='error'&&<div className="wsEvidenceWarning">{visibleEvidence.message}</div>}
+         {visibleEvidence.status==='ready'&&<>
+           <div className="wsEvidenceStats"><span><b>{visibleEvidence.evidence?.source_record_count||0}</b> source records checked</span><span><b>{visibleEvidence.evidence?.selected?.length||0}</b> selected observations</span><span><b>Up to 3</b> source references per draft</span></div>
+           {visibleEvidence.evidence?.selected?.length?<div className="wsEvidenceList">{visibleEvidence.evidence.selected.map(e=><div className="wsEvidenceItem" key={e.id}>
+             <div className="wsEvidenceItemTop"><strong>{e.label}</strong><span>{e.freshness} · {e.observed_at||'Date unavailable'}</span></div>
+             <p>{e.observation}</p><small>Source: {e.source_id} · Record: {e.id}</small><em>{e.caution}</em>
+           </div>)}</div>:<div className="wsEvidenceWarning">No safely attributable observations found for this edition. AI generation is not recommended.</div>}
+           <p className="wsEvidenceDisclaimer">All records are synthetic. This selection is a source map, not proof of financial goals, advice suitability or independently verified account figures. Marketing must review each claim.</p>
+         </>}
+       </section>
        <div className="wsAiHelp"><b>AI creates a candidate, not a customer communication.</b> Netlify checks the reviewer session, selects synthetic context, invokes OpenAI server-side and rejects unsafe claims. Read and verify the output before using the existing review steps. If the AI key is not configured, the synthetic-template option remains available.</div>
        {currentEdition?<div className="wsDraft"><div className="wsDraftProvenance"><span>STORY SOURCE</span><b>{currentEdition.generation_method==='openai_draft'?'AI-generated candidate':'Synthetic template · Not generated by AI'}</b><span>CREATED</span><b>{formatDate(currentEdition.created_at)}</b><span>EDITORIAL STATE</span><b>{currentEdition.stage.replaceAll('_',' ')}</b></div><div className="wsDraftTop"><span>Latest {EDITION_LABELS[currentEdition.edition_type]} edition · {currentEdition.generation_method==='openai_draft'?'AI-assisted draft':'Synthetic template'}</span><Chip tone={currentEdition.stage==='published_in_app'?'success':'neutral'}>{currentEdition.stage.replaceAll('_',' ')}</Chip></div><h3>{currentEdition.title}</h3><p>{currentEdition.body}</p><details><summary>Why was this prepared?</summary><p>{currentEdition.decision_note}</p></details>
+         <details className="wsStoryTrace" open={!!storyTrace}><summary>Source records → selected insights → generated narrative</summary>
+           {storyTrace?<div className="wsTraceContent">
+             <div className="wsTraceNote">This edition references {storyTrace.used_ids?.length||0} selected source records. References are checked against available synthetic IDs, but narrative claims still require human verification.</div>
+             {storyTrace.selected?.map(e=><div key={e.id} className={'wsTraceItem '+(storyTrace.used_ids?.includes(e.id)?'cited':'')}><div><b>{e.label}</b><span>{storyTrace.used_ids?.includes(e.id)?'Cited by AI':'Context available · not cited'}</span></div><p>{e.observation}</p><small>{e.id} · {e.source_id} · {e.freshness}</small></div>)}
+             <p className="wsSmall">Narrative above was drafted from this evidence package; source references do not automatically prove each sentence. Approval must remain a human decision.</p>
+           </div>:<p className="wsSmall">This older edition has no persisted evidence trace. Generate a new POC 2.5 AI draft to compare its source observations.</p>}
+         </details>
          <div className="wsReviewChecklist"><div className="eyebrow">EDITORIAL QUALITY GATE · DEMO</div>
            <p>Before approving this edition, verify the source records and read every claim. These are reviewer attestations in this browser session, not a production approval audit.</p>
            <label><input type="checkbox" checked={!!reviewChecks[currentEdition.id]?.sources} onChange={e=>toggleReview('sources',e.target.checked)}/> Source evidence and dates reviewed</label>
