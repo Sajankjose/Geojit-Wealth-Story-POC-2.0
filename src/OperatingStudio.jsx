@@ -89,6 +89,13 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
    if(upError)setError(upError.message);else{setNotice('Fictional subscription state updated. This does not record real customer consent.');await refresh()}
    setBusy(false)
  }
+ async function updateWindow(windowValue){
+   if(!persisted||!client||type!=='daily_trading')return
+   setBusy(true);setError('');setNotice('')
+   const {error:upError}=await supabase.from('poc_edition_subscriptions').update({delivery_window:windowValue,updated_at:new Date().toISOString()}).eq('client_id',selected).eq('edition_type',type)
+   if(upError)setError(upError.message);else{setNotice('Fictional daily delivery preference updated; no scheduling or emails were activated.');await refresh()}
+   setBusy(false)
+ }
  async function generateCandidate(){
    if(!persisted||!client)return
    setBusy(true);setNotice('');setError('')
@@ -162,6 +169,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      <aside className="wsSurface"><div className="eyebrow">FICTIONAL CUSTOMER PREFERENCES</div><h2>{displayName(client)}</h2><p className="wsSmall">{client?.persona_scenario||'Select a client'}</p>
        <div className="wsPreferenceList">{EDITIONS.map(e=>{const row=subscriptions.find(s=>s.client_id===selected&&s.edition_type===e.id);return <div key={e.id}><b>{e.label}</b><Chip tone={row?.status==='subscribed'?'success':row?.status==='paused'?'warning':'neutral'}>{row?.status||'Not set'}</Chip></div>})}</div>
        <label className="wsFieldLabel" htmlFor="wsEditionPicker">Manage edition</label><select id="wsEditionPicker" value={type} onChange={e=>setType(e.target.value)}>{EDITIONS.map(e=><option key={e.id} value={e.id}>{e.label}</option>)}</select>
+       {type==='daily_trading'&&<><label className="wsFieldLabel" htmlFor="wsTradingWindow">Trading-day delivery window (demo)</label><select id="wsTradingWindow" value={sub?.delivery_window||'pre_market'} disabled={!persisted||busy} onChange={e=>updateWindow(e.target.value)}><option value="pre_market">Pre-market brief</option><option value="after_market">After-market recap</option></select></>}
        <div className="wsActions"><button type="button" disabled={busy||!persisted||sub?.status==='subscribed'} onClick={()=>patchSubscription('subscribed')}>Subscribe (demo)</button><button type="button" disabled={busy||!persisted||sub?.status==='paused'} onClick={()=>patchSubscription('paused')}>Pause</button><button type="button" disabled={busy||!persisted||sub?.status==='unsubscribed'} onClick={()=>patchSubscription('unsubscribed')}>Unsubscribe</button></div>
        <p className="wsSmall">Daily Trading Brief is for trading days; market-sensitive notices and essential service alerts have separate communication governance.</p>
      </aside></div>}
