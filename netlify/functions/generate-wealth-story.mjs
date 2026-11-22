@@ -72,8 +72,8 @@ const guidelines=[
  'Do not include email addresses, dates, numeric figures or confidential identifiers. Never claim this was sent, approved or published.'
 ].join(' ')
 export default async function handler(request) {
- if(request.method!=='POST')return send(405,{error:'POST required'})
- if(!request.headers.get('content-type')?.includes('application/json'))return send(415,{error:'Expected JSON body'})
+ if(!['POST','GET'].includes(request.method))return send(405,{error:'GET (status) or POST (generate) required'})
+ if(request.method==='POST'&&!request.headers.get('content-type')?.includes('application/json'))return send(415,{error:'Expected JSON body'})
  const auth=request.headers.get('authorization')||''
  if(!/^Bearer\s+\S+$/.test(auth))return send(401,{error:'Reviewer sign-in required'})
  const token=auth.replace(/^Bearer\s+/,'')
@@ -81,6 +81,15 @@ export default async function handler(request) {
  const publishable=process.env.SUPABASE_PUBLISHABLE_KEY||process.env.VITE_SUPABASE_PUBLISHABLE_KEY
  const openaiKey=process.env.OPENAI_API_KEY
  if(!supabaseUrl||!publishable)return send(503,{error:'Supabase server configuration missing'})
+ if(request.method==='GET'){
+  try{
+   const authResponse=await fetch(supabaseUrl+'/auth/v1/user',{headers:{apikey:publishable,Authorization:'Bearer '+token},signal:AbortSignal.timeout(8000)})
+   if(!authResponse.ok)return send(401,{error:'Reviewer session expired; sign in again'})
+   const reviewer=await jsonOrThrow(authResponse)
+   if(!reviewer?.id)return send(403,{error:'Reviewer authentication required'})
+   return send(200,{function_ready:true,reviewer_authenticated:true,openai_key_configured:Boolean(openaiKey),model:process.env.OPENAI_MODEL||'gpt-4.1-mini',actual_generation_tested:false})
+  }catch{return send(502,{error:'Reviewer validation failed or Supabase is unreachable'})}
+ }
  if(!openaiKey)return send(503,{error:'OpenAI API key is not configured in Netlify Functions'})
  let payload
  try{const raw=await request.text();if(raw.length>1600)return send(413,{error:'Request too large'});payload=JSON.parse(raw)}catch{return send(400,{error:'Invalid JSON'})}
