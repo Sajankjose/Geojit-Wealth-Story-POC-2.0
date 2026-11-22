@@ -83,9 +83,9 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
        const url='/.netlify/functions/generate-wealth-story?client_id='+encodeURIComponent(clientId)+'&edition_type='+encodeURIComponent(edition)
        const res=await fetch(url,{headers:{authorization:'Bearer '+session.access_token}})
        const data=await res.json().catch(()=>({}))
-       if(!res.ok)throw Error(data.error||'Could not load source evidence.')
+       if(!res.ok){const err=new Error(data.error||'Could not load source evidence.');err.code=data.code||('HTTP_'+res.status);throw err}
        if(!cancelled)setEvidencePreview({status:'ready',clientId,editionType:edition,evidence:data.evidence})
-     }catch(e){if(!cancelled)setEvidencePreview({status:'error',clientId,editionType:edition,message:e.message||'Evidence unavailable'})}
+     }catch(e){if(!cancelled)setEvidencePreview({status:'error',clientId,editionType:edition,message:e.message||'Evidence unavailable',code:e.code||'EVIDENCE_LOAD_FAILED'})}
    }
    load()
    return ()=>{cancelled=true}
@@ -218,7 +218,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const pipeline = [['Candidates',editions.filter(e=>e.stage==='candidate').length],['Reviewed',editions.filter(e=>e.stage==='reviewed').length],['Approved',editions.filter(e=>e.stage==='approved').length],['Published in-app',editions.filter(e=>e.stage==='published_in_app').length]]
  const generatedCount=countUnique(editions)
  return <div className="wsStudio">
-   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.5 · Evidence-led narrative</div></div>
+   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.5.1 · Evidence connection fix</div></div>
    <section className="wsStudioIntro"><div className="eyebrow">GEOJIT WEALTH STORY STUDIO</div><h1>One relationship.<br/><span>Multiple meaningful editions.</span></h1><p>Manage the fictional subscription lifecycle, editorial workflow, in-app availability and optional email eligibility for 20 synthetic customers.</p></section>
    <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>POC 2.2 can create AI-assisted drafts for review when an OpenAI API key is configured. Subscription, approval and delivery states remain demonstration-only; no emails are sent.</span></div>
    {error&&<div role="alert" className="wsError">{error}</div>}
@@ -271,7 +271,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
        <section className="wsEvidencePanel" aria-label="Source evidence selected for AI">
          <div className="wsEvidenceHeader"><div><div className="eyebrow">EVIDENCE SELECTION · POC 2.5</div><h3>What can this story responsibly say?</h3></div><span>Source → Observation → Story</span></div>
          {visibleEvidence.status==='loading'&&<p className="wsSmall">Selecting attributable customer records…</p>}
-         {visibleEvidence.status==='error'&&<div className="wsEvidenceWarning">{visibleEvidence.message}</div>}
+         {visibleEvidence.status==='error'&&<div className="wsEvidenceWarning"><b>Evidence preview unavailable</b><p>{visibleEvidence.message}</p><small>Diagnostic: {visibleEvidence.code||'EVIDENCE_LOAD_FAILED'}. Source records remain available in Customer Intelligence; the POC does not send emails.</small></div>}
          {visibleEvidence.status==='ready'&&<>
            <div className="wsEvidenceStats"><span><b>{visibleEvidence.evidence?.source_record_count||0}</b> source records checked</span><span><b>{visibleEvidence.evidence?.selected?.length||0}</b> selected observations</span><span><b>Up to 3</b> source references per draft</span></div>
            {visibleEvidence.evidence?.selected?.length?<div className="wsEvidenceList">{visibleEvidence.evidence.selected.map(e=><div className="wsEvidenceItem" key={e.id}>
