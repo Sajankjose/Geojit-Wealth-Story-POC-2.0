@@ -39,7 +39,7 @@ function safeContext(records,edition,client){
  const body=typeof story?.narrative==='string' ? story.narrative : 'A relevant customer insight will appear when its supporting facts and editorial modules have been validated.'
  return {title,body,why:'An illustrative edition composed from the existing synthetic story context. '+reason,blocked:serviceBlock||preferenceBlock,evidence_count:story?1:0}
 }
-export default function OperatingStudio({clients=[],onBack,onOpenClient}){
+export default function OperatingStudio({clients=[],onBack,onOpenClient,onPreviewCustomer}){
  const [tab,setTab]=useState('overview')
  const [subscriptions,setSubscriptions]=useState([])
  const [editions,setEditions]=useState([])
@@ -308,7 +308,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
        <div className="wsAiDiagnostic"><button type="button" onClick={checkAIStatus} disabled={!persisted||diagnosticBusy}>{diagnosticBusy?'Checking server configuration…':'Check AI connection'}</button>
        <button type="button" onClick={refreshReviewerAndRetry} disabled={!persisted||sessionRefreshing}>{sessionRefreshing?'Refreshing session…':'Refresh reviewer session & retry'}</button>
        {aiStatus&&<div role="status" className={aiStatus.error?'wsAiDiagnosticError':'wsAiDiagnosticStatus'}>{aiStatus.error?<span>{aiStatus.error}</span>:<><strong>{aiStatus.openai_key_configured?'Server key detected':'Server key not detected'}</strong><span>Reviewer authenticated · Model: {aiStatus.model} · Live model response not yet tested</span></>}</div>}</div>
-       <div className="wsActions"><button type="button" className="wsPrimary" disabled={!persisted||busy||aiBusy} onClick={generateAIDraft}>{aiBusy?'Generating AI draft…':'Generate with AI →'}</button><button type="button" disabled={!persisted||busy||aiBusy} onClick={generateCandidate}>Use synthetic template</button><button type="button" onClick={()=>onOpenClient(selected,'story')}>Inspect source story</button></div>
+       <div className="wsActions"><button type="button" className="wsPrimary" disabled={!persisted||busy||aiBusy} onClick={generateAIDraft}>{aiBusy?'Generating AI draft…':'Generate with AI →'}</button><button type="button" disabled={!persisted||busy||aiBusy} onClick={generateCandidate}>Use synthetic template</button><button type="button" onClick={()=>onOpenClient(selected,'story')}>Inspect source story</button><button type="button" onClick={()=>onPreviewCustomer?.(selected)}>Preview as customer →</button></div>
        {visibleGeneration&&<div className={'wsGenerationResult '+(visibleGeneration.status==='failed'?'isFailed':visibleGeneration.status==='saved'?'isSaved':'isGenerating')} role="status" aria-live="polite">
          <span className="wsGenerationIndicator" aria-hidden="true">{visibleGeneration.status==='generating'?'◌':visibleGeneration.status==='saved'?'✓':'!'}</span>
          <div><strong>{visibleGeneration.status==='generating'?'Preparing AI story draft…':visibleGeneration.status==='saved'?'AI story generated and saved':'AI generation could not complete'}</strong>
@@ -360,6 +360,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
          <div className="wsDecisionChecks">{deliveryDecision.checks.map(check=><div key={check.name} className={check.pass?'pass':'blocked'}><span>{check.pass?'✓':'×'}</span><div><b>{check.name}</b>{!check.pass&&<small>{check.detail}</small>}</div></div>)}</div>
          <p className="wsSmall">Demonstration rules only. Source status, customer consent, approved templates, exchange holidays and send frequency require production governance and server-side enforcement.</p>
        </div>
+       <div className="wsCustomerPreviewLaunch"><div><strong>Continue into the customer experience</strong><p>Open the approved, published edition as the fictional customer would see it. Drafts are hidden.</p></div><button type="button" onClick={()=>onPreviewCustomer?.(selected)}>Preview as customer →</button></div>
        <div className="wsEmailPreview"><div className="eyebrow">EMAIL PREVIEW · NON-SENDING DEMO</div><h3>One safe invitation into the authenticated story</h3>
        <div className="wsEmailFrame"><div className="wsEmailHeader"><span>From</span><b>Geojit · Wealth Story (illustration)</b></div>
          <div className="wsEmailHeader"><span>Subject</span><b>Your Wealth Story is ready to explore</b></div>
