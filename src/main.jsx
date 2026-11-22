@@ -4,5 +4,6 @@ import App from './App.jsx'
 import './styles.css'
 import './geojit-experience.css'
 import './operating-studio.css'
+import './customer-experience.css'
 
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>)
