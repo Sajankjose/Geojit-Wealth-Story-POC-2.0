@@ -53,6 +53,9 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const [filter,setFilter]=useState('all')
  const [draft,setDraft]=useState(null)
  const [aiBusy,setAiBusy]=useState(false)
+ const [aiStatus,setAiStatus]=useState(null)
+ const [diagnosticBusy,setDiagnosticBusy]=useState(false)
+ const [reviewChecks,setReviewChecks]=useState({})
  const refresh=useCallback(async()=>{
    if(!supabase){setPersisted(false);setSubscriptions(initialSubscriptions(clients));return}
    try{
@@ -114,6 +117,23 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
    }catch(e){setError(e.message||String(e))}
    setBusy(false)
  }
+ async function checkAIStatus(){
+   if(!supabase||diagnosticBusy)return
+   setDiagnosticBusy(true);setAiStatus(null)
+   try{
+     const {data:{session},error:sessionError}=await supabase.auth.getSession()
+     if(sessionError||!session?.access_token)throw Error('Please sign in again.')
+     const result=await fetch('/.netlify/functions/generate-wealth-story',{headers:{authorization:'Bearer '+session.access_token}})
+     const payload=await result.json().catch(()=>({error:'Invalid status response'}))
+     if(!result.ok)throw Error(payload.error||'AI configuration check failed')
+     setAiStatus(payload)
+   }catch(e){setAiStatus({error:e.message||'Could not verify AI configuration'})}
+   finally{setDiagnosticBusy(false)}
+ }
+ function toggleReview(field,checked){
+   if(!currentEdition)return
+   setReviewChecks(old=>({...old,[currentEdition.id]:{...(old[currentEdition.id]||{}),[field]:checked}}))
+ }
  async function generateAIDraft(){
    if(!persisted||!client||busy||aiBusy)return
    setAiBusy(true);setNotice('');setError('')
@@ -144,6 +164,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  }
  async function updateStage(edition,stage){
    if(!persisted||!edition)return
+   if(stage==='approved'&&!['sources','claims','purpose'].every(k=>reviewChecks[edition.id]?.[k])){setError('Complete all three editorial review checks before demo approval.');return}
    setBusy(true);setError('');setNotice('')
    const {error:upError}=await supabase.from('poc_story_editions').update({stage,updated_at:new Date().toISOString()}).eq('id',edition.id)
    if(upError)setError(upError.message);else{setNotice('Edition moved to '+stage.replaceAll('_',' ')+'. This is a synthetic review workflow.');await refresh()}
@@ -166,7 +187,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const pipeline = [['Candidates',editions.filter(e=>e.stage==='candidate').length],['Reviewed',editions.filter(e=>e.stage==='reviewed').length],['Approved',editions.filter(e=>e.stage==='approved').length],['Published in-app',editions.filter(e=>e.stage==='published_in_app').length]]
  const generatedCount=countUnique(editions)
  return <div className="wsStudio">
-   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.2 · AI draft preparation</div></div>
+   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.3 · AI readiness & editorial QA</div></div>
    <section className="wsStudioIntro"><div className="eyebrow">GEOJIT WEALTH STORY STUDIO</div><h1>One relationship.<br/><span>Multiple meaningful editions.</span></h1><p>Manage the fictional subscription lifecycle, editorial workflow, in-app availability and optional email eligibility for 20 synthetic customers.</p></section>
    <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>POC 2.2 can create AI-assisted drafts for review when an OpenAI API key is configured. Subscription, approval and delivery states remain demonstration-only; no emails are sent.</span></div>
    {error&&<div role="alert" className="wsError">{error}</div>}
@@ -206,10 +227,18 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      <section className="wsSurface"><div className="eyebrow">STORY STUDIO</div><h2>Prepare an evidence-led edition.</h2>
        <p>Choose a client and edition, then prepare a grounded AI-assisted draft or use the existing synthetic template. AI drafts are never automatically approved or sent.</p>
        <div className="wsFormRow"><label>Client<select value={selected} onChange={e=>{setSelected(e.target.value);setDraft(null)}}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{displayName(c)} · {c.client_id}</option>)}</select></label><label>Edition<select value={type} onChange={e=>{setType(e.target.value);setDraft(null)}}>{EDITIONS.map(e=><option key={e.id} value={e.id}>{e.label}</option>)}</select></label></div>
+       <div className="wsAiDiagnostic"><button type="button" onClick={checkAIStatus} disabled={!persisted||diagnosticBusy}>{diagnosticBusy?'Checking server configuration…':'Check AI connection'}</button>
+       {aiStatus&&<div role="status" className={aiStatus.error?'wsAiDiagnosticError':'wsAiDiagnosticStatus'}>{aiStatus.error?<span>{aiStatus.error}</span>:<><strong>{aiStatus.openai_key_configured?'Server key detected':'Server key not detected'}</strong><span>Reviewer authenticated · Model: {aiStatus.model} · Live model response not yet tested</span></>}</div>}</div>
        <div className="wsActions"><button type="button" className="wsPrimary" disabled={!persisted||busy||aiBusy} onClick={generateAIDraft}>{aiBusy?'Generating AI draft…':'Generate with AI →'}</button><button type="button" disabled={!persisted||busy||aiBusy} onClick={generateCandidate}>Use synthetic template</button><button type="button" onClick={()=>onOpenClient(selected,'story')}>Inspect source story</button></div>
        <div className="wsAiHelp"><b>AI creates a candidate, not a customer communication.</b> Netlify checks the reviewer session, selects synthetic context, invokes OpenAI server-side and rejects unsafe claims. Read and verify the output before using the existing review steps. If the AI key is not configured, the synthetic-template option remains available.</div>
        {currentEdition?<div className="wsDraft"><div className="wsDraftTop"><span>Latest {EDITION_LABELS[currentEdition.edition_type]} edition · {currentEdition.generation_method==='openai_draft'?'AI-assisted draft':'Synthetic template'}</span><Chip tone={currentEdition.stage==='published_in_app'?'success':'neutral'}>{currentEdition.stage.replaceAll('_',' ')}</Chip></div><h3>{currentEdition.title}</h3><p>{currentEdition.body}</p><details><summary>Why was this prepared?</summary><p>{currentEdition.decision_note}</p></details>
-         <div className="wsActions"><button disabled={!persisted||busy||currentEdition.stage!=='candidate'} onClick={()=>updateStage(currentEdition,'reviewed')}>Mark reviewed</button><button disabled={!persisted||busy||currentEdition.stage!=='reviewed'} onClick={()=>updateStage(currentEdition,'approved')}>Approve (demo)</button><button className="wsPrimary" disabled={!persisted||busy||currentEdition.stage!=='approved'} onClick={()=>updateStage(currentEdition,'published_in_app')}>Publish in-app (demo)</button></div>
+         <div className="wsReviewChecklist"><div className="eyebrow">EDITORIAL QUALITY GATE · DEMO</div>
+           <p>Before approving this edition, verify the source records and read every claim. These are reviewer attestations in this browser session, not a production approval audit.</p>
+           <label><input type="checkbox" checked={!!reviewChecks[currentEdition.id]?.sources} onChange={e=>toggleReview('sources',e.target.checked)}/> Source evidence and dates reviewed</label>
+           <label><input type="checkbox" checked={!!reviewChecks[currentEdition.id]?.claims} onChange={e=>toggleReview('claims',e.target.checked)}/> No invented returns, financial figures, research calls or misleading claims</label>
+           <label><input type="checkbox" checked={!!reviewChecks[currentEdition.id]?.purpose} onChange={e=>toggleReview('purpose',e.target.checked)}/> Appropriate tone, purpose and service-first context confirmed</label>
+         </div>
+         <div className="wsActions"><button disabled={!persisted||busy||currentEdition.stage!=='candidate'} onClick={()=>updateStage(currentEdition,'reviewed')}>Mark reviewed</button><button disabled={!persisted||busy||currentEdition.stage!=='reviewed'||!['sources','claims','purpose'].every(k=>reviewChecks[currentEdition.id]?.[k])} onClick={()=>updateStage(currentEdition,'approved')}>Approve (demo)</button><button className="wsPrimary" disabled={!persisted||busy||currentEdition.stage!=='approved'} onClick={()=>updateStage(currentEdition,'published_in_app')}>Publish in-app (demo)</button></div>
        </div>:<Empty title="No prepared edition yet">Create a fictional candidate to begin the review and publication workflow.</Empty>}
        <div className="wsEditionLedger"><div className="eyebrow">PREPARED EDITION REGISTER</div><h3>Who has a story, and where is it in the workflow?</h3>
          {editions.length?<div className="wsLedgerList">{editions.slice(0,35).map(e=><button type="button" key={e.id} onClick={()=>{setSelected(e.client_id);setType(e.edition_type);setDraft(null)}}><div><b>{displayName(clients.find(c=>c.client_id===e.client_id))} · {e.client_id}</b><small>{EDITION_LABELS[e.edition_type]} · {formatDate(e.created_at)}</small></div><Chip tone={e.stage==='published_in_app'?'success':'neutral'}>{e.stage.replaceAll('_',' ')}</Chip></button>)}</div>:<Empty title="No editions prepared yet">Candidates appear here as they are generated, reviewed and published.</Empty>}
@@ -220,6 +249,11 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      <section className="wsSurface"><div className="eyebrow">DELIVERY CENTRE</div><h2>Delivery is a separate decision.</h2><p>Email is deliberately not connected. The actions below only record simulated delivery or in-app engagement events.</p>
        <div className="wsFormRow"><label>Client<select value={selected} onChange={e=>setSelected(e.target.value)}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{displayName(c)} · {c.client_id}</option>)}</select></label><label>Edition<select value={type} onChange={e=>setType(e.target.value)}>{EDITIONS.map(e=><option key={e.id} value={e.id}>{e.label}</option>)}</select></label></div>
        <div className="wsDeliveryCheck"><div><span>Subscription</span><Chip tone={sub?.status==='subscribed'?'success':'neutral'}>{sub?.status||'No preference'}</Chip></div><div><span>Edition state</span><Chip>{currentEdition?.stage?.replaceAll('_',' ')||'No edition prepared'}</Chip></div><div><span>Last email simulation</span><b>{formatDate(lastEvent?.created_at)}</b></div></div>
+       <div className="wsEmailPreview"><div className="eyebrow">EMAIL PREVIEW · NON-SENDING DEMO</div><h3>One safe invitation into the authenticated story</h3>
+       <div className="wsEmailFrame"><div className="wsEmailHeader"><span>From</span><b>Geojit · Wealth Story (illustration)</b></div>
+         <div className="wsEmailHeader"><span>Subject</span><b>Your Wealth Story is ready to explore</b></div>
+         <div className="wsEmailBody"><div className="wsEmailLogo">WEALTH STORY</div><h4>A new chapter is here.</h4><p>Hello {displayName(client)},</p><p>Your latest {EDITION_LABELS[type]?.toLowerCase()} can be explored securely when you sign in to your account.</p><div className="wsEmailCta">View Wealth Story · Demo only</div><small>No private holdings, prices, account values or sensitive financial details appear in this email preview.</small></div>
+       </div><p className="wsSmall">This preview is not an actual sendable template. Verified links, required footer, unsubscribe, legal entity details and email compliance must be configured before live delivery.</p></div>
        <div className="wsActions"><button className="wsPrimary" type="button" disabled={!persisted||busy||currentEdition?.stage!=='published_in_app'||sub?.status!=='subscribed'||['C020','C004','C019'].includes(selected)} onClick={()=>recordEvent(currentEdition,'email_delivery_simulated')}>Simulate email delivery →</button><button type="button" disabled={!persisted||busy||currentEdition?.stage!=='published_in_app'} onClick={()=>recordEvent(currentEdition,'in_app_view_demo')}>Mark in-app viewed (demo)</button></div>
        <div className="wsCallout">A simulated email is never sent to an address. The production system must re-check explicit consent, send eligibility, content validity, frequency limits and unsubscribe status at send time.</div>
      </section>
