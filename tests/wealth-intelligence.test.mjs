@@ -14,7 +14,7 @@ test('Thomas illustrative portfolio values and market comparison reconcile',()=>
  assert.equal(x.market_verified,false)
  assert.equal(x.synthetic,true)
  assert.equal(x.as_of,'2026-11-20')
- assert.equal(x.relative_pp,Math.round((x.weekly_return-x.benchmark_return)*100)/100)
+ assert.equal(x.relative_pp,Math.round((100*(dietzReturn(f.valuations[5],f.valuations[6],f.external_net_flows[6])-(DEMO_MARKET.proxy[6]/DEMO_MARKET.proxy[5]-1)))*100)/100)
  assert.equal(x.journey.length,7)
  assert.equal(x.source_records.portfolio,'DEMO_VALUATION_SERIES_C012')
  assert.equal(x.goal,null)
