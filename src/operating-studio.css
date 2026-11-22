@@ -196,3 +196,15 @@
 .wsRetryEvidence{display:inline-flex;margin-top:12px;border:1px solid var(--ds-border-action);background:white;border-radius:8px;padding:9px 12px;color:var(--ds-primary-action-pressed);font-size:11px;font-weight:650;min-height:40px;align-items:center}
 .wsRetryEvidence:hover:not(:disabled){background:var(--ds-surface-green)}
 .wsRetryEvidence:disabled{opacity:.5;cursor:not-allowed}
+
+/* POC 2.6 — explainable optional delivery decision */
+.wsSendReadiness{background:#F8FCFA;border:1px solid var(--ds-border-primary);border-radius:14px;padding:18px 20px;margin:22px 0 20px}
+.wsSendReadiness .wsEvidenceHeader h3{font-size:17px;margin-top:6px}
+.wsDecisionChecks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
+.wsDecisionChecks>div{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--ds-border-primary);border-radius:10px;padding:11px 12px;background:white}
+.wsDecisionChecks>div>span{font-size:15px;line-height:1.2;font-weight:700;color:var(--ds-primary-action)}
+.wsDecisionChecks>div.blocked{background:var(--ds-warning-light);border-color:#E5CEBB}
+.wsDecisionChecks>div.blocked>span{color:var(--ds-warning)}
+.wsDecisionChecks b{display:block;font-size:11px;color:var(--ds-text-primary)}
+.wsDecisionChecks small{display:block;margin-top:5px;font-size:10px;line-height:1.5;color:var(--ds-text-secondary)}
+@media(max-width:650px){.wsSendReadiness{padding:14px}.wsDecisionChecks{grid-template-columns:1fr}}
