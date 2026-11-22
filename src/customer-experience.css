@@ -120,3 +120,25 @@
 .wsCustomerPreviewLaunch p{font-size:11px;line-height:1.5;color:var(--ds-text-secondary);margin:5px 0 0}
 .wsCustomerPreviewLaunch button{background:#fff;border:1px solid var(--ds-border-primary);padding:11px 14px;font-size:12px;font-weight:650;color:var(--ds-primary-action-pressed);border-radius:8px;min-height:44px}
 .wsCustomerPreviewLaunch button:hover{background:var(--ds-tab-active)}
+
+/* POC 2.7.1: premium guided narrative instead of a customer activity audit. */
+.cxChapterIntro{padding:10px 0 17px}
+.cxChapterIntro p{font-size:clamp(15px,1.3vw,18px);line-height:1.95;color:var(--ds-text-primary);max-width:780px;margin:15px 0 0}
+.cxFinancialPicture{border-top:1px solid var(--ds-border-primary);padding-top:27px;margin:25px 0 28px}
+.cxFinancialPicture h3,.cxPerspective h3,.cxNextStep h3{font-size:clamp(20px,2vw,27px);letter-spacing:-.55px;line-height:1.4;margin:9px 0 15px;font-weight:650}
+.cxFigureGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cxFigureCard{display:grid;gap:7px;border:1px solid var(--ds-border-primary);border-radius:11px;background:var(--ds-surface-green);padding:17px}
+.cxFigureCard span{font-size:11px;color:var(--ds-text-secondary)}
+.cxFigureCard b{font-size:clamp(20px,2.4vw,32px);line-height:1.2;font-weight:650;font-variant-numeric:tabular-nums}
+.cxFigureCard small{color:var(--ds-text-secondary);font-size:10px;line-height:1.5}
+.cxFigureNote{font-size:11px;color:var(--ds-text-secondary);line-height:1.7;margin:11px 0 0}
+.cxPerspective{padding:24px 0 22px;border-top:1px solid var(--ds-border-primary)}
+.cxPerspective p{font-size:15px;line-height:1.85;color:var(--ds-text-secondary);max-width:760px}
+.cxNextStep{margin:5px 0 21px;padding:25px 24px;border:1px solid var(--ds-border-primary);background:var(--ds-surface-yellow);border-radius:14px}
+.cxNextStep p{font-size:13px;line-height:1.8;color:var(--ds-text-secondary);margin-bottom:17px}
+.cxNextStep button{border-radius:9px;border:1px solid var(--ds-primary-action);min-height:44px;padding:11px 16px;font-size:12px;font-weight:650}
+.cxAboutPanel{border:1px solid var(--ds-border-primary);background:var(--ds-surface-green);padding:24px;border-radius:14px;margin:24px 0}
+.cxAboutPanel strong{font-size:15px}
+.cxAboutPanel p{line-height:1.8;font-size:13px;color:var(--ds-text-secondary)}
+.cxAboutPanel button{border:1px solid var(--ds-border-primary);background:white;color:var(--ds-primary-action-pressed);padding:11px 14px;min-height:44px;font-size:12px;font-weight:700;border-radius:9px;margin-top:12px}
+@media(max-width:650px){.cxChapterIntro p{font-size:15px}.cxFigureGrid{grid-template-columns:1fr}.cxNextStep,.cxAboutPanel{padding:19px}.cxFinancialPicture{margin-top:14px}}
