@@ -119,3 +119,29 @@
 .wsAiHelp{margin-top:13px;background:var(--ds-surface-green);border:1px solid var(--ds-border-primary);border-radius:10px;padding:13px 15px;font-size:11px;line-height:1.7;color:var(--ds-text-secondary)}
 .wsAiHelp b{color:var(--ds-text-primary)}
 .wsDraftTop{flex-wrap:wrap}
+
+/* POC 2.3 — AI readiness, editorial review, privacy-safe email preview */
+.wsAiDiagnostic{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0 4px}
+.wsAiDiagnostic>button{background:#fff;border:1px solid var(--ds-border-primary);border-radius:8px;padding:10px 14px;min-height:44px;font-size:12px;font-weight:650;color:var(--ds-text-primary)}
+.wsAiDiagnostic>button:hover:not(:disabled){background:var(--ds-surface-green)}
+.wsAiDiagnosticStatus,.wsAiDiagnosticError{display:grid;gap:3px;font-size:11px;padding:10px 13px;border-radius:9px;line-height:1.6}
+.wsAiDiagnosticStatus{background:var(--ds-success-light);color:var(--ds-text-primary)}
+.wsAiDiagnosticError{background:var(--ds-error-light);color:var(--ds-error)}
+.wsAiDiagnosticStatus strong{font-size:12px}
+.wsReviewChecklist{border-top:1px solid var(--ds-border-primary);margin-top:20px;padding:19px 0 6px;display:grid;gap:11px}
+.wsReviewChecklist p{font-size:11px!important;margin:3px 0 0}
+.wsReviewChecklist label{display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.6;color:var(--ds-text-primary);cursor:pointer}
+.wsReviewChecklist input{margin-top:3px;accent-color:var(--ds-primary-action);width:17px;height:17px;flex:none}
+.wsEmailPreview{border-top:1px solid var(--ds-border-primary);padding-top:22px;margin-top:25px}
+.wsEmailPreview h3{font-size:16px;font-weight:650;letter-spacing:-.3px;margin:9px 0 15px}
+.wsEmailFrame{border:1px solid var(--ds-border-primary);border-radius:12px;overflow:hidden;background:white}
+.wsEmailHeader{display:flex;gap:16px;padding:11px 15px;border-bottom:1px solid var(--ds-border-primary);font-size:11px}
+.wsEmailHeader span{width:46px;flex:none;color:var(--ds-text-secondary)}
+.wsEmailHeader b{font-weight:600}
+.wsEmailBody{padding:29px 28px 30px;background:var(--ds-surface-white)}
+.wsEmailLogo{font-size:11px;letter-spacing:1.2px;color:var(--ds-primary-action);font-weight:800}
+.wsEmailBody h4{font-size:24px;letter-spacing:-.7px;line-height:1.25;margin:17px 0}
+.wsEmailBody p{font-size:13px;line-height:1.7}
+.wsEmailCta{background:var(--ds-primary-action);color:white;display:inline-block;padding:11px 19px;border-radius:8px;font-size:12px;font-weight:650;margin:17px 0 21px}
+.wsEmailBody small{display:block;font-size:11px;color:var(--ds-text-secondary);line-height:1.6}
+@media(max-width:600px){.wsEmailBody{padding:20px 16px}.wsEmailBody h4{font-size:21px}.wsAiDiagnostic{display:grid}.wsReviewChecklist label{font-size:11px}}
