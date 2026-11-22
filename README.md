@@ -1,6 +1,55 @@
-# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.1
+# Geojit Wealth Story — Customer Intelligence & AI Draft Studio POC 2.2
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.2 — AI-assisted Wealth Story drafting (November 2026)
+
+This phase adds a **secure Netlify Function** that generates draft, structured Wealth Story candidates from the existing **fictional** client universe. This is a POC, not a production automated publishing pipeline.
+
+**User-facing workflow:** Sign in → Wealth Story Studio → Story Production → choose client and edition → **Generate with AI** → a new `candidate` is saved in Supabase → human review → demo approval → optional in-app publication. The existing **Use synthetic template** option remains available. No AI generation sends email.
+
+**Server function:** `netlify/functions/generate-wealth-story.mjs`
+
+- Calls `/auth/v1/user` with the caller's own Supabase bearer token before any private data read.
+- Reads one authenticated, **synthetic** client from `poc_clients` and an allowlisted subset of `poc_records`. The client never supplies arbitrary narrative facts to the AI endpoint.
+- Prepares a small controlled context. Daily trading briefs deliberately omit current market figures and research, which are **not connected**.
+- Calls OpenAI's Responses API on the server using structured JSON output and `store:false`, and rejects numbers, percentages, links and obvious financial-promotional claims in visible copy.
+- Returns an **unapproved** draft; the browser persists it to `poc_story_editions` under the current synthetic authenticated reviewer. It does not execute trades, send email or expose secret credentials.
+- The model output is not inherently verified by virtue of being structured. Human factual review and product/compliance approval are still mandatory. The demo approval state is not a production authorization or audit mechanism.
+- This system handles *fictional data only*. Do not upload real customer data.
+
+### One-time database change
+
+In the SAME Supabase project as your 20 clients, open SQL Editor and run:
+
+`supabase/migrations/20261122_003_ai_drafts.sql`
+
+This small script modifies only the `poc_story_editions.generation_method` constraint to support `openai_draft` alongside `synthetic_template`. It does not modify subscriptions or existing stories.
+
+### Configure Netlify — backend only
+
+Go to **Netlify → Your Wealth Story site → Project configuration → Environment variables** and add:
+
+| Variable | Value / where |
+|---|---|
+| `OPENAI_API_KEY` | Secret OpenAI Platform API key, stored **only** in Netlify; mark it as containing a secret and enable **Functions** scope |
+| `OPENAI_MODEL` | Optional non-secret value: `gpt-4.1-mini` (the default) |
+
+Existing public Netlify `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` remain unchanged. Ensure they are available in the **Functions** scope as well as Builds, if using specific scopes. Never set `VITE_OPENAI_API_KEY`, never place `OPENAI_API_KEY` inside GitHub or commit an API key in any environment file.
+
+An OpenAI **API** project with billing/credits is required; ChatGPT subscription alone does not provide API usage. After setting the secret, trigger a new Netlify deploy. The backend route is `/.netlify/functions/generate-wealth-story`.
+
+### Test v2.2
+
+1. Verify the Netlify deployment succeeds and log in as your existing Supabase demo reviewer.
+2. Open Wealth Story Studio → **Story Production**.
+3. Select C014 George, Monthly Wealth Journey; click **Generate with AI**.
+4. If successful, the candidate appears with `AI-assisted draft` in the edition register. Read its claims against the synthetic source context before any demo review or approval.
+5. Try C008 Vikram, Daily Trading Brief: it should **not** invent prices, trading calls, P&L or real-time research.
+6. Try C004 Dev and C020 Isha: optional email delivery remains suppressed in the demo rules even when an in-app edition exists.
+7. Use **Use synthetic template** if API billing, configuration or generation is unavailable.
+
+**Limitations:** This is a controlled fictional draft experiment, not independently verified fact grounding. The POC reviewer RLS write policies remain deliberately broad and must never be used with real client data. Real production needs server-enforced publication transitions, validated sources and research freshness, provenance and consent, audit logs, usage caps, customer access entitlements, and a properly approved channel-delivery system.
 
 ## POC 2.1 — Wealth Story Operating Studio (November 2026)
 
