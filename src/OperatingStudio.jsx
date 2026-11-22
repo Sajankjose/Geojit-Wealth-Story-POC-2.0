@@ -195,7 +195,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const pipeline = [['Candidates',editions.filter(e=>e.stage==='candidate').length],['Reviewed',editions.filter(e=>e.stage==='reviewed').length],['Approved',editions.filter(e=>e.stage==='approved').length],['Published in-app',editions.filter(e=>e.stage==='published_in_app').length]]
  const generatedCount=countUnique(editions)
  return <div className="wsStudio">
-   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.3 · AI readiness & editorial QA</div></div>
+   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.4 · Clear AI generation results</div></div>
    <section className="wsStudioIntro"><div className="eyebrow">GEOJIT WEALTH STORY STUDIO</div><h1>One relationship.<br/><span>Multiple meaningful editions.</span></h1><p>Manage the fictional subscription lifecycle, editorial workflow, in-app availability and optional email eligibility for 20 synthetic customers.</p></section>
    <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>POC 2.2 can create AI-assisted drafts for review when an OpenAI API key is configured. Subscription, approval and delivery states remain demonstration-only; no emails are sent.</span></div>
    {error&&<div role="alert" className="wsError">{error}</div>}
