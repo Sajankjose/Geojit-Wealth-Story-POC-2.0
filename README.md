@@ -1,6 +1,48 @@
-# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.5
+# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.6
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.6 — Consent-aware email delivery readiness (simulation only)
+
+Evidence-led AI story creation (POC 2.5) is now demonstrated with source references. POC 2.6 moves to **the next step in the Wealth Story operating lifecycle**: preparing optional email communication safely and transparently.
+
+### Operating workflow
+
+**Client → Edition subscription → Story candidate → Human review → Approval → Published in-app → Eligibility decision → Email dry-run event → In-app engagement**
+
+In **Wealth Story Studio → Delivery & Engagement**, select a fictional customer and edition. A new **Delivery Decision** panel shows the outcome and reason for each rule:
+
+- **Active edition-level opt-in**, independent of other story editions.
+- **Published, matching edition**; preparing an AI draft does not authorize sending it.
+- **Fictional customer preference** restrictions and **service-first** suppression.
+- **Edition freshness** (30-day demonstration window; not a financial/research validity certification).
+- **Duplicate prevention** (the same edition cannot be simulated as sent twice).
+- **Cadence** (minimum 7 days for weekly stories, 28 days for monthly; daily only on weekdays as an approximation).
+- **Re-evaluation** against latest saved Supabase subscription, client context, edition and event records before recording a simulated email delivery.
+
+If one requirement fails, the **Record eligible email dry-run** button remains disabled and the failed reason is shown. A successful dry run saves an event with a policy version and fictional rule outcomes. The existing **Email Preview** intentionally excludes sensitive client financial details and does not contain a real link or sending mechanism.
+
+### Important limits
+
+- **No actual email is sent**; no SMTP, MoEngage, provider API, outbound queue, client email address or production template is connected.
+- Subscriptions and eligibility are **fictional**. Existing POC Supabase reviewer permissions are deliberately broad and are **not** suitable for real customer data.
+- The client-side eligibility view and pre-insert checks are **not atomic or authoritative**. The production implementation must enforce consent, unsubscribe, schedule, finance/research currency, authorisations and idempotency on a secured server.
+- The daily trading-day rule is a weekday approximation and does not consider exchange holidays, session time or content expiry.
+- Editorial approval remains a demo step; no production compliance or security certification is implied.
+- Mandatory/transactional/security/regulatory updates remain independently handled.
+
+### Verification
+
+No new SQL migration or Netlify secret is required. The existing `poc_studio_events.details` JSONB stores the dry-run policy trace. Run `npm test` only if adding an npm test script; GitHub Actions runs:
+
+```bash
+node --test tests/ai-generation.test.mjs tests/delivery-eligibility.test.mjs
+npm run build
+```
+
+To demo: publish an approved fictional weekly edition for Thomas; inspect the Delivery Decision, record an eligible dry run, and verify that a repeat attempt or a fresh edition inside the cooldown is withheld. Pause Thomas's weekly subscription to see the opt-in gate suppress delivery without changing his monthly or daily preferences.
+
+**Next:** production-capable recipient preference/consent ledger, compliance-reviewed Geojit email templates, protected deep-link authentication, research freshness governance and an authorised provider integration—not yet in scope.
 
 ## POC 2.5.2 — Reviewer authentication diagnostics
 
