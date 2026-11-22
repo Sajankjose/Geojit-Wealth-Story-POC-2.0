@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { configured, supabase, loadClients, loadClientRecords } from './lib/supabase'
 import OperatingStudio from './OperatingStudio.jsx'
+import CustomerExperience from './CustomerExperience.jsx'
 
 const sample = [
  ['C001','Arun','New explorer','Explore'],['C002','Anu','First SIP','Guide'],['C003','Meera','Regular SIP investor','Guide'],
@@ -110,12 +111,12 @@ export default function App(){
  <aside className="sidebar">
  <div className="brand"><div className="brand-symbol" aria-hidden="true">WS</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
  <div className="side-heading">REVIEW WORKSPACE</div><button type="button" className={"menu-item wsSideNav "+(workspace==="intelligence"?"active":"")} onClick={()=>setWorkspace("intelligence")}><span className="icon">◫</span> Customer intelligence</button>
- <button type="button" className={"menu-item wsSideNav "+(workspace==="studio"?"active":"")} onClick={()=>setWorkspace("studio")}><span className="icon">◇</span> Wealth Story Studio <em>2.1</em></button>
- <div className="menu-item muted"><span className="icon">✳</span> Live AI narration <em>Next</em></div>
+ <button type="button" className={"menu-item wsSideNav "+(workspace==="studio"?"active":"")} onClick={()=>setWorkspace("studio")}><span className="icon">◇</span> Wealth Story Studio <em>2.7</em></button>
+ <button type="button" className={"menu-item wsSideNav "+(workspace==="customer"?"active":"")} onClick={()=>setWorkspace("customer")}><span className="icon">◈</span> Customer experience <em>NEW</em></button>
  <div className="side-bottom"><span className="status-dot"/> {configured?'Supabase connected':'Local preview mode'}<div className="tiny">{configured?'Authenticated synthetic dataset':'Configure Netlify Supabase variables to activate live data'}</div>{session&&<button className="signout" onClick={()=>supabase.auth.signOut()}>Sign out</button>}</div>
  </aside><main className="main">
- <header className="topline"><div className="breadcrumb">WEALTH STORY <span>/</span> {workspace==="studio"?"OPERATING STUDIO":"CUSTOMER INTELLIGENCE"} <span>/</span> POC 2.1</div><div className="environment"><span className="environmentDot"/> SYNTHETIC DATA ONLY</div></header>
- {workspace==="studio"?<OperatingStudio clients={clients} onBack={()=>setWorkspace("intelligence")} onOpenClient={(clientId,view)=>{setSelected(clientId);setTab(view||"overview");setWorkspace("intelligence")}}/>:<>
+ <header className="topline"><div className="breadcrumb">WEALTH STORY <span>/</span> {workspace==="studio"?"OPERATING STUDIO":workspace==="customer"?"CUSTOMER EXPERIENCE":"CUSTOMER INTELLIGENCE"} <span>/</span> POC 2.7</div><div className="environment"><span className="environmentDot"/> SYNTHETIC DATA ONLY</div></header>
+ {workspace==="studio"?<OperatingStudio clients={clients} onBack={()=>setWorkspace("intelligence")} onOpenClient={(clientId,view)=>{setSelected(clientId);setTab(view||"overview");setWorkspace("intelligence")}}/>:workspace==="customer"?<CustomerExperience clients={clients} initialClientId={selected} onChooseClient={setSelected} onBack={()=>setWorkspace("intelligence")} onOpenStudio={()=>setWorkspace("studio")}/>:<>
  <section className="heading"><div className="eyebrow">CUSTOMER RELATIONSHIP INTELLIGENCE</div><h1>A clearer picture of<br/><i>every customer journey.</i></h1><p>Bring together product relationships, transactions, digital behaviour and human interactions to understand what matters next.</p></section>
  {!configured&&<Alert><b>Preview mode:</b> The live Supabase connection has not been configured. The 20 client labels are placeholders; no imported data or story is shown.</Alert>}
  {error&&<Alert><b>Data loading issue:</b> {error}. Confirm the SQL import, reviewer permissions and Netlify environment variables.</Alert>}
