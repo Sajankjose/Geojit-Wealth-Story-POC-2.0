@@ -142,3 +142,73 @@
 .cxAboutPanel p{line-height:1.8;font-size:13px;color:var(--ds-text-secondary)}
 .cxAboutPanel button{border:1px solid var(--ds-border-primary);background:white;color:var(--ds-primary-action-pressed);padding:11px 14px;min-height:44px;font-size:12px;font-weight:700;border-radius:9px;margin-top:12px}
 @media(max-width:650px){.cxChapterIntro p{font-size:15px}.cxFigureGrid{grid-template-columns:1fr}.cxNextStep,.cxAboutPanel{padding:19px}.cxFinancialPicture{margin-top:14px}}
+
+/* Wealth Intelligence POC 2.7.2 — premium, responsive illustration. */
+.wiExperience{padding:35px 33px 44px;max-width:1200px;color:var(--ds-text-primary)}
+.wiLabelRow,.wiHeading,.wiJourneyTop{display:flex;align-items:start;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.wiEyebrow{color:var(--ds-primary-action-pressed);font-size:10px;letter-spacing:1.1px;font-weight:750}
+.wiDemoPill{font-size:10px;line-height:1.4;font-weight:700;color:#946218;background:#FFF2D9;border:1px solid #E9D4A9;padding:7px 11px;border-radius:25px}
+.wiHeading{margin:14px 0 24px}
+.wiHeading h2{font-size:clamp(29px,3.2vw,44px);font-weight:650;line-height:1.22;letter-spacing:-1.3px;max-width:660px;margin:0 0 11px}
+.wiHeading p,.wiJourneyTop p{font-size:13px;line-height:1.75;color:var(--ds-text-secondary);margin:0}
+.wiDate{font-size:11px;color:var(--ds-text-secondary);white-space:nowrap;padding-top:11px}
+.wiFigures{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:22px 0 28px}
+.wiFigure{border:1px solid var(--ds-border-primary);border-radius:13px;background:#F3FAF6;padding:17px;display:grid;gap:10px;min-width:0}
+.wiFigure span{font-size:11px;color:var(--ds-text-secondary);line-height:1.5}
+.wiFigure strong{font-size:clamp(21px,2.3vw,31px);font-weight:650;letter-spacing:-.7px;line-height:1.2;white-space:nowrap;font-variant-numeric:tabular-nums}
+.wiFigure small{font-size:10px;line-height:1.55;color:var(--ds-text-secondary)}
+.wiPositive{color:#116C5D}.wiNegative{color:#AE5949}
+.wiSplit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.wiPanel{border:1px solid var(--ds-border-primary);border-radius:15px;padding:23px;background:#fff;min-width:0}
+.wiPanel h3,.wiJourneyArea h3,.wiToolArea h3{font-size:22px;letter-spacing:-.5px;font-weight:650;line-height:1.3;margin:12px 0 14px}
+.wiPanel p{font-size:13px;line-height:1.8;color:var(--ds-text-secondary)}
+.wiComparison{display:grid;gap:0;margin:20px 0 13px;border-top:1px solid var(--ds-border-primary)}
+.wiComparison>div{padding:12px 0;display:flex;justify-content:space-between;align-items:center;gap:13px;border-bottom:1px solid var(--ds-border-primary)}
+.wiComparison span{font-size:12px;color:var(--ds-text-secondary)}
+.wiComparison b{font-size:18px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.wiScope{background:#F1F7F4;border-radius:9px;padding:13px 14px;font-size:11px;line-height:1.7;color:var(--ds-text-secondary);margin:13px 0}
+.wiTextButton,.wiBack{background:transparent;color:var(--ds-primary-action-pressed);border:0;padding:10px 0;font-size:12px;font-weight:700}
+.wiExplanation{background:var(--ds-surface-yellow);border-radius:10px;padding:14px;font-size:11px;line-height:1.7;margin:11px 0}
+.wiExplanation p{font-size:11px}
+.wiMarket{background:var(--ds-surface-yellow)}
+.wiInsight{border-top:1px solid var(--ds-border-primary);padding-top:18px;margin-top:22px}
+.wiInsight span{font-size:11px;font-weight:700}
+.wiInsight p{margin:7px 0 0}
+.wiJourneyArea{border:1px solid var(--ds-border-primary);border-radius:15px;padding:27px;margin:14px 0;background:#fff}
+.wiJourneyTop h3{margin:10px 0}
+.wiTrend{margin:24px 0 12px;max-width:100%;overflow:hidden}
+.wiTrend svg{width:100%;height:auto;display:block;color:var(--ds-text-primary)}
+.wiTimeline{display:flex;justify-content:space-between;gap:2px}
+.wiTimeline span{flex:1;text-align:center;color:var(--ds-text-secondary);font-size:10px;white-space:nowrap}
+.wiJourneyNumbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:22px}
+.wiJourneyNumbers>div{background:#F5FAF7;border:1px solid var(--ds-border-primary);border-radius:10px;padding:15px;display:grid;gap:6px;min-width:0}
+.wiJourneyNumbers span{font-size:10px;color:var(--ds-text-secondary);line-height:1.5}
+.wiJourneyNumbers b{font-size:18px;font-weight:650;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.wiGoal{border-top:1px solid var(--ds-border-primary);padding-top:20px;margin-top:20px}
+.wiGoal>div:first-child{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px}
+.wiGoal strong{font-size:13px}
+.wiGoal p{font-size:11px;line-height:1.6;color:var(--ds-text-secondary)}
+.wiProgress{height:9px;border-radius:20px;background:#E0E9E4;margin:12px 0}
+.wiProgress span{display:block;height:100%;background:var(--ds-primary-action);border-radius:20px}
+.wiGoalBlank{font-size:12px;line-height:1.7;padding:16px;background:#F7F8F6;border-radius:9px;margin-top:18px;color:var(--ds-text-secondary)}
+.wiDisclaimer{font-size:11px!important;color:var(--ds-text-secondary)!important;line-height:1.65!important}
+.wiToolArea{margin:16px 0;padding:26px;border:1px solid var(--ds-border-primary);border-radius:15px;background:var(--ds-surface-green)}
+.wiTools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.wiTools button{border:1px solid var(--ds-border-primary);background:#fff;border-radius:10px;padding:17px 15px;min-height:88px;text-align:left;color:var(--ds-text-primary);display:flex;flex-direction:column;justify-content:space-between;gap:11px}
+.wiTools button:hover{border-color:var(--ds-primary-action)}
+.wiTools strong{font-size:12px}
+.wiTools span{font-size:11px;color:var(--ds-primary-action-pressed);font-weight:650}
+.wiToolDetail{background:white;border-radius:10px;padding:16px;margin-top:12px}
+.wiToolDetail b{font-size:13px}
+.wiToolDetail p{font-size:12px;line-height:1.7;color:var(--ds-text-secondary)}
+.wiToolDetail small{font-size:10px;color:var(--ds-text-secondary)}
+.wiFootnote{padding:18px 21px;border-radius:12px;background:var(--ds-surface-yellow);margin-top:16px}
+.wiFootnote b{font-size:11px}
+.wiFootnote p{font-size:11px;color:var(--ds-text-secondary);line-height:1.7;margin:7px 0 0}
+.cxIntelligenceInvite{margin:20px 0;padding:21px;border:1px solid var(--ds-border-primary);background:var(--ds-surface-green);border-radius:13px}
+.cxIntelligenceInvite strong{display:block;font-size:16px;letter-spacing:-.3px;margin:11px 0 5px}
+.cxIntelligenceInvite p{font-size:12px;color:var(--ds-text-secondary);line-height:1.75}
+.cxIntelligenceInvite button{border:1px solid var(--ds-primary-action);background:var(--ds-primary-action);color:#fff;min-height:44px;border-radius:9px;padding:11px 14px;font-size:12px;font-weight:650;margin-top:8px}
+@media(max-width:1150px){.wiFigures{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:780px){.wiSplit{grid-template-columns:1fr}.wiTools{grid-template-columns:1fr}.wiJourneyNumbers{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.wiExperience{padding:23px 15px 29px}.wiHeading h2{font-size:30px}.wiFigures{gap:7px}.wiFigure{padding:13px}.wiFigure strong{font-size:23px}.wiPanel,.wiJourneyArea,.wiToolArea{padding:18px}.wiJourneyNumbers{grid-template-columns:1fr}.wiTimeline span{font-size:8px}.wiFigure small{font-size:9px}}
