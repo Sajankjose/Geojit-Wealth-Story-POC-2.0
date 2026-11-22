@@ -58,6 +58,8 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const [diagnosticBusy,setDiagnosticBusy]=useState(false)
  const [reviewChecks,setReviewChecks]=useState({})
  const [evidencePreview,setEvidencePreview]=useState({status:'idle',clientId:null,editionType:null})
+ const [evidenceAttempt,setEvidenceAttempt]=useState(0)
+ const [sessionRefreshing,setSessionRefreshing]=useState(false)
  const refresh=useCallback(async()=>{
    if(!supabase){setPersisted(false);setSubscriptions(initialSubscriptions(clients));return}
    try{
@@ -89,7 +91,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
    }
    load()
    return ()=>{cancelled=true}
- },[selected,type,persisted])
+ },[selected,type,persisted,evidenceAttempt])
  const client=clients.find(c=>c.client_id===selected)||clients[0]
  const subsFor=cid=>subscriptions.filter(s=>s.client_id===cid)
  const sub= subscriptions.find(s=>s.client_id===selected&&s.edition_type===type)
@@ -141,6 +143,17 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
    }catch(e){setError(e.message||String(e))}
    setBusy(false)
  }
+ async function refreshReviewerAndRetry(){
+   if(!supabase||sessionRefreshing)return
+   setSessionRefreshing(true);setAiStatus(null)
+   try{
+     const {data,error}=await supabase.auth.refreshSession()
+     if(error||!data?.session?.access_token)throw Error(error?.message||'Reviewer session could not be refreshed. Sign out and in again.')
+     setEvidenceAttempt(x=>x+1)
+     setNotice('Reviewer session refreshed. Rechecking evidence selection.')
+   }catch(e){setAiStatus({error:e.message||'Session refresh unavailable'})}
+   finally{setSessionRefreshing(false)}
+ }
  async function checkAIStatus(){
    if(!supabase||diagnosticBusy)return
    setDiagnosticBusy(true);setAiStatus(null)
@@ -149,7 +162,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
      if(sessionError||!session?.access_token)throw Error('Please sign in again.')
      const result=await fetch('/.netlify/functions/generate-wealth-story',{headers:{authorization:'Bearer '+session.access_token}})
      const payload=await result.json().catch(()=>({error:'Invalid status response'}))
-     if(!result.ok)throw Error(payload.error||'AI configuration check failed')
+     if(!result.ok)throw Error((payload.code?payload.code+' · ':'')+(payload.error||'AI configuration check failed'))
      setAiStatus(payload)
    }catch(e){setAiStatus({error:e.message||'Could not verify AI configuration'})}
    finally{setDiagnosticBusy(false)}
@@ -218,7 +231,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
  const pipeline = [['Candidates',editions.filter(e=>e.stage==='candidate').length],['Reviewed',editions.filter(e=>e.stage==='reviewed').length],['Approved',editions.filter(e=>e.stage==='approved').length],['Published in-app',editions.filter(e=>e.stage==='published_in_app').length]]
  const generatedCount=countUnique(editions)
  return <div className="wsStudio">
-   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.5.1 · Evidence connection fix</div></div>
+   <div className="wsStudioTop"><button type="button" className="wsTextButton" onClick={onBack}>← Customer Intelligence</button><div className="wsStudioVersion"><span className="statusDot"/> POC 2.5.2 · Auth diagnostics</div></div>
    <section className="wsStudioIntro"><div className="eyebrow">GEOJIT WEALTH STORY STUDIO</div><h1>One relationship.<br/><span>Multiple meaningful editions.</span></h1><p>Manage the fictional subscription lifecycle, editorial workflow, in-app availability and optional email eligibility for 20 synthetic customers.</p></section>
    <div className="wsNotice"><strong>Fictional data · No real messages</strong><span>POC 2.2 can create AI-assisted drafts for review when an OpenAI API key is configured. Subscription, approval and delivery states remain demonstration-only; no emails are sent.</span></div>
    {error&&<div role="alert" className="wsError">{error}</div>}
@@ -259,6 +272,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
        <p>Choose a client and edition, then prepare a grounded AI-assisted draft or use the existing synthetic template. AI drafts are never automatically approved or sent. A previously saved template may remain visible if generation fails.</p>
        <div className="wsFormRow"><label>Client<select value={selected} onChange={e=>{setSelected(e.target.value);setDraft(null)}}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{displayName(c)} · {c.client_id}</option>)}</select></label><label>Edition<select value={type} onChange={e=>{setType(e.target.value);setDraft(null)}}>{EDITIONS.map(e=><option key={e.id} value={e.id}>{e.label}</option>)}</select></label></div>
        <div className="wsAiDiagnostic"><button type="button" onClick={checkAIStatus} disabled={!persisted||diagnosticBusy}>{diagnosticBusy?'Checking server configuration…':'Check AI connection'}</button>
+       <button type="button" onClick={refreshReviewerAndRetry} disabled={!persisted||sessionRefreshing}>{sessionRefreshing?'Refreshing session…':'Refresh reviewer session & retry'}</button>
        {aiStatus&&<div role="status" className={aiStatus.error?'wsAiDiagnosticError':'wsAiDiagnosticStatus'}>{aiStatus.error?<span>{aiStatus.error}</span>:<><strong>{aiStatus.openai_key_configured?'Server key detected':'Server key not detected'}</strong><span>Reviewer authenticated · Model: {aiStatus.model} · Live model response not yet tested</span></>}</div>}</div>
        <div className="wsActions"><button type="button" className="wsPrimary" disabled={!persisted||busy||aiBusy} onClick={generateAIDraft}>{aiBusy?'Generating AI draft…':'Generate with AI →'}</button><button type="button" disabled={!persisted||busy||aiBusy} onClick={generateCandidate}>Use synthetic template</button><button type="button" onClick={()=>onOpenClient(selected,'story')}>Inspect source story</button></div>
        {visibleGeneration&&<div className={'wsGenerationResult '+(visibleGeneration.status==='failed'?'isFailed':visibleGeneration.status==='saved'?'isSaved':'isGenerating')} role="status" aria-live="polite">
@@ -271,7 +285,7 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient}){
        <section className="wsEvidencePanel" aria-label="Source evidence selected for AI">
          <div className="wsEvidenceHeader"><div><div className="eyebrow">EVIDENCE SELECTION · POC 2.5</div><h3>What can this story responsibly say?</h3></div><span>Source → Observation → Story</span></div>
          {visibleEvidence.status==='loading'&&<p className="wsSmall">Selecting attributable customer records…</p>}
-         {visibleEvidence.status==='error'&&<div className="wsEvidenceWarning"><b>Evidence preview unavailable</b><p>{visibleEvidence.message}</p><small>Diagnostic: {visibleEvidence.code||'EVIDENCE_LOAD_FAILED'}. Source records remain available in Customer Intelligence; the POC does not send emails.</small></div>}
+         {visibleEvidence.status==='error'&&<div className="wsEvidenceWarning"><b>Evidence preview unavailable</b><p>{visibleEvidence.message}</p><small>Diagnostic: {visibleEvidence.code||'EVIDENCE_LOAD_FAILED'}. Source records remain available in Customer Intelligence; the POC does not send emails.</small><button className="wsRetryEvidence" type="button" onClick={()=>setEvidenceAttempt(x=>x+1)} disabled={sessionRefreshing}>Retry evidence check</button></div>}
          {visibleEvidence.status==='ready'&&<>
            <div className="wsEvidenceStats"><span><b>{visibleEvidence.evidence?.source_record_count||0}</b> source records checked</span><span><b>{visibleEvidence.evidence?.selected?.length||0}</b> selected observations</span><span><b>Up to 3</b> source references per draft</span></div>
            {visibleEvidence.evidence?.selected?.length?<div className="wsEvidenceList">{visibleEvidence.evidence.selected.map(e=><div className="wsEvidenceItem" key={e.id}>
