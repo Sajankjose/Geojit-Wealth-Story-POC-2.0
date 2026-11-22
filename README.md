@@ -1,6 +1,28 @@
-# Geojit Wealth Story — Customer Intelligence & AI Draft Studio POC 2.2
+# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.3
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.3 — AI readiness and email experience QA
+
+The new release adds **three controls** to the existing Wealth Story Studio without altering the 20 fictional clients, subscriptions or Supabase table schemas:
+
+1. **Check AI connection** in Story Production: an authenticated `GET /.netlify/functions/generate-wealth-story` checks that a signed-in Supabase reviewer can reach the Netlify function and whether the server-side `OPENAI_API_KEY` environment variable is present. The key is never returned to the browser. **Key detected does NOT mean the OpenAI API accepted the key or a model generated successfully**—only `Generate with AI` can prove that.
+2. **Editorial checklist:** three explicit client-side attestations (source evidence, factual claims, intended purpose and service-first tone) are required before an edition can transition from `reviewed` to `approved` using the demo UI. The checklist is session-local and **is not a production compliance record**; actual approval enforcement requires database/server authorization and audit.
+3. **Email-preview experience** in Delivery & Engagement: a generic invitation to open the authenticated story. It deliberately **excludes personal figures, account-specific financial data, research details and live URLs**. No email is sent. The final production template must use an approved logo, entity-specific footer, unsubscribe mechanism, authenticated link and compliance/legal review.
+
+### Test instructions
+
+1. Verify latest Netlify deployment. Sign in as an existing Supabase POC reviewer.
+2. Go to **Wealth Story Studio → Story Production** and click **Check AI connection**. It should show whether the Netlify Function detects a key. If the function reports missing config, confirm `OPENAI_API_KEY` is marked secret with **Functions** scope in Netlify and redeploy.
+3. Run `supabase/migrations/20261122_003_ai_drafts.sql` if not already done. The small constraint update is required to save real AI-assisted drafts with `generation_method='openai_draft'`.
+4. Choose **C014 George → Monthly Wealth Journey → Generate with AI**. A successful response and saved candidate verify actual API connectivity and the Supabase persistence path; inspect the text against source records. If it fails, the UI displays a specific diagnostic error where possible.
+5. For a candidate, mark **Reviewed**, tick all editorial quality checks and then **Approve (demo)**. Check that approval stays disabled until all checks are complete.
+6. Open **Delivery & Engagement** for the chosen client and edition to inspect the **Email Preview**. This is a visual demonstration, not a sending tool.
+7. Check **C008 Vikram → Daily Trading Brief** and ensure it does not claim current/live research or prices.
+
+No new SQL migration is needed specifically for POC 2.3. Existing POC 2.2 migration remains required.
+
+**Remaining production gaps:** OpenAI API billing and model permission must be tested with a live request; AI-generated claims still require verification; reviewer approval/checklist controls must be server-enforced; email delivery needs a separately approved provider, proper identity/consent, unsubscribe, scheduling, template, footer and reporting infrastructure.
 
 ## POC 2.2 — AI-assisted Wealth Story drafting (November 2026)
 
