@@ -113,3 +113,10 @@
 @media(max-width:850px){.cxStoryLayout{grid-template-columns:1fr}.cxSideNote{max-width:unset}.cxChannelChooser{gap:8px}.cxChannelChooser button{min-height:155px}.cxContextGrid{grid-template-columns:1fr}.cxDiscoverGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.cxPreviewBar{padding:12px;gap:10px;margin:15px 0 21px}.cxIdentityBar{margin-bottom:24px}.cxIdentityBar>label{width:100%;min-width:0}.cxHero{padding:24px 20px;border-radius:14px}.cxHero h1{font-size:34px;letter-spacing:-1.2px}.cxHero>p{font-size:12px}.cxHeroStats{margin-top:20px}.cxChannelChooser{grid-template-columns:1fr;gap:7px}.cxChannelChooser button{min-height:0;gap:4px;padding:13px}.cxChannelChooser button>span{font-size:11px}.cxNav{padding:7px 9px 0}.cxNav button{font-size:11px;padding:10px 12px}.cxStoryLayout{padding:21px 18px;gap:22px}.cxStoryMain>h2{font-size:29px;letter-spacing:-.8px}.cxProse p{font-size:14px;line-height:1.83}.cxSideNote{padding:20px}.cxContextArea,.cxPreferences{padding:23px 18px}.cxContextArea>h2,.cxPreferences>h2{font-size:28px}.cxDiscoverGrid{grid-template-columns:1fr}.cxPreferenceRow{padding:15px}.cxPreferenceActions{width:100%}.cxPreferenceActions button{flex:1}.cxFooter{margin:18px 0}.cxStoryActions button{flex:1}}
 @media(prefers-reduced-motion:reduce){.cxExperience *{scroll-behavior:auto!important;transition:none!important}}
+
+/* Direct handoff from internal Story Studio to the fictional customer preview */
+.wsCustomerPreviewLaunch{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--ds-border-primary);border-radius:12px;background:var(--ds-surface-green);padding:15px 17px;margin:22px 0 16px}
+.wsCustomerPreviewLaunch strong{font-size:12px}
+.wsCustomerPreviewLaunch p{font-size:11px;line-height:1.5;color:var(--ds-text-secondary);margin:5px 0 0}
+.wsCustomerPreviewLaunch button{background:#fff;border:1px solid var(--ds-border-primary);padding:11px 14px;font-size:12px;font-weight:650;color:var(--ds-primary-action-pressed);border-radius:8px;min-height:44px}
+.wsCustomerPreviewLaunch button:hover{background:var(--ds-tab-active)}
