@@ -66,13 +66,13 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
   setClientId(id);onChooseClient?.(id);setView('story');setNotice('');setError('');setExpandedExplore(null)
  }
  function chooseEdition(id){setEditionType(id);setView('story');setNotice('');setError('');setExpandedExplore(null)}
- async function changePreference(next){
-  if(!client||working||!subscription||data.status!=='ready')return
+ async function changePreference(next,requestedEdition=editionType){
+  if(!client||working||data.status!=='ready')return
   setWorking(true);setError('');setNotice('')
   try{
-   const {error:upError}=await supabase.from('poc_edition_subscriptions').update({status:next,updated_at:new Date().toISOString()}).eq('client_id',clientId).eq('edition_type',editionType)
+   const {error:upError}=await supabase.from('poc_edition_subscriptions').update({status:next,updated_at:new Date().toISOString()}).eq('client_id',clientId).eq('edition_type',requestedEdition)
    if(upError)throw upError
-   setNotice('Fictional '+editionLabel(editionType)+' preference set to '+next+'. This is a reviewer-operated simulation, not real customer consent.')
+   setNotice('Fictional '+editionLabel(requestedEdition)+' preference set to '+next+'. This is a reviewer-operated simulation, not real customer consent.')
    setRefreshKey(x=>x+1)
   }catch(e){setError(e.message||'The fictional preference could not be updated.')}
   finally{setWorking(false)}
@@ -151,7 +151,14 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
        <button type="button" className="cxTextLink" onClick={()=>setView('story')}>← Return to your story</button>
      </section>:
      <section className="cxPreferences"><div className="cxEyebrow">COMMUNICATION PREFERENCES</div><h2>Your story, on your terms.</h2><p>Each edition has a separate optional email preference. Turning off an email edition does not remove access to a published in-app story. In this POC, these controls update fictional data under the reviewer's demonstration account—not actual consent.</p>
-       <div className="cxPreferenceList">{CHANNELS.map(ch=>{const row=data.subscriptions.find(x=>x.edition_type===ch.id);return <div className="cxPreferenceRow" key={ch.id}><div><small>{ch.rhythm}</small><strong>{ch.title}</strong><p>{ch.description}</p></div><div><span className={'cxPrefStatus '+(row?.status==='subscribed'?'on':'')}>{row?.status||'Not configured'}</span><button type="button" disabled={!row||working||row.status==='subscribed'} onClick={()=>{setEditionType(ch.id);setWorking(true);setError('');supabase.from('poc_edition_subscriptions').update({status:'subscribed',updated_at:new Date().toISOString()}).eq('client_id',clientId).eq('edition_type',ch.id).then(({error:upError})=>{setWorking(false);if(upError)setError(upError.message);else{setNotice('Fictional '+ch.title+' subscribed. Not real consent.');setRefreshKey(x=>x+1)}})}}>Subscribe</button><button type="button" disabled={!row||working||row.status==='paused'} onClick={()=>{setEditionType(ch.id);setWorking(true);setError('');supabase.from('poc_edition_subscriptions').update({status:'paused',updated_at:new Date().toISOString()}).eq('client_id',clientId).eq('edition_type',ch.id).then(({error:upError})=>{setWorking(false);if(upError)setError(upError.message);else{setNotice('Fictional '+ch.title+' paused.');setRefreshKey(x=>x+1)}})}}>Pause</button><button type="button" disabled={!row||working||row.status==='unsubscribed'} onClick={()=>{setEditionType(ch.id);setWorking(true);setError('');supabase.from('poc_edition_subscriptions').update({status:'unsubscribed',updated_at:new Date().toISOString()}).eq('client_id',clientId).eq('edition_type',ch.id).then(({error:upError})=>{setWorking(false);if(upError)setError(upError.message);else{setNotice('Fictional '+ch.title+' unsubscribed.');setRefreshKey(x=>x+1)}})}}>Unsubscribe</button></div></div>})}</div>
+       <div className="cxPreferenceList">{CHANNELS.map(ch=>{const row=data.subscriptions.find(x=>x.edition_type===ch.id);return <div className="cxPreferenceRow" key={ch.id}>
+         <div><small>{ch.rhythm}</small><strong>{ch.title}</strong><p>{ch.description}</p></div>
+         <div className="cxPreferenceActions"><span className={'cxPrefStatus '+(row?.status==='subscribed'?'on':'')}>{row?.status||'Not configured'}</span>
+           <button type="button" disabled={!row||working||row.status==='subscribed'} onClick={()=>changePreference('subscribed',ch.id)}>Subscribe</button>
+           <button type="button" disabled={!row||working||row.status==='paused'} onClick={()=>changePreference('paused',ch.id)}>Pause</button>
+           <button type="button" disabled={!row||working||row.status==='unsubscribed'} onClick={()=>changePreference('unsubscribed',ch.id)}>Unsubscribe</button>
+         </div>
+       </div>})}</div>
        {editionType==='daily_trading'&&subscription&&<label className="cxWindow">Daily Trading Brief timing (fictional)<select value={subscription.delivery_window||'pre_market'} onChange={e=>changeWindow(e.target.value)} disabled={working}><option value="pre_market">Before the market opens</option><option value="after_market">After the market closes</option></select></label>}
        <div className="cxConsentNote"><b>A note about essential communications</b><p>Account, transaction, security and regulatory messages are managed separately from optional Wealth Story editions.</p></div>
      </section>}
