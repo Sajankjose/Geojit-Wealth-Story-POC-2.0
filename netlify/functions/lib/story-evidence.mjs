@@ -24,13 +24,13 @@ const LABELS = {
 const FIELDS={
  service_cases:['status','case_type','service_type','suppress_optional_promotions'],
  consent_preferences:['marketing_permission','email_opt_in','subscription_status','preferred_channel'],
- goals_preferences:['goal_type','goal','goal_name','preference_type'],
- product_subscriptions:['product','product_type','product_category','subscription_status','status'],
- transactions:['transaction_type','product_type','product_category','status'],
- human_touchpoints:['touchpoint_type','interaction_type','channel','topic'],
- engagement_tool_events:['tool_name','tool_type','event_type','action'],
- digital_platform_events:['platform','event_type','action','channel'],
- communication_events:['channel','event_type','status','communication_type'],
+ goals_preferences:['goal_type','goal','goal_name','goal_label','preference_type','preference_name'],
+ product_subscriptions:['product','product_name','product_label','product_type','product_category','asset_class','subscription_type','subscription_status','status'],
+ transactions:['transaction_type','transaction_category','activity_type','product','product_name','product_type','product_category','asset_class','status'],
+ human_touchpoints:['touchpoint_type','touchpoint','interaction_type','interaction_name','channel','topic','meeting_type'],
+ engagement_tool_events:['tool_name','tool_type','event_type','event_name','action','activity_type'],
+ digital_platform_events:['platform','platform_name','event_type','event_name','action','activity_type','channel'],
+ communication_events:['channel','event_type','event_name','status','communication_type'],
  story_contexts:['headline'],
  customer_states:['primary_priority','story_type','goal_type','marketing_permission']
 };
