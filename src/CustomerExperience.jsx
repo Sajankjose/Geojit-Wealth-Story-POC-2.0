@@ -1,5 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import {supabase} from './lib/supabase'
+import WealthIntelligence from './WealthIntelligence.jsx'
 
 const CHANNELS=[
  {id:'daily_trading',title:'Daily Trading Brief',rhythm:'Trading days',description:'Your trading context, only when current and approved sources are available.'},
@@ -123,15 +124,17 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
      {CHANNELS.map(ch=><button type="button" key={ch.id} className={editionType===ch.id?'selected':''} aria-pressed={editionType===ch.id} onClick={()=>chooseEdition(ch.id)}><small>{ch.rhythm}</small><strong>{ch.title}</strong><span>{ch.description}</span></button>)}
    </div>
    <div className="cxBody">
-    <nav className="cxNav" aria-label="Customer experience sections">{[['story','Your story'],['context','What shaped it'],['preferences','Your preferences']].map(([id,label])=><button type="button" key={id} className={view===id?'selected':''} aria-current={view===id?'page':undefined} onClick={()=>setView(id)}>{label}</button>)}</nav>
+    <nav className="cxNav" aria-label="Customer experience sections">{[['story','Your story'],['intelligence','Your financial picture'],['context','About this story'],['preferences','Your preferences']].map(([id,label])=><button type="button" key={id} className={view===id?'selected':''} aria-current={view===id?'page':undefined} onClick={()=>setView(id)}>{label}</button>)}</nav>
     {data.status==='loading'?<div className="cxEmpty"><h2>Bringing your story together…</h2><p>Retrieving approved fictional editions and subscription preferences.</p></div>:
      data.status==='error'?<div className="cxEmpty"><h2>We couldn't load this preview.</h2><p>{data.message}</p><button className="cxMainButton" type="button" onClick={()=>setRefreshKey(x=>x+1)}>Try again</button></div>:
+     view==='intelligence'?<WealthIntelligence clientId={clientId} editionType={editionType} onShowStory={()=>setView('story')}/>:
      view==='story'?<div className="cxStoryLayout">
       <article className="cxStoryMain">
        {edition?<><div className="cxStoryMeta"><span>{editionLabel(editionType).toUpperCase()}</span><span>{date(edition.created_at)}</span></div>
          <h2>{edition.title}</h2>
          <div className="cxChapterIntro"><span className="cxEyebrow">YOUR CHAPTER</span><p>{editorial.chapter}</p></div>
          {financialFigures.length>0&&<section className="cxFinancialPicture" aria-label="Your financial picture"><div className="cxEyebrow">YOUR FINANCIAL PICTURE</div><h3>Numbers that add perspective</h3><div className="cxFigureGrid">{financialFigures.map(m=><div key={m.key} className="cxFigureCard"><span>{m.label}</span><b>{m.display}</b><small>{m.scope} · As of {m.as_of}</small></div>)}</div><p className="cxFigureNote">Only figures explicitly verified and dated in the fictional data appear here. Values are not estimates from AI, and may not include assets elsewhere.</p></section>}
+         <div className="cxIntelligenceInvite"><div><span className="cxEyebrow">YOUR FINANCIAL PICTURE</span><strong>See the week in context—and your wider journey.</strong><p>Explore a fictional market comparison, cash-flow-adjusted portfolio movement and a longer-term trend, with the assumptions clearly explained.</p></div><button type="button" onClick={()=>setView('intelligence')}>Explore my financial picture →</button></div>
          <section className="cxPerspective"><div className="cxEyebrow">A PERSPECTIVE WORTH CONSIDERING</div><h3>A little more perspective</h3><p>{editorial.perspective}</p></section>
          <section className="cxNextStep"><div className="cxEyebrow">YOUR NEXT STEP</div><h3>Explore at your pace</h3><p>{editorial.next_step}</p><button type="button" className="cxMainButton" onClick={()=>setView('context')}>Explore this perspective →</button></section>
          {(serviceFirst||withheld)&&<div className="cxServiceNote">{serviceFirst?'An important service matter deserves attention first.':'Optional email updates are currently paused under your preview preferences.'} You can still access available in-app information.</div>}
