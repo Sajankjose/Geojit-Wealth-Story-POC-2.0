@@ -52,7 +52,11 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
   fetchData();return()=>{active=false}
  },[clientId,refreshKey])
  const published=useMemo(()=>data.editions.filter(e=>e.edition_type===editionType),[data.editions,editionType])
- const edition=published[0]
+ // Existing pre-2.7.1 stories remain available in the internal Studio for review.
+ // Do not expose an earlier, possibly intrusive draft to a customer preview.
+ const edition=published.find(e=>e.evidence_trace?.editorial?.version==='story_framework_v2_7_1')
+ const hasLegacyPublished=published.length>0&&!edition
+ const editorial=edition?.evidence_trace?.editorial
  const subscription=data.subscriptions.find(s=>s.edition_type===editionType)
  const cited=edition?.evidence_trace?.version==='evidence_v2_5'?(edition.evidence_trace.selected||[]).filter(x=>edition.evidence_trace.used_ids?.includes(x.id)&&x.evidence_kind!=='prior_editorial_context'):[]
  const allContext=edition?.evidence_trace?.version==='evidence_v2_5'?(edition.evidence_trace.selected||[]).filter(x=>x.evidence_kind!=='prior_editorial_context'):[]
@@ -60,6 +64,7 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
  const intro=edition?.body?.split(/\n\s*\n/).map(x=>x.trim()).filter(Boolean)||[]
  const serviceFirst=!!edition?.evidence_trace?.service_first
  const withheld=!!edition?.evidence_trace?.optional_outbound_withheld
+ const financialFigures=editorial?.verified_figures||[]
  const subscribedCount=data.subscriptions.filter(s=>s.status==='subscribed').length
  const availableCount=data.editions.length
  function chooseCustomer(id){
@@ -125,27 +130,30 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
       <article className="cxStoryMain">
        {edition?<><div className="cxStoryMeta"><span>{editionLabel(editionType).toUpperCase()}</span><span>{date(edition.created_at)}</span></div>
          <h2>{edition.title}</h2>
-         <div className="cxProse">{intro.map((para,i)=><p key={i}>{para}</p>)}</div>
-         {cited.length>0&&<div className="cxProofBanner"><span>◈</span><div><b>Grounded in your relationship context</b><p>This fictional edition draws on {cited.length} cited source {cited.length===1?'record':'records'}. You can see the supporting context without exposing raw account data.</p><button type="button" onClick={()=>setView('context')}>See what shaped this story →</button></div></div>}
-         {(serviceFirst||withheld)&&<div className="cxServiceNote">{serviceFirst?'A service issue takes priority over optional promotional communication.':'Optional email communication is withheld under the fictional preferences for this customer.'} You can still explore approved in-app context.</div>}
-         <div className="cxStoryActions"><button type="button" className="cxMainButton" onClick={()=>setView('context')}>Explore the context →</button>
+         <div className="cxChapterIntro"><span className="cxEyebrow">YOUR CHAPTER</span><p>{editorial.chapter}</p></div>
+         {financialFigures.length>0&&<section className="cxFinancialPicture" aria-label="Your financial picture"><div className="cxEyebrow">YOUR FINANCIAL PICTURE</div><h3>Numbers that add perspective</h3><div className="cxFigureGrid">{financialFigures.map(m=><div key={m.key} className="cxFigureCard"><span>{m.label}</span><b>{m.display}</b><small>{m.scope} · As of {m.as_of}</small></div>)}</div><p className="cxFigureNote">Only figures explicitly verified and dated in the fictional data appear here. Values are not estimates from AI, and may not include assets elsewhere.</p></section>}
+         <section className="cxPerspective"><div className="cxEyebrow">A PERSPECTIVE WORTH CONSIDERING</div><h3>A little more perspective</h3><p>{editorial.perspective}</p></section>
+         <section className="cxNextStep"><div className="cxEyebrow">YOUR NEXT STEP</div><h3>Explore at your pace</h3><p>{editorial.next_step}</p><button type="button" className="cxMainButton" onClick={()=>setView('context')}>Explore this perspective →</button></section>
+         {(serviceFirst||withheld)&&<div className="cxServiceNote">{serviceFirst?'An important service matter deserves attention first.':'Optional email updates are currently paused under your preview preferences.'} You can still access available in-app information.</div>}
+         <div className="cxStoryActions"><button type="button" onClick={()=>setView('context')}>About this update</button>
           <button type="button" disabled={!!readEvent||working} onClick={markRead}>{readEvent?'Marked as read · demo':'Mark as read · demo'}</button></div>
-        </>:<div className="cxEmpty"><span className="cxEmptyIcon">◇</span><h2>No published edition here yet.</h2>
-         <p>This story isn't available in the customer preview until a reviewer has approved and published an edition in Wealth Story Studio. Drafts and review-only content stay private.</p>
-         <button type="button" className="cxMainButton" onClick={onOpenStudio}>Open Story Studio →</button></div>}
+        </>:<div className="cxEmpty"><span className="cxEmptyIcon">◇</span><h2>{hasLegacyPublished?'A refreshed chapter is being prepared.':'Nothing new for this chapter yet.'}</h2>
+         <p>{hasLegacyPublished?'Earlier editions need to be reviewed against the updated helpful, customer-first editorial standard. The older content stays in the internal reviewer Studio and is not displayed here.':'We only publish a chapter when there is something genuinely useful and approved to share. There is no pressure to create an update just to fill a schedule.'}</p>
+         <button type="button" className="cxMainButton" onClick={onOpenStudio}>Open Story Studio · reviewer →</button></div>}
       </article>
-      <aside className="cxSideNote"><span className="cxEyebrow">YOUR STORY, YOUR PACE</span><h3>What this experience is for</h3><p>To help you see the relationship between the activity recorded, the goals you've chosen to share and the information that may deserve a closer look.</p><div className="cxSideDivider"/><strong>One customer. Different rhythms.</strong><p>Trading, investing and longer-term wealth journeys may call for different updates. You can control each optional edition separately.</p><button type="button" onClick={()=>setView('preferences')}>Manage your editions →</button></aside>
+      <aside className="cxSideNote"><span className="cxEyebrow">YOUR STORY, YOUR PACE</span><h3>What this experience is for</h3><p>To bring meaningful financial information together and offer a thoughtful perspective when you need one.</p><div className="cxSideDivider"/><strong>One customer. Different rhythms.</strong><p>Trading, investing and longer-term wealth journeys may call for different updates. You can control each optional edition separately.</p><button type="button" onClick={()=>setView('preferences')}>Manage your editions →</button></aside>
      </div>:
-     view==='context'?<section className="cxContextArea"><div className="cxEyebrow">EXPLAINABLE PERSONALISATION</div><h2>What shaped this chapter?</h2><p>We show the recorded context behind an edition—and the limits of what it tells us. A transaction record, for example, does not tell us your financial goals or risk preference.</p>
-       {edition?<><div className="cxContextStats"><span><b>{allContext.length}</b> observations available to this edition</span><span><b>{cited.length}</b> specifically cited</span></div>
-         {cited.length?<div className="cxContextGrid">{cited.map(item=><ContextCard key={item.id} item={item}/>)}</div>:<div className="cxContextEmpty">No independently cited source observations were retained for this published edition. The narrative should be reviewed with extra caution.</div>}
-         <div className="cxDiscover"><h3>Explore a little further</h3><p>Choose what you'd like to understand. This is a guided preview, not a live account service.</p>
+     view==='context'?<section className="cxContextArea"><div className="cxEyebrow">ABOUT THIS UPDATE</div><h2>A clearer view, with your privacy in mind.</h2>
+       <p>This chapter draws on relevant information available from your Geojit relationship and any preferences you've chosen to share. It may not include investments held elsewhere. Your choices remain yours.</p>
+       {edition?<><div className="cxAboutPanel"><strong>How this chapter was prepared</strong><p>We chose a useful financial perspective supported by available account context. You won't see a list of every action you took or every interaction with Geojit. Specific figures are shown only when verified and dated.</p><p>This is a fictional preview, not personal investment advice or a complete financial statement.</p>
+         <button type="button" onClick={()=>setView('preferences')}>Manage optional updates →</button></div>
+       <div className="cxDiscover"><h3>Explore a little further</h3><p>Choose what you'd like to understand. This is a guided preview, not a live account service.</p>
           <div className="cxDiscoverGrid">{[
-           ['activity','Your recorded activity','Understand what a transaction record does—and doesn’t—show.'],
-           ['goals','Your goals and preferences','Learn why stated goals are more useful than assumptions.'],
-           ['human','Your Geojit conversations','See how branch or RM interactions can support continuity.']
+           ['activity','Understand investment activity','See how different investment types can contribute to your wider picture.'],
+           ['goals','Reflect on your priorities','Explore how to review your own stated priorities over time.'],
+           ['human','Guidance when you want it','Understand how a conversation with Geojit may help clarify a question.']
           ].map(([id,title,description])=><button type="button" key={id} className={expandedExplore===id?'active':''} onClick={()=>setExpandedExplore(expandedExplore===id?null:id)}><b>{title}</b><span>{description}</span><em>{expandedExplore===id?'Close −':'Explore →'}</em></button>)}</div>
-          {expandedExplore&&<div className="cxExploreDetail">{expandedExplore==='activity'?'Activity records can help you review what happened on your Geojit account, but they are not enough to establish investment performance or suitability.':expandedExplore==='goals'?'Only goals that you have explicitly declared should guide a personal financial narrative. Missing goals remain unknown.':'A prior branch or RM conversation can provide context, but recorded topics do not replace your current preferences or consent.'}</div>}
+          {expandedExplore&&<div className="cxExploreDetail">{expandedExplore==='activity'?'Equity purchases and mutual fund contributions are different types of activity. Consider how each relates to your financial plans. Your current value or returns need separately verified figures.':expandedExplore==='goals'?'Your priorities are yours to define. If you have not chosen to share a goal, we will not assume one.':'If you would like a clearer view, you can request a conversation with Geojit through an approved service channel. No request is sent from this demo.'}</div>}
          </div>
        </>:<div className="cxContextEmpty">There is no published story to explain yet. Marketing reviewers can prepare and publish a demo edition in the Studio.</div>}
        <button type="button" className="cxTextLink" onClick={()=>setView('story')}>← Return to your story</button>
