@@ -1,6 +1,53 @@
-# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.4
+# Geojit Wealth Story — Customer Intelligence & Operating Studio POC 2.5
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 2.5 — evidence-led narrative intelligence (November 2026)
+
+The first successful AI draft established end-to-end generation, but it mostly repeated product relationships. POC 2.5 upgrades the **server-side Story Context Package**, requires source references and gives Marketing a transparent review surface.
+
+### New functionality
+
+- **Source curation:** the authenticated Netlify function loads up to 500 synthetic records for the chosen client across service, consent, declared goals, product subscriptions, transactions, physical/RM touchpoints, digital-platform events, engagement-tool events, communications, previous editorial story context and derived states.
+- **Evidence selection:** a pure function in `netlify/functions/lib/story-evidence.mjs` chooses at most **nine** source observations (maximum two per domain), using priority and date/freshness flags. It never presents a product subscription as proof of need, objective, suitability or motivation.
+- **Preview before generation:** the Story Production screen displays selected source observations with record IDs, source labels, dates (when recorded) and cautions **before** invoking OpenAI.
+- **Cited story generation:** OpenAI receives only the filtered synthetic observations, not the unrestricted raw customer timeline. The structured response must include `evidence_ids`; any invented IDs are rejected.
+- **Persistent review trace:** each new AI story stores an `evidence_trace` JSONB snapshot with selected observations, their record IDs, which ones the AI cited, source counts and documented limitations. The story review panel distinguishes *cited by AI* from *context available but not cited*.
+- **Content safeguards:** no made-up financial figures, returns, prices or research calls; no live market claims or suitability inferences. Human verification and POC approval remain separate, with real email delivery disabled.
+- **Backward compatibility:** existing synthetic templates and older AI drafts stay available. Older stories without a trace are labelled accordingly.
+
+### Required Supabase SQL update (small)
+
+Run the complete file `supabase/migrations/20261122_004_evidence_trace.sql` in **Supabase → SQL Editor** for the **same** POC project containing the 20 synthetic clients. This adds only the `evidence_trace jsonb` column to `public.poc_story_editions`. It does not replace any clients, editions, subscription values or account login.
+
+To verify:
+```sql
+select column_name, data_type
+from information_schema.columns
+where table_schema='public'
+  and table_name='poc_story_editions'
+  and column_name='evidence_trace';
+```
+
+Expected: one row, `evidence_trace | jsonb`.
+
+### Management demonstration
+
+1. Deploy latest GitHub changes to Netlify, sign in.
+2. Open **Wealth Story Studio → Story Production**, select **Thomas (C012) / Weekly Investment Story**.
+3. Check the **Evidence Selection** section. It shows the data actually eligible for AI use and where it came from. Source dates may be absent, in which case the UI says so.
+4. Click **Generate with AI**. A successful new candidate is saved with `evidence_trace` and a visible AI-generated label.
+5. Expand **Source records → selected insights → generated narrative** below the new story. Compare cited records and narrative claims.
+6. Test **Dev (C004)**, **Isha (C020)** and a **Daily Trading Brief**. Service/opt-out priority and live-market limitations must remain visible.
+7. Use the editorial review checklist before any demo approval; no actual email is sent.
+
+### Limits and next validation
+
+- All data are fictional. The evidence mapping is a safe, conservative prototype, **not an independently verified source-of-truth graph**; source schema mapping will require refinement against real data dictionaries and approved contracts.
+- A cited source ID proves a supplied record existed, not that every natural-language claim is supported. The LLM still requires **human claim-level review** and future automatic entailment checks.
+- The POC will refuse generation if no attributable observations are selected.
+- No live market/research feed, automatic current trading briefing, real account segmentation, customer opt-in, production permissions, email delivery or ROI measurement is implemented here.
+- Existing broad demo reviewer policies are **not** suitable for real Geojit customer information.
 
 ## POC 2.4 — AI generation troubleshooting and clearer UX
 
