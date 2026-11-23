@@ -51,6 +51,10 @@
 .cxProofBanner p{font-size:12px;color:var(--ds-text-secondary);line-height:1.7;margin:5px 0}
 .cxProofBanner button{font-size:12px;color:var(--ds-primary-action-pressed);font-weight:700;border:0;background:transparent;padding:9px 0}
 .cxStoryActions{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:24px}
+.cxPilotInvite{background:#f7fbf8;border:1px solid var(--ds-border-primary);border-left:4px solid var(--ds-primary-action);border-radius:12px;padding:22px;margin:23px 0}
+.cxPilotInvite h3{font-size:1.35rem;margin:9px 0}
+.cxPilotInvite p{font-size:.9rem;line-height:1.65;color:var(--ds-text-secondary)}
+.cxPilotInvite button{border:1px solid var(--ds-primary-action);color:#fff;background:var(--ds-primary-action);border-radius:8px;padding:11px 15px;min-height:44px;font-size:.9rem;font-weight:700;cursor:pointer}
 .cxStoryActions button,.cxEmpty button{border:1px solid var(--ds-border-primary);border-radius:9px;background:#fff;min-height:45px;padding:12px 17px;color:var(--ds-text-primary);font-size:12px;font-weight:650}
 .cxStoryActions button:disabled{opacity:.55;cursor:not-allowed}
 .cxMainButton{background:var(--ds-primary-action)!important;color:#fff!important;border-color:var(--ds-primary-action)!important}

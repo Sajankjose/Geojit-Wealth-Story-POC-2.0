@@ -2,6 +2,17 @@
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
 
+## Connected newsletter-to-plan pilot
+
+In **Customer Experience → Guided pilot**, reviewers can walk through a separate fictional weekly insight, a short educational article, a three-scene captioned video storyboard, scripted contextual assistant answers, and a provisional education-goal picture. The pilot is available even when no edition has been published in Supabase; it is deliberately **not** calculated from whichever fictional client is selected in the customer preview.
+
+- The sample value bridge separates ₹3,000 of SIP cash flow from approximately ₹1,200 of remaining movement; it does not label either as investment return or compare the mixed portfolio with an equity benchmark.
+- Learning content is optional and skippable. The storyboard is not a produced video; the assistant is not a connected AI service. A product-selection question stops at the approved advisory or distribution handoff.
+- The plan does not show a comparison until the SIP is explicitly assigned, a target is entered, and outside savings are either entered or consciously excluded. The 0% illustration is arithmetic, not a return forecast or product prescription.
+- **Save this view · demo** stores only fictional inputs in the browser tab's session storage. It creates no Supabase record, lead, email, adviser request or real customer plan.
+
+Suggested walkthrough: Weekly insight → Read or Watch → Ask “Does my SIP support my education goal?” → What I used → Goal picture. First show the unknown state, then confirm the SIP and target, and deliberately choose how to treat outside savings. Finally ask “Which fund should I buy?” to demonstrate the boundary.
+
 ## POC 2.7.3 — Adaptive Wealth Creation Map and Genuine Guidance Gate
 
 **Foundation:** Proactive in understanding. Genuine in guidance. Respectful of every decision.
