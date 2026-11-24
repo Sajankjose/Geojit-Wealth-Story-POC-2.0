@@ -1,6 +1,54 @@
-# Geojit Wealth Story — Customer Intelligence, Operating Studio & Customer Experience POC 2.7.3
+# Geojit Wealth Companion — Self-Directed Wealth Journey POC 3.0
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.0 — Geojit Wealth Companion (self-directed service concept)
+
+**Product premise:** A customer-first financial understanding and educational roadmap that helps users explore questions relevant to their wealth journey, with Wealth Story as an ongoing editorial extension. The product is **not a personalised investment advisory service or an active paid subscription**. All accounts and figures remain fictional.
+
+### What is now built
+
+**Customer entry point:** the app's **My Wealth Companion** reviewer navigation now opens an upgraded customer experience. The default tab is **Wealth Companion**; the existing Wealth Story, Financial Picture, Wealth Map, Guided Pilot and Preferences are preserved.
+
+**Guided discovery and enrolment:** customers choose one or several topics—understand investments, explore goals, financial protection, financial flexibility or wider review. They can set a preferred review rhythm and express a *demonstration-only* interest in future optional check-ins. No real consent is obtained and no messages are scheduled or sent.
+
+**Live educational roadmap:** `src/lib/wealthCompanion.js` constructs a short roadmap **only from explicitly selected topics**, never missing Geojit products, inferred investment needs or financial-health scores. Each action has an explanation and an optional path to a working part of the POC. The customer can mark a step explored, defer it, reopen it, or choose another focus. Progress reflects *explored educational tasks*, never portfolio performance or the probability of reaching financial goals.
+
+**A genuinely proactive but controlled experience:** `shouldOfferProactiveCheckIn` refuses to trigger outbound communication without customer-selected cadence, an affirmative check-in preference, separately verified channel permission, a genuinely verified material event and no service-priority block. The current POC has **neither live events nor permissioned outbound delivery**, so its home screen correctly says there is no new action required merely to generate engagement.
+
+**Subscription concepts:** the service-introduction screen includes **Essential** and **Journey Plus** as explicitly unpriced/unauthorised concepts. A reviewer can select a preferred service concept; this does not take payment, activate an entitlement, create an advisory engagement or move any customer into a chargeable tier. Included features are exploratory digital utilities and educational functionality, not personalised buy/sell/hold calls.
+
+**Studio for management:** **Wealth Story Studio → Wealth Companion POC** outlines the conceptual tiers and a feature-by-feature boundary matrix for utility, education, distribution and advice. It gives stakeholders a review checklist for fees, conflicts, legal entity, suitability, product-specific permissions, data sources, consent and authorised billing.
+
+**Local reviewer progress:** in this MVP the demo configuration and selected roadmap actions are kept in the browser's `sessionStorage`, namespaced to the fictional client ID and scoped to the current session. This deliberately avoids creating new account-wide entitlements, real consent, charged subscriptions or sales records. Nothing in this POC is an actual subscription. There is **no SQL migration or new Netlify environment variable required**.
+
+### Show the value to management
+
+1. Open the Netlify POC, sign in as the existing synthetic reviewer and select **My Wealth Companion**.
+2. Choose fictional **Thomas (C012)**. The upgraded welcome screen invites him to **Build my learning roadmap**, not buy a product or pay for advice.
+3. Choose **Understand my investments** and **Explore a financial goal**. Select *Monthly perspective* if desired, leave optional check-in interest disabled, then create the roadmap.
+4. On the Companion home, see the first **current focus** with the evidence logic clearly explained as **customer-selected interest**, not an AI diagnosis or sales opportunity.
+5. Open **View my roadmap**, choose **Explore** to move into Financial Picture or Wealth Map; return and select **Mark explored** or **Maybe later**. This does not change financial goals, investment performance or holdings.
+6. Read an already-approved **Wealth Story** to demonstrate the service's continuing communication layer.
+7. Select **Explore service options** and switch between Essential and Journey Plus, observing that both are **non-purchasable, without approved prices**.
+8. Open **Wealth Story Studio → Wealth Companion POC** for the business model, advisory/distribution separation and pre-pilot approval matrix.
+9. Refresh the page in the same browser tab/session to see local progress retained. Closing the browser session may erase it, by design.
+
+### Operational and regulatory scope
+
+**Within the POC:** fictional customer-specific factual views, educational explanations, user-entered goal scenarios, an explicitly topic-selected roadmap, optional reading, a genuine-guidance gate and subscription *concept* UI.
+
+**Outside the POC:** personalised financial planning conclusions, suitable product recommendations, advice on buy/sell/hold or switching investments, real investment advice fees, live entitlement/payment services, legal consent or marketing opt-in, automated CRM/lead routing, real client records, open banking aggregation or real autonomous outreach.
+
+Calling the service 'guidance' does not itself determine regulatory classification. Compliance and Legal must evaluate the actual feature-level outputs, fee design, entity structure and advisory/distribution relationships before customer availability or monetisation.
+
+### Next product-validation tasks
+
+- Test the experience with fictional newcomer, mixed investor and retirement-focused personas, then with approved recruited real users in a research environment **without using real investment data in the POC**.
+- Validate the roadmap's usefulness against customer benefit, not product-click volume.
+- Run an opt-in qualitative study of willingness to pay for clearly separated digital utilities; pricing and proposed entitlements are not approved.
+- Obtain an explicit compliance classification for each informational, educational, planning, communication and distribution feature.
+- Only after approval: design durable customer-scoped plan storage, secure authentication, verified event ingestion, actual permission management, authorised billing and adoption metrics.
 
 ## Connected newsletter-to-plan pilot
 
