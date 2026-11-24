@@ -1,6 +1,32 @@
-# Geojit Wealth Companion — New Customer Lifecycle & Guided Wealth Journey POC 3.2
+# Geojit Wealth Companion — Unified Customer Experience & Value Lab POC 3.3
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.3 — Unified Companion Experience Engine & Continuing-Value Lab
+
+**Goal:** Bring brand-new and established customer journeys under one common educational roadmap selection system, and demonstrate how ongoing value could be evaluated without confusing engagement with financial benefit.
+
+### What is implemented
+
+1. **One shared rules module:** `src/lib/companionExperience.js` adapts the existing customer-selected `createLearningRoadmap` engine for both the fictional new-customer lifecycle and the established investor. The canonical educational step IDs, reasons and explicit-interest logic are shared. Missing investments are never a diagnosis, goal or product recommendation.
+2. **New-client integration:** `Customer Experience → New Client Journey` now renders educational steps through the shared engine. A new account still starts with no holdings, performance or goal. When a customer explicitly marks a learning step explored, the shared next-action selector moves on without treating the step as financial progress. Prewritten stage-specific Wealth Story explanations remain separate from production AI publication.
+3. **Existing-client integration:** `Customer Experience → Wealth Companion` now consumes the shared engine for roadmap selection while preserving the previous One App onboarding and functional destination links (financial picture, Wealth Map and Wealth Story). This creates one coherent underlying decision architecture across personas, without merging their fictional data.
+4. **Value & Lifecycle Lab in Marketing Studio:** under `Wealth Story Studio → Value & lifecycle lab`, a reviewer can switch between the new-client scenario and an existing-customer profile. The lab displays its stage, known/unknown portfolio context, common educational actions and why they were selected.
+5. **Continuing value demonstration:** reviewers can manually simulate educational learning, clarified questions, goal-scenario exploration, revisits and fictional story reads. `valueSignals` counts these narrowly scoped session events separately. It **does not** claim to measure customer comprehension, net worth, goal progress, retention, permission to contact, real product sales or subscription ROI.
+6. **Regression safeguards:** `tests/companion-experience.test.mjs` checks shared roadmap behaviour, missing-goal rules, zero-data handling, investor context, no product recommendations and separation between simulated engagement and real customer outcomes.
+
+### Management walkthrough
+
+- Open `https://wealthstory.netlify.app/`, sign in, then go to **Wealth Story Studio → Value & lifecycle lab**.
+- Select **New client · No investment history**. Walk from **Just joined** through the four fictional milestones and observe how the same roadmap engine presents useful educational steps without pretending an investment portfolio exists.
+- Switch to **Existing client · In-scope investments**. The engine uses the selected financial interests and permits a limited financial picture, but still doesn't infer a missing product or a personalised recommended allocation.
+- In **Value evaluation**, simulate a learning step or clarified question. Explain that these are test signals; survey-based usefulness and true behaviour change must be measured in a controlled pilot.
+- Open **Customer Experience → New Client Journey** to demonstrate Arun's interactive zero-investment lifecycle, then switch to **Wealth Companion** for existing clients and the complete One App enrolment.
+- Discuss the practical next milestone: securely persist customer-consented learning preferences, reconcile real financial sources, conduct a compliance-approved user study, and test an approved value-added service without assuming that all clicks are valuable.
+
+### Important scope boundaries
+
+The lab is fictional, local browser-session based and explicitly manually triggered. It does not send notifications, activate billing, create advice, run product recommendations, route opportunities to CRM, or access a real customer. Real source contracts and client-scoped entitlements have **not** been implemented. No Supabase migration or new Netlify environment variables are required.
 
 ## POC 3.2 — Brand-new client lifecycle: value before investments
 
