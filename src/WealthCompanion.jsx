@@ -1,4 +1,5 @@
 import React,{useEffect,useMemo,useState} from 'react'
+import './wealth-companion.css'
 import {
  FOCUS_AREAS,REVIEW_RHYTHMS,PLAN_EXPERIENCES,
  blankCompanion,sanitiseCompanion,createLearningRoadmap,
