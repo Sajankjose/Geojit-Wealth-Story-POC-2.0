@@ -1,0 +1,103 @@
+/* Wealth Companion POC 3.0 — informational utility / educational roadmap.
+   Align with the Geojit semantic design tokens; no actual subscription or advice. */
+.wcCompanion{color:var(--ds-text-primary);padding:24px 28px 36px}
+.wcCompanion button,.wcCompanion select{font-family:var(--geojit-type)}
+.wcDemo{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;color:var(--ds-text-secondary);margin:3px 0 20px}
+.wcDemo span{font-size:10px;letter-spacing:1.05px;font-weight:750;color:var(--ds-primary-action-pressed)}
+.wcDemo b{font-size:10px;font-weight:500}
+.wcHero{background:linear-gradient(115deg,#E3F4E8 0%,#F7FAF4 62%,#EDF6E7 100%);border:1px solid var(--ds-border-primary);border-radius:18px;padding:37px 35px;display:flex;gap:25px;justify-content:space-between;align-items:center;overflow:hidden}
+.wcKicker{font-size:10px;font-weight:750;letter-spacing:1.12px;color:var(--ds-primary-action-pressed)}
+.wcHero>div:first-child{max-width:710px;flex:1;position:relative;z-index:1}
+.wcHero h2{font-weight:650;line-height:1.16;font-size:clamp(30px,3.4vw,48px);letter-spacing:-1.5px;margin:15px 0}
+.wcHero p{font-size:13px;line-height:1.85;color:var(--ds-text-secondary);max-width:680px}
+.wcHeroActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
+.wcHeroActions button,.wcSectionTop>button,.wcCheckIn button,.wcServiceFooter button{background:#fff;border:1px solid var(--ds-border-primary);border-radius:9px;color:var(--ds-text-primary);min-height:44px;padding:11px 15px;font-size:12px;font-weight:650}
+.wcHeroActions .wcMainBtn,.wcCompanion .wcMainBtn{border:1px solid var(--ds-primary-action);background:var(--ds-primary-action);color:#fff}
+.wcCompanion .wcMainBtn:hover{background:var(--ds-primary-action-pressed)}
+.wcHeroArt{position:relative;width:195px;height:190px;flex:none;display:grid;place-items:center}
+.wcOrbit{position:absolute;inset:10px;border:1px solid #BED8C4;border-radius:50%}
+.wcOrbit.two{inset:28px;border-style:dashed;border-color:#90B6A1}
+.wcHeroCompass{width:70px;height:70px;border-radius:21px;display:grid;place-items:center;background:white;font-size:41px;color:#117F70;box-shadow:0 8px 25px #17483415}
+.wcHeroArt>span{position:absolute;background:white;border:1px solid #D6E9DB;border-radius:20px;padding:6px 9px;font-size:10px;color:var(--ds-text-secondary)}
+.wcHeroArt>span:nth-last-child(3){top:0;left:27px}
+.wcHeroArt>span:nth-last-child(2){right:-10px;top:70px}
+.wcHeroArt>span:nth-last-child(1){bottom:0;left:19px}
+.wcNotice{border:1px solid var(--ds-border-primary);background:var(--ds-surface-green);border-radius:9px;padding:12px 15px;margin:15px 0;font-size:11px;line-height:1.65}
+.wcPanel{border:1px solid var(--ds-border-primary);background:#fff;border-radius:14px;padding:22px;min-width:0}
+.wcSetup,.wcPlanSection,.wcRoadmap{margin-top:17px}
+.wcSectionTop{display:flex;justify-content:space-between;align-items:start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.wcSectionTop h3{font-weight:650;font-size:clamp(24px,2.5vw,32px);letter-spacing:-.8px;margin:9px 0}
+.wcSectionTop p{font-size:12px;line-height:1.8;color:var(--ds-text-secondary);max-width:720px}
+.wcFocusGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:22px}
+.wcFocus{background:#FAFCF9;border:1px solid var(--ds-border-primary);border-radius:12px;padding:17px;text-align:left;color:var(--ds-text-primary);display:flex;flex-direction:column;align-items:start;gap:10px;min-height:155px}
+.wcFocus.active{border-color:var(--ds-primary-action);background:var(--ds-surface-green);box-shadow:inset 0 3px 0 var(--ds-primary-action)}
+.wcFocus>span{border:1px solid var(--ds-border-primary);background:#fff;border-radius:50%;width:27px;height:27px;display:grid;place-items:center;font-weight:700;font-size:13px}
+.wcFocus strong{font-size:13px}
+.wcFocus small{font-size:11px;line-height:1.65;color:var(--ds-text-secondary)}
+.wcSetupGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:10px 0}
+.wcSetupGrid>label,.wcConsent{display:grid;gap:10px;border:1px solid var(--ds-border-primary);padding:17px;border-radius:11px;background:#FAFCF9;align-content:start}
+.wcSetupGrid>label>span,.wcConsent b{font-size:12px;font-weight:650}
+.wcSetupGrid select{border:1px solid var(--ds-border-primary);border-radius:9px;background:#fff;color:var(--ds-text-primary);min-height:44px;padding:11px;font-size:12px;width:100%}
+.wcConsent label{display:flex;gap:8px;align-items:start;font-size:12px;line-height:1.5}
+.wcConsent input{accent-color:var(--ds-primary-action);margin-top:2px}
+.wcConsent small{font-size:10px;color:var(--ds-text-secondary);line-height:1.6}
+.wcSetupBottom{border-top:1px solid var(--ds-border-primary);margin-top:22px;padding-top:19px;display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;align-items:center}
+.wcSetupBottom p{font-size:11px;color:var(--ds-text-secondary);max-width:610px;line-height:1.7}
+.wcSetupBottom button{font-size:12px;min-height:45px;border-radius:9px;padding:12px 16px;font-weight:700}
+.wcHome{margin-top:16px}
+.wcHomeGrid{display:grid;grid-template-columns:1.25fr .8fr;gap:13px}
+.wcFocusPanel{background:var(--ds-surface-green)}
+.wcFocusPanel h3,.wcMiniMap h3,.wcInsights h3,.wcCheckIn h3,.wcIntroCard h3{font-size:clamp(19px,2vw,26px);font-weight:650;line-height:1.3;letter-spacing:-.5px;margin:12px 0}
+.wcFocusPanel p,.wcMiniMap p,.wcInsights p,.wcCheckIn p,.wcIntroCard p{font-size:12px;line-height:1.8;color:var(--ds-text-secondary)}
+.wcFocusPanel .wcMainBtn{padding:12px 16px;border-radius:9px;min-height:44px;font-size:12px;font-weight:650;margin-top:10px}
+.wcFocusFoot{border-top:1px solid var(--ds-border-primary);margin-top:22px;padding-top:13px;font-size:10px;line-height:1.7;color:var(--ds-text-secondary)}
+.wcStatRow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.wcStatRow>div{padding:11px;background:var(--ds-surface-green);border-radius:9px;display:grid;gap:4px}
+.wcStatRow strong{font-size:24px;font-weight:650}
+.wcStatRow span{font-size:10px;color:var(--ds-text-secondary)}
+.wcMiniMap>button,.wcInsights button,.wcIntroCard button{border:1px solid var(--ds-border-primary);background:#fff;border-radius:9px;padding:11px 13px;font-size:12px;color:var(--ds-primary-action-pressed);font-weight:700;min-height:44px;margin-top:9px}
+.wcInsights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:13px}
+.wcInsights>section{display:flex;flex-direction:column}
+.wcInsights p{flex:1}
+.wcCheckIn{border:1px solid var(--ds-border-primary);padding:20px 23px;margin-top:13px;border-radius:13px;background:var(--ds-surface-yellow);display:flex;gap:17px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.wcCheckIn>div{max-width:710px}
+.wcCheckIn h3{font-size:18px}
+.wcIntroCard{background:var(--ds-surface-green)}
+.wcInitialAreas{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.wcInitialAreas span{font-size:11px;border:1px solid var(--ds-border-primary);padding:8px 12px;border-radius:15px;background:white}
+.wcIntroCard>button{margin-top:10px;font-size:12px;font-weight:700;min-height:44px;border-radius:9px;padding:11px 16px}
+.wcServiceFooter{border:1px solid var(--ds-border-primary);border-radius:12px;margin-top:14px;padding:18px 20px;background:#FAFCF9;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.wcServiceFooter>div{max-width:770px}
+.wcServiceFooter strong{font-size:12px}
+.wcServiceFooter p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary)}
+.wcRoadmapSummary{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:19px}
+.wcRoadmapSummary span{border-radius:8px;border:1px solid var(--ds-border-primary);padding:10px 13px;font-size:11px;background:var(--ds-surface-green)}
+.wcTaskList{display:grid;gap:11px}
+.wcTaskList article{display:flex;gap:15px;padding:19px;border:1px solid var(--ds-border-primary);border-radius:12px}
+.wcTaskList article.done{background:#F6FAF7}
+.wcTaskIcon{flex:none}
+.wcStepSymbol{display:grid;place-items:center;width:43px;height:43px;background:var(--ds-surface-green);border-radius:12px;font-size:22px;color:var(--ds-primary-action-pressed)}
+.wcTaskContent{flex:1;min-width:0}
+.wcTaskMeta{font-size:10px;letter-spacing:.6px;font-weight:750;color:var(--ds-primary-action-pressed)}
+.wcTaskContent h4{font-size:18px;letter-spacing:-.2px;font-weight:650;margin:8px 0}
+.wcTaskContent p{font-size:12px;line-height:1.7;color:var(--ds-text-secondary)}
+.wcTaskControls{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.wcTaskControls button{background:#fff;border:1px solid var(--ds-border-primary);padding:10px 12px;border-radius:8px;min-height:43px;font-weight:650;font-size:11px;color:var(--ds-text-primary)}
+.wcTaskControls .wcStepExplore{background:var(--ds-surface-green);color:var(--ds-primary-action-pressed);border-color:var(--ds-primary-action)}
+.wcCaution{padding:17px 19px;background:var(--ds-surface-yellow);border-radius:10px;margin-top:21px}
+.wcCaution b{font-size:12px}
+.wcCaution p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary)}
+.wcPlanGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.wcPlanGrid article{display:flex;flex-direction:column;gap:11px;border:1px solid var(--ds-border-primary);border-radius:13px;padding:21px}
+.wcPlanGrid article.chosen{border-color:var(--ds-primary-action);background:var(--ds-surface-green)}
+.wcPlanHead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.wcPlanHead strong{font-size:17px}
+.wcPlanHead span{font-size:10px;color:var(--ds-primary-action-pressed);background:#fff;border-radius:16px;padding:6px 9px}
+.wcPlanGrid h4{font-size:27px;margin:3px 0;letter-spacing:-.7px;font-weight:650}
+.wcPlanGrid p,.wcPlanGrid li{font-size:12px;line-height:1.7;color:var(--ds-text-secondary)}
+.wcPlanGrid ul{padding-left:20px;flex:1}
+.wcPlanGrid button{background:white;border:1px solid var(--ds-border-primary);border-radius:9px;padding:12px 15px;font-size:12px;font-weight:700;color:var(--ds-primary-action-pressed);min-height:44px}
+.wcPlanGrid article.chosen button{border-color:var(--ds-primary-action)}
+@media(max-width:1100px){.wcHero{padding:29px}.wcFocusGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.wcInsights{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.wcHeroArt{display:none}.wcHomeGrid{grid-template-columns:1fr}.wcInsights{grid-template-columns:1fr}.wcSetupGrid{grid-template-columns:1fr}}
+@media(max-width:600px){.wcCompanion{padding:18px 14px 26px}.wcHero{padding:22px 19px;border-radius:13px}.wcHero h2{font-size:31px}.wcPanel{padding:17px}.wcFocusGrid{grid-template-columns:1fr;gap:8px}.wcFocus{min-height:0}.wcPlanGrid{grid-template-columns:1fr}.wcTaskList article{padding:13px;gap:9px}.wcTaskContent h4{font-size:16px}.wcTaskControls button{width:100%;text-align:left}.wcHeroActions button{width:100%}}
