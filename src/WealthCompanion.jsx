@@ -1,5 +1,6 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import './wealth-companion.css'
+import CompanionOnboarding from './CompanionOnboarding.jsx'
 import {
  FOCUS_AREAS,REVIEW_RHYTHMS,PLAN_EXPERIENCES,
  blankCompanion,sanitiseCompanion,createLearningRoadmap,
@@ -15,10 +16,10 @@ function readSession(id){
 function ChapterIcon({type}){return <span className="wcStepSymbol" aria-hidden="true">{type==='picture'?'◫':type==='story'?'◈':type==='protection'?'♧':type==='goals'?'◎':type==='foundation'?'◇':'◌'}</span>}
 export default function WealthCompanion({clientId='C012',client,onNavigate}){
  const [profile,setProfile]=useState(()=>readSession(clientId))
- const [stage,setStage]=useState('home')
+ const [stage,setStage]=useState(()=>readSession(clientId).started?'home':'entry')
  const [notice,setNotice]=useState('')
  const model=useMemo(()=>fixtureIntelligence(clientId),[clientId])
- useEffect(()=>{setProfile(readSession(clientId));setStage('home');setNotice('')},[clientId])
+ useEffect(()=>{setProfile(readSession(clientId));setStage(readSession(clientId).started?'home':'entry');setNotice('')},[clientId])
  const roadmap=useMemo(()=>createLearningRoadmap(profile),[profile])
  const next=selectNextHelpfulAction(profile)
  const summary=actionSummary(profile)
@@ -34,11 +35,14 @@ export default function WealthCompanion({clientId='C012',client,onNavigate}){
  function setDecision(id,state){save({...profile,decisions:{...profile.decisions,[id]:state}},state==='completed'?'You marked this learning step complete. This is not a financial milestone.':state==='later'?'You can return to this optional step whenever you wish.':'The step is available to explore again.')}
  function begin(){if(!profile.focus.length){setNotice('Choose at least one area you would like to explore.');return}save({...profile,started:true},'Your self-directed educational roadmap is ready. There is no product commitment or real subscription.');setStage('home')}
  return <div className="wcCompanion">
+  {stage==='entry'?<CompanionOnboarding clientId={clientId} client={client}
+   onComplete={draft=>{save(draft,'Your educational roadmap is ready. This is a fictional browser-only activation, not a paid subscription.');setStage('home')}}
+   onExit={()=>setStage('home')}/>:<>
   <div className="wcDemo"><span>GEOJIT WEALTH COMPANION · PRODUCT CONCEPT POC 3.0</span><b>Fictional reviewer experience · Not an advisory service or active subscription</b></div>
   <header className="wcHero">
    <div><div className="wcKicker">MY WEALTH JOURNEY</div><h2>{profile.started?'A clearer financial journey, '+title+'.':'A more thoughtful way to navigate your financial future.'}</h2>
     <p>{profile.started?'Explore the questions that matter to you. Your roadmap stays in your control and changes only when you choose.':'Understand your investments, explore goals and keep useful financial information together—without being told what to buy.'}</p>
-    {profile.started?<div className="wcHeroActions"><button type="button" className="wcMainBtn" onClick={()=>setStage('roadmap')}>View my roadmap →</button><button type="button" onClick={()=>setStage('setup')}>Update what matters to me</button></div>:
+    {profile.started?<div className="wcHeroActions"><button type="button" className="wcMainBtn" onClick={()=>setStage('roadmap')}>View my roadmap →</button><button type="button" onClick={()=>setStage('setup')}>Update what matters to me</button><button type="button" onClick={()=>setStage('entry')}>Replay One App onboarding</button></div>:
      <div className="wcHeroActions"><button type="button" className="wcMainBtn" onClick={()=>setStage('setup')}>Build my learning roadmap →</button><button type="button" onClick={()=>setStage('plans')}>Explore service options</button></div>}
    </div><div className="wcHeroArt" aria-hidden="true"><div className="wcOrbit one"/><div className="wcOrbit two"/><div className="wcHeroCompass">◇</div><span>Understanding</span><span>Perspective</span><span>Progress</span></div>
   </header>
@@ -70,5 +74,6 @@ export default function WealthCompanion({clientId='C012',client,onNavigate}){
      </>:<section className="wcPanel wcIntroCard"><div className="wcKicker">AN EXPERIENCE BUILT AROUND YOUR QUESTIONS</div><h3>Start with clarity—not a product.</h3><p>Choose one or more questions you'd like to explore. We'll turn them into a simple educational roadmap, with the freedom to change your mind or do nothing.</p><div className="wcInitialAreas">{FOCUS_AREAS.slice(0,3).map(x=><span key={x.id}>{x.title}</span>)}</div><button className="wcMainBtn" type="button" onClick={()=>setStage('setup')}>Choose what matters →</button></section>}
    <div className="wcServiceFooter"><div><strong>About this concept</strong><p>Essential and Journey Plus are illustrative service tiers; neither is available for purchase. No money is collected. This experience is a synthetic educational companion, not a personalised investment plan, investment advice or an authorised service enrolment.</p></div><button type="button" onClick={()=>setStage('plans')}>View service concepts →</button></div>
   </div>}
+ </>}
  </div>
 }
