@@ -4,6 +4,7 @@ import WealthIntelligence from './WealthIntelligence.jsx'
 import WealthCreationMap from './WealthCreationMap.jsx'
 import GuidedJourney from './GuidedJourney.jsx'
 import WealthCompanion from './WealthCompanion.jsx'
+import NewClientLifecycle from './NewClientLifecycle.jsx'
 
 const CHANNELS=[
  {id:'daily_trading',title:'Daily Trading Brief',rhythm:'Trading days',description:'Your trading context, only when current and approved sources are available.'},
@@ -129,8 +130,9 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
    </div>
    </>}
    <div className="cxBody">
-    <nav className="cxNav" aria-label="Customer experience sections">{[['companion','Wealth Companion'],['story','Your Wealth Story'],['intelligence','Financial picture'],['wealthmap','Wealth Map'],['pilot','Guided pilot'],['context','About this story'],['preferences','Preferences']].map(([id,label])=><button type="button" key={id} className={view===id?'selected':''} aria-current={view===id?'page':undefined} onClick={()=>setView(id)}>{label}</button>)}</nav>
+    <nav className="cxNav" aria-label="Customer experience sections">{[['companion','Wealth Companion'],['newclient','New Client Journey'],['story','Your Wealth Story'],['intelligence','Financial picture'],['wealthmap','Wealth Map'],['pilot','Guided pilot'],['context','About this story'],['preferences','Preferences']].map(([id,label])=><button type="button" key={id} className={view===id?'selected':''} aria-current={view===id?'page':undefined} onClick={()=>setView(id)}>{label}</button>)}</nav>
     {view==='companion'?<WealthCompanion clientId={clientId} client={client} onNavigate={setView}/>:
+     view==='newclient'?<NewClientLifecycle onReturn={()=>setView('companion')} onExploreWealthMap={()=>setView('wealthmap')}/>:
      view==='pilot'?<GuidedJourney onOpenWealthMap={()=>setView('wealthmap')}/>:
      data.status==='loading'?<div className="cxEmpty"><h2>Bringing your story together…</h2><p>Retrieving approved fictional editions and subscription preferences.</p></div>:
      data.status==='error'?<div className="cxEmpty"><h2>We couldn't load this preview.</h2><p>{data.message}</p><button className="cxMainButton" type="button" onClick={()=>setRefreshKey(x=>x+1)}>Try again</button></div>:
