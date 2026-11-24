@@ -1,6 +1,49 @@
-# Geojit Wealth Companion — Self-Directed Wealth Journey POC 3.0
+# Geojit Wealth Companion — One App Onboarding & Guided Wealth Journey POC 3.1
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.1 — One App → Wealth Companion: management-ready guided onboarding
+
+The **first visit to My Wealth Companion** now begins with a complete, interactive fictional One App discovery-to-onboarding experience rather than a bare checklist. The prototype uses a reviewer-only synthetic Supabase account and **does not** activate a paid account or advisory relationship.
+
+### The six-screen customer story
+
+1. **One App discovery** — a polished conceptual One App home, investment tools and a clickable `My Wealth Companion` tile under a new value-added experience. Other tiles are non-interactive visual context. The top-level reviewer navigation remains accessible.
+2. **Service introduction** — makes the value proposition clear: understanding your financial picture, a self-chosen educational roadmap and an ongoing Wealth Story. The promise is help without sales pressure.
+3. **Permissioned account prefill** — the customer deliberately chooses `Review my available information` before any onboarding query is made. The app then fetches **read-only synthetic Supabase poc_records** restricted to the selected fictional customer and four allowlisted domains (product relationships, transactions, previously shared goal data and service cases). It **does not** read browsing/engagement, meeting details or external financial data. The flow also provides `Continue without prefill`.
+4. **Review and confirmation** — presents source availability, dated counts, limits of what Geojit knows and a separately labelled *fictional valuation* from the existing demo engine. The customer must acknowledge that these data do not represent their complete wealth, needs, suitability or investment advice. Unknown information remains unknown.
+5. **Light-touch profiling** — customers choose areas they *want to understand*: investing, goals, protection, flexibility and review. They select a preferred rhythm, with optional future check-in interest off by default. This is neither risk profiling nor financial planning advice, and **does not grant real channel permission**.
+6. **Roadmap reveal and local activation** — a preview shows a personalised customer-facing welcome, chosen focus summary, review rhythm, and an initial roadmap created solely from those choices. An expandable `Why these steps?` explanation clarifies the logic. `Enter my Wealth Companion` saves the learning preferences in the browser session and opens the service dashboard.
+
+The onward experience links the customer to **their roadmap → Financial Picture → Wealth Map → Wealth Story**, with each optional step allowing `Mark explored`, `Maybe later`, reopen or change focus.
+
+### Live data access versus simulation
+
+**A real read-only query takes place against fictional Supabase poc_records when selected.** The returned domain summary is actually computed from the fictional records in that POC database. It is not a real client data connection. The illustrative portfolio valuation is independently generated from a deterministic **synthetic fixture** and never represented as a prefilled, live portfolio value.
+
+The service activation is simulated in `sessionStorage`. No data is posted to an entitlement, billing, marketing consent or advisory system; no email or CRM workflow is triggered. The demonstration never requires a new SQL migration or environment variable.
+
+### How management should test it
+
+1. Sign into the existing POC: `https://wealthstory.netlify.app/`.
+2. Select **My Wealth Companion** in the sidebar and choose **Thomas C012**.
+3. On the simulated **One App** screen, select the featured **My Wealth Companion** tile.
+4. Explore the service promise and click **Start my journey**.
+5. Click **Review my available information**. Read the account-context summaries and confirm the limitations. Optionally replay with **Continue without prefill** to demonstrate graceful onboarding when data are unavailable.
+6. Choose **Understand my investments** and **Explore a financial goal**, plus a review cadence. Leave optional future check-in interest unticked.
+7. View the personalised roadmap, expand **Why these steps?**, then **Enter my Wealth Companion**.
+8. Show the next helpful educational action, detailed roadmap, Wealth Map and ongoing Wealth Story.
+9. Once onboarded, select **Replay One App onboarding** from the Companion header to run the journey again; session data remains until explicitly re-saved or the browser session ends.
+10. Open **Wealth Story Studio → Wealth Companion POC** to discuss service economics, advice-versus-guidance boundaries and required governance approvals.
+
+### Guardrails and future real implementation
+
+- **Before real use:** authorised One App entry, real consent and access-control checks, source reliability, financial aggregation/scope explanations, customer identity permissions, event and channel governance, accessibility and documented regulatory classification.
+- Customer-selected educational focus is **not a suitability profile**, and selecting a product-learning topic is **not consent to sales contact**.
+- The POC recommends **no financial products, securities, allocations, financial-health scores or investment action amounts**.
+- Premium plans are unpriced concepts; a real subscription must not be sold before Compliance, Legal, Product and Advisory approval.
+
+**Current product narrative:** *One App brings the service to the customer; Wealth Companion helps them choose a direction; the roadmap gives an educational path; Wealth Story keeps the journey meaningful over time.*
 
 ## POC 3.0 — Geojit Wealth Companion (self-directed service concept)
 
