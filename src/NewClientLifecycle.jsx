@@ -1,6 +1,7 @@
 import React,{useEffect,useMemo,useState} from 'react'
 import {LIFECYCLE_PHASES,STARTING_CHOICES,FIRST_ACTIONS,newClientState,sanitiseLifecycle,lifecycleSnapshot,advanceLifecycle} from './lib/newClientLifecycle.js'
 import {calculateGoalScenario} from './lib/genuineGuidance.js'
+import {composeExperience} from './lib/companionExperience.js'
 import './new-client-lifecycle.css'
 
 const key='geojit-new-client-lifecycle-v3_2'
@@ -14,7 +15,8 @@ export default function NewClientLifecycle({onReturn,onExploreWealthMap}){
  const [goalName,setGoalName]=useState('A future milestone')
  const [showReason,setShowReason]=useState(false)
  const [notice,setNotice]=useState('')
- const insight=useMemo(()=>lifecycleSnapshot(state),[state])
+ const experience=useMemo(()=>composeExperience({kind:'new',lifecycle:state}),[state])
+ const insight=experience.insight
  useEffect(()=>{try{sessionStorage.setItem(key,JSON.stringify(state))}catch{}},[state])
  const calc=calculateGoalScenario({target,current:0,years,annualRate:0});
  function update(next,message=''){setState(sanitiseLifecycle(next));setNotice(message)}
@@ -60,9 +62,9 @@ export default function NewClientLifecycle({onReturn,onExploreWealthMap}){
    <div className="nlJourneyGrid"><section className="nlBoard"><span className="nlEyebrow">YOUR STARTING PICTURE</span><h4>{insight.hasInvestment?'A first fictional contribution is recorded.':'No investment values to display yet.'}</h4>
      {insight.hasInvestment?<div className="nlMoney"><span>Illustrative transaction</span><strong>{insight.fictionalInvestment.display}</strong><small>One synthetic mutual fund contribution. No current value, gain, benchmark or return can be calculated.</small></div>:<div className="nlNoData"><span>◇</span><p>There is no portfolio chart because no holdings or verified transactions exist in this scenario. That doesn't tell us anything about assets outside Geojit.</p></div>}
      {insight.goal?<div className="nlGoalBadge"><b>Goal shared in this demo: {insight.goal.label}</b><span>{INR.format(insight.goal.target)} · {insight.goal.years} years</span><p>Goal adequacy or investment alignment has not been assessed.</p></div>:<div className="nlGoalBlank">No goal has been shared. You can choose one at any time.</div>}
-   </section><section className="nlBoard"><span className="nlEyebrow">YOUR EDUCATIONAL ROADMAP</span><h4>Small steps. Your pace.</h4><div className="nlTaskList">{insight.items.map((x,i)=><div key={x.id}><span>{state.completed.includes(x.id)?'✓':String(i+1).padStart(2,'0')}</span><div><b>{x.title}</b><p>{x.why}</p><button type="button" onClick={()=>markStep(x.id)}>{state.completed.includes(x.id)?'Reopen':'Mark explored'} →</button></div></div>)}</div><p className="nlSmall">{insight.educationalProgress} educational step(s) explored. This is not a wealth-progress score.</p></section></div>
+   </section><section className="nlBoard"><span className="nlEyebrow">YOUR EDUCATIONAL ROADMAP</span><p className="nlSmall">One shared Wealth Companion engine · Customer-selected topics only</p><h4>Small steps. Your pace.</h4><div className="nlTaskList">{experience.roadmap.map((x,i)=><div key={x.id}><span>{state.completed.includes(x.id)?'✓':String(i+1).padStart(2,'0')}</span><div><b>{x.title}</b><p>{x.reason}</p><button type="button" onClick={()=>markStep(x.id)}>{state.completed.includes(x.id)?'Reopen':'Mark explored'} →</button></div></div>)}</div><p className="nlSmall">{insight.educationalProgress} educational step(s) explored. This is not a wealth-progress score.</p></section></div>
    <section className="nlStory"><div><span className="nlEyebrow">YOUR WEALTH STORY · EVOLVES WITH THE JOURNEY</span><h4>{state.stage==='new'?'A new chapter begins':state.stage==='learning'?'Understanding comes first':state.stage==='goal'?'Your goals, your terms':'A first step, with a clearer picture'}</h4><p>{insight.story}</p><button type="button" onClick={()=>setShowReason(x=>!x)}>How was this story selected? {showReason?'−':'+'}</button>{showReason&&<div className="nlReason">This is prewritten editorial content selected by the manually simulated lifecycle stage. No behavioural monitoring, live AI inference, actual portfolio analysis or personalised investment recommendation occurs here.</div>}</div></section>
-   <div className="nlProactive"><div><span className="nlEyebrow">ONE HELPFUL NEXT STEP</span><h4>{insight.next?insight.next.title:'Nothing else is needed right now.'}</h4><p>{insight.next?insight.next.why:'You can return whenever there is something you would like to explore.'}</p></div><div className="nlActions">{!insight.goal&&<button type="button" className="nlPrimary" onClick={()=>setPhase('goal')}>Explore a goal scenario →</button>}{onExploreWealthMap&&<button type="button" onClick={onExploreWealthMap}>Open general Wealth Map (existing-client demo) →</button>}</div></div>
+   <div className="nlProactive"><div><span className="nlEyebrow">ONE HELPFUL NEXT STEP</span><h4>{experience.next?experience.next.title:'Nothing else is needed right now.'}</h4><p>{experience.next?experience.next.reason:'You can return whenever there is something you would like to explore.'}</p></div><div className="nlActions">{!insight.goal&&<button type="button" className="nlPrimary" onClick={()=>setPhase('goal')}>Explore a goal scenario →</button>}{onExploreWealthMap&&<button type="button" onClick={onExploreWealthMap}>Open general Wealth Map (existing-client demo) →</button>}</div></div>
    <p className="nlFoot">Management demo: the stage selector advances synthetic scenario facts. Nothing is saved to a real client account or used to contact customers. No product is recommended. A real Wealth Story requires verified data, editorial approval and appropriately authorised distribution.</p>
   </section>}
  </div>
