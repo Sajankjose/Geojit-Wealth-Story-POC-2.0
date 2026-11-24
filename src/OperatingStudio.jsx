@@ -3,6 +3,7 @@ import { supabase, loadClientRecords } from './lib/supabase'
 import { evaluateDelivery } from './lib/deliveryEligibility.js'
 import GuidanceInsights from './GuidanceInsights.jsx'
 import CompanionGovernance from './CompanionGovernance.jsx'
+import CompanionValueLab from './CompanionValueLab.jsx'
 
 export const EDITIONS = [
   { id:'daily_trading', label:'Daily Trading Brief', cadence:'Trading days', description:'Trading context and approved, valid research only.', icon:'↗' },
@@ -284,11 +285,12 @@ export default function OperatingStudio({clients=[],onBack,onOpenClient,onPrevie
      <div><small>Email delivery simulations</small><strong>{events.filter(e=>e.event_type==='email_delivery_simulated').length}</strong><em>No actual messages sent</em></div>
    </div>
    <nav className="wsStudioNav" aria-label="Studio sections">
-     {[['overview','Overview'],['subscribers','Subscription centre'],['production','Story production'],['activity','Delivery & engagement'],['guidance','Guidance insights'],['companion','Wealth Companion POC']].map(([id,label])=>
+     {[['overview','Overview'],['subscribers','Subscription centre'],['production','Story production'],['activity','Delivery & engagement'],['guidance','Guidance insights'],['companion','Wealth Companion POC'],['value','Value & lifecycle lab']].map(([id,label])=>
        <button type="button" key={id} className={tab===id?'active':''} aria-current={tab===id?'page':undefined} onClick={()=>setTab(id)}>{label}</button>)}
    </nav>
    {tab==='guidance'&&<GuidanceInsights clients={clients} onPreviewCustomer={onPreviewCustomer}/>} 
    {tab==='companion'&&<CompanionGovernance onPreviewCustomer={onPreviewCustomer}/>} 
+   {tab==='value'&&<CompanionValueLab onPreviewCustomer={onPreviewCustomer}/>} 
    {tab==='overview'&&<div className="wsStudioGrid">
      <section className="wsSurface"><div className="wsSurfaceHeading"><div className="eyebrow">EDITION SUBSCRIPTIONS</div><h2>Choose the rhythm that fits the customer.</h2></div>
        <div className="wsEditionGrid">{EDITIONS.map(e=><article key={e.id} className="wsEditionCard"><div className="wsEditionIcon">{e.icon}</div><span>{e.cadence}</span><h3>{e.label}</h3><p>{e.description}</p><strong>{subscriptionCounts.find(c=>c.edition===e.id)?.count||0} <small>fictional subscribers</small></strong><button type="button" onClick={()=>{setType(e.id);setTab('subscribers')}}>Manage edition →</button></article>)}</div>
