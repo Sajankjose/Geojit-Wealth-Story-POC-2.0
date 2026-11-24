@@ -1,6 +1,46 @@
-# Geojit Wealth Companion — One App Onboarding & Guided Wealth Journey POC 3.1
+# Geojit Wealth Companion — New Customer Lifecycle & Guided Wealth Journey POC 3.2
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.2 — Brand-new client lifecycle: value before investments
+
+**Demonstration objective:** Show a complete Wealth Companion relationship for a fictional newly joined Geojit client **with no account holdings, investment transactions or declared financial goals**. This is deliberately separate from the established Thomas synthetic investment demo.
+
+### What is now built
+
+In **Customer Experience → New Client Journey**, reviewers can enter a fictional beginner experience with **Arun** and move through four editable management scenarios:
+
+1. **Just joined (Day 1)** — no portfolio values to show. The customer chooses a topic to explore (goals, investing basics, money habits or an open starting point). The first meaningful moment is a plain-language explanation and a short, optional learning roadmap—not a product recommendation.
+2. **Exploring (Week 1)** — the customer sees an appropriate educational Wealth Story about what they have explored and chooses the next learning step. Marking a step explored is **not** treated as financial progress, wealth or investment suitability.
+3. **Goal defined (Weeks 2–4)** — the reviewer may enter a fictional *customer-declared* goal, target amount and horizon through a customer-controlled calculator. The default calculation assumes **0% nominal growth**, illustrates arithmetic saving only and is **not an investment instruction**. Merely selecting the phase does not invent a declared goal.
+4. **Investment started (Month 2+)** — the scenario adds one manually simulated **₹3,000 mutual fund contribution**, with no asset valuation, gain, benchmark or returns inferred. The Wealth Story evolves to explain that contributions and market growth are not the same.
+
+The **Management simulation** selector makes it possible to demonstrate progression or return to an earlier stage without waiting weeks. Moving back to a pre-investment phase removes later fictional holdings from that view. Nothing is written to actual customer records, portfolios, advisory systems or communication services.
+
+### Customer-first editorial value
+
+- **Day one:** An empty account still gets a useful, understandable first chapter and customer-selected educational next step.
+- **Later:** The customer can revisit learning activities, enter their own goal, compare zero-return scenario arithmetic and progressively understand the account.
+- **After a fictional contribution:** A new Wealth Story describes the activity without claiming returns, recommending securities or assuming the goal is on track.
+- **At any time:** The customer can mark a learning step explored, defer their next decision, or leave. No urgency or product-purchase pressure is introduced.
+
+### Management walkthrough
+
+1. Sign in to the existing Netlify prototype, open **My Wealth Companion → New Client Journey**.
+2. Start with **Just joined** and click **Discover where to begin**.
+3. Select **Understand investing** (or another customer-led topic), read the first-value educational perspective and open the starting roadmap.
+4. Use the stage selector to show **Exploring**. Mark an educational step complete and open its corresponding Wealth Story.
+5. Select **Goal defined** and click **Explore a goal scenario**. Choose a fictional goal label, target and years; show the transparent, zero-growth monthly saving calculation.
+6. Move to **Investment started** and compare the new Wealth Story. Emphasise that a first contribution does not establish portfolio return or goal adequacy.
+7. Press **Restart demo** to reset the scenario without affecting Thomas or other synthetic clients.
+
+This flow uses a new isolated deterministic module `src/lib/newClientLifecycle.js` and the interactive `src/NewClientLifecycle.jsx` with responsive stylesheet. The latest CI includes `tests/new-client-lifecycle.test.mjs`.
+
+**Important scope:** Arun here is a standalone fictional scenario, not a new `poc_clients` row. It does not call Supabase, create a real investment or publish an actual AI-generated story; its evolving story text is prewritten, stage-specific editorial copy. Browser-session storage preserves only scenario state if available. No SQL migration or environment variable is needed.
+
+### Subsequent technical work
+
+To make a production pilot credible, Geojit would need an approved client lifecycle-state engine, verified account/transaction feeds, permissioned profile persistence, content provenance and publishing, channel consent, compliant product discovery, authorised routing and measurable customer value. The regulatory classification of financial planning and paid guidance remains subject to Legal and Compliance review.
 
 ## POC 3.1 — One App → Wealth Companion: management-ready guided onboarding
 
