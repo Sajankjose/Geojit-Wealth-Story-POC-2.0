@@ -1,0 +1,90 @@
+/* POC 3.2 new-client lifecycle and scenario theatre */
+.nlRoot{padding:18px 20px 30px;color:var(--ds-text-primary)}
+.nlRoot button,.nlRoot input{font-family:var(--geojit-type)}
+.nlEyebrow{font-size:10px;font-weight:750;letter-spacing:1.1px;color:var(--ds-primary-action-pressed)}
+.nlTop{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:21px}
+.nlTop h2{font-size:clamp(25px,2.7vw,36px);font-weight:650;letter-spacing:-1px;line-height:1.25;margin:8px 0}
+.nlTop p{font-size:12px;line-height:1.7;color:var(--ds-text-secondary);max-width:770px}
+.nlTop button,.nlReset{border:1px solid var(--ds-border-primary);border-radius:9px;background:#fff;color:var(--ds-text-secondary);padding:11px 14px;min-height:43px;font-size:11px;font-weight:700}
+.nlManager{border:1px solid var(--ds-border-primary);border-radius:13px;background:#F5F8F5;padding:16px 19px;display:grid;gap:12px;margin:16px 0 22px}
+.nlManager>b,.nlManager div>b{font-size:12px}
+.nlManager p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary);margin:5px 0 0}
+.nlTimeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.nlTimeline button{text-align:left;border:1px solid var(--ds-border-primary);border-radius:10px;background:white;padding:12px 13px;color:var(--ds-text-primary);display:grid;gap:5px;min-height:65px}
+.nlTimeline button.active{border-color:var(--ds-primary-action);background:var(--ds-surface-green);box-shadow:inset 0 3px 0 var(--ds-primary-action)}
+.nlTimeline small{font-size:10px;color:var(--ds-text-secondary)}
+.nlTimeline strong{font-size:12px}
+.nlReset{justify-self:start}
+.nlNotice{background:var(--ds-surface-green);border:1px solid var(--ds-border-primary);border-radius:9px;padding:12px 15px;margin-bottom:15px;font-size:11px}
+.nlIntro{border:1px solid var(--ds-border-primary);border-radius:17px;background:linear-gradient(125deg,#E5F5E7,#F8FBF4);padding:clamp(25px,3vw,42px);position:relative;overflow:hidden}
+.nlIntro h3{font-size:clamp(29px,3.2vw,43px);font-weight:650;letter-spacing:-1.2px;line-height:1.2;max-width:760px;margin:13px 0}
+.nlIntro h3 em{font-style:normal;color:var(--ds-primary-action-pressed)}
+.nlIntro>p{font-size:13px;line-height:1.85;max-width:620px;color:var(--ds-text-secondary)}
+.nlHeroArt{position:absolute;right:5%;top:35px;font-size:100px;line-height:1;color:#9CC8AE;opacity:.42}
+.nlHeroArt span{display:block;text-align:center;font-size:12px;font-weight:700;letter-spacing:3px}
+.nlKnown{display:flex;flex-wrap:wrap;gap:9px;margin:25px 0 20px;position:relative}
+.nlKnown>div{font-size:11px;line-height:1.5;background:white;border:1px solid var(--ds-border-primary);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:8px}
+.nlKnown span{color:var(--ds-primary-action-pressed);font-weight:750;font-size:17px}
+.nlPrimary{background:var(--ds-primary-action)!important;color:#fff!important;border-color:var(--ds-primary-action)!important}
+.nlIntro>button,.nlActions>button,.nlProactive button{border:1px solid var(--ds-border-primary);background:white;border-radius:9px;padding:12px 16px;min-height:44px;font-size:12px;font-weight:700;color:var(--ds-text-primary)}
+.nlPage{border:1px solid var(--ds-border-primary);border-radius:15px;background:white;padding:clamp(22px,3vw,37px)}
+.nlPage h3,.nlJourneyHero h3{font-size:clamp(25px,2.6vw,36px);letter-spacing:-.9px;font-weight:650;line-height:1.25;margin:12px 0}
+.nlPage>p,.nlJourneyHero p{font-size:13px;line-height:1.8;color:var(--ds-text-secondary);max-width:740px}
+.nlChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:23px}
+.nlChoices button{text-align:left;border:1px solid var(--ds-border-primary);border-radius:12px;background:#FAFCF9;padding:21px;display:grid;gap:11px;color:var(--ds-text-primary)}
+.nlChoices button.active,.nlChoices button:hover{border-color:var(--ds-primary-action);background:var(--ds-surface-green)}
+.nlChoices span{font-size:23px;color:var(--ds-primary-action-pressed)}
+.nlChoices strong{font-size:15px}
+.nlChoices small{font-size:11px;line-height:1.6;color:var(--ds-text-secondary)}
+.nlChoices em{font-style:normal;font-size:11px;font-weight:700;color:var(--ds-primary-action-pressed)}
+.nlInsight{border-left:3px solid var(--ds-primary-action);background:var(--ds-surface-green);border-radius:10px;padding:20px;margin:22px 0}
+.nlInsight>span{font-size:10px;font-weight:750;color:var(--ds-primary-action-pressed)}
+.nlInsight p{font-size:13px;line-height:1.8}
+.nlMicro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:19px 0}
+.nlMicro>div{border:1px solid var(--ds-border-primary);border-radius:11px;padding:17px;display:grid;gap:9px}
+.nlMicro span{font-weight:750;font-size:12px;color:var(--ds-primary-action-pressed)}
+.nlMicro strong{font-size:13px}
+.nlMicro p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary)}
+.nlFirst>button{border:1px solid var(--ds-primary-action);border-radius:9px;padding:12px 17px;min-height:44px;font-size:12px;font-weight:700}
+.nlJourneyHero{padding:27px;background:var(--ds-surface-green);border-radius:14px;border:1px solid var(--ds-border-primary);margin-bottom:13px}
+.nlJourneyGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.nlBoard{border:1px solid var(--ds-border-primary);border-radius:13px;background:white;padding:22px;min-width:0}
+.nlBoard h4,.nlStory h4,.nlProactive h4{font-size:20px;font-weight:650;letter-spacing:-.4px;margin:11px 0}
+.nlNoData{border:1px dashed #BBD1C2;border-radius:11px;background:#F8FAF7;text-align:center;padding:18px}
+.nlNoData span{font-size:34px;color:var(--ds-primary-action-pressed)}
+.nlNoData p,.nlGoalBlank{font-size:12px;line-height:1.7;color:var(--ds-text-secondary)}
+.nlMoney{padding:17px;border-radius:11px;background:var(--ds-surface-green);display:grid;gap:7px}
+.nlMoney span{font-size:11px;color:var(--ds-text-secondary)}
+.nlMoney strong{font-size:31px;letter-spacing:-.6px}
+.nlMoney small{font-size:10px;line-height:1.7;color:var(--ds-text-secondary)}
+.nlGoalBlank,.nlGoalBadge{padding:15px;background:var(--ds-surface-yellow);border-radius:9px;margin-top:17px}
+.nlGoalBadge{display:grid;gap:6px}
+.nlGoalBadge b{font-size:12px}
+.nlGoalBadge span{font-size:13px;color:var(--ds-primary-action-pressed);font-weight:700}
+.nlGoalBadge p{font-size:11px;color:var(--ds-text-secondary)}
+.nlTaskList{display:grid;gap:0}
+.nlTaskList>div{display:flex;align-items:start;gap:11px;padding:14px 0;border-top:1px solid var(--ds-border-primary)}
+.nlTaskList>div>span{font-size:11px;font-weight:750;color:var(--ds-primary-action-pressed);width:23px;flex:none}
+.nlTaskList b{font-size:13px}
+.nlTaskList p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary);margin:5px 0}
+.nlTaskList button,.nlStory button{border:0;background:transparent;color:var(--ds-primary-action-pressed);font-size:11px;font-weight:700;padding:7px 0}
+.nlSmall,.nlFoot{font-size:10px;line-height:1.7;color:var(--ds-text-secondary)}
+.nlStory{background:white;border:1px solid var(--ds-border-primary);padding:24px;margin:13px 0;border-radius:13px}
+.nlStory p{font-size:13px;line-height:1.85;color:var(--ds-text-secondary);max-width:800px}
+.nlReason{font-size:11px;line-height:1.7;padding:13px 15px;background:var(--ds-surface-yellow);border-radius:9px;margin-top:10px}
+.nlProactive{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;border:1px solid var(--ds-border-primary);padding:23px;border-radius:13px;background:var(--ds-surface-green)}
+.nlProactive>div:first-child{max-width:640px}
+.nlProactive p{font-size:12px;line-height:1.7;color:var(--ds-text-secondary)}
+.nlActions{display:flex;gap:9px;flex-wrap:wrap}
+.nlFoot{margin-top:19px}
+.nlGoalForm{max-width:670px;display:grid;gap:19px;margin:23px 0}
+.nlGoalForm label{display:grid;gap:8px;font-size:12px;color:var(--ds-text-secondary)}
+.nlGoalForm label strong{font-size:15px;color:var(--ds-text-primary)}
+.nlGoalForm input[type=text],.nlGoalForm input:not([type]){padding:12px;border:1px solid var(--ds-border-primary);border-radius:8px;font-size:13px}
+.nlGoalForm input[type=range]{width:100%;accent-color:var(--ds-primary-action)}
+.nlGoalResult{background:var(--ds-surface-green);border-radius:11px;padding:20px;display:grid;gap:9px}
+.nlGoalResult span{font-size:11px;color:var(--ds-text-secondary)}
+.nlGoalResult strong{font-size:29px;letter-spacing:-.4px}
+.nlGoalResult p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary);margin:0}
+@media(max-width:830px){.nlJourneyGrid,.nlChoices{grid-template-columns:1fr}.nlMicro{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.nlRoot{padding:14px 7px}.nlTimeline{grid-template-columns:repeat(2,minmax(0,1fr))}.nlIntro,.nlPage{padding:20px}.nlHeroArt{display:none}.nlMicro{grid-template-columns:1fr}.nlJourneyHero,.nlBoard,.nlStory,.nlProactive{padding:17px}.nlTop h2{font-size:27px}.nlManager{padding:13px}}
