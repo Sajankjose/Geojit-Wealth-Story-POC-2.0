@@ -101,3 +101,29 @@
 @media(max-width:1100px){.wcHero{padding:29px}.wcFocusGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.wcInsights{grid-template-columns:1fr 1fr}}
 @media(max-width:800px){.wcHeroArt{display:none}.wcHomeGrid{grid-template-columns:1fr}.wcInsights{grid-template-columns:1fr}.wcSetupGrid{grid-template-columns:1fr}}
 @media(max-width:600px){.wcCompanion{padding:18px 14px 26px}.wcHero{padding:22px 19px;border-radius:13px}.wcHero h2{font-size:31px}.wcPanel{padding:17px}.wcFocusGrid{grid-template-columns:1fr;gap:8px}.wcFocus{min-height:0}.wcPlanGrid{grid-template-columns:1fr}.wcTaskList article{padding:13px;gap:9px}.wcTaskContent h4{font-size:16px}.wcTaskControls button{width:100%;text-align:left}.wcHeroActions button{width:100%}}
+
+/* POC 3.0 internal product-commercial governance preview */
+.cgGovernance{border:1px solid var(--ds-border-primary);border-radius:15px;background:#fff;padding:27px}
+.cgGovernance h2{font-size:clamp(24px,2.4vw,33px);font-weight:650;letter-spacing:-.8px;margin:12px 0}
+.cgGovernance p,.cgGovernance li{color:var(--ds-text-secondary);font-size:12px;line-height:1.75}
+.cgLead{max-width:810px}
+.cgCards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:21px 0}
+.cgCards article{border:1px solid var(--ds-border-primary);border-radius:12px;padding:21px;background:var(--ds-surface-green)}
+.cgCards article>span{font-size:10px;color:var(--ds-primary-action-pressed)}
+.cgCards h3{font-size:21px;font-weight:650;margin:12px 0}
+.cgCards strong{font-size:17px;font-weight:650}
+.cgCards ul{padding-left:19px}
+.cgActions{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin:19px 0}
+.cgActions button{border:1px solid var(--ds-primary-action);border-radius:9px;background:var(--ds-primary-action);padding:12px 15px;min-height:44px;color:white;font-size:12px;font-weight:700}
+.cgActions span{font-size:11px;color:var(--ds-text-secondary)}
+.cgMatrix,.cgNext{border-top:1px solid var(--ds-border-primary);margin-top:27px;padding-top:25px}
+.cgMatrix h3,.cgNext h3{font-size:21px;font-weight:650;letter-spacing:-.4px;margin:10px 0}
+.cgMatrixList{display:grid;gap:8px}
+.cgMatrixList>div{display:grid;grid-template-columns:minmax(150px,1fr) minmax(140px,.65fr) minmax(220px,2fr);gap:14px;align-items:center;border-radius:9px;border:1px solid var(--ds-border-primary);padding:13px}
+.cgMatrixList strong{font-size:11px}
+.cgMatrixList span{font-size:11px;color:var(--ds-primary-action-pressed)}
+.cgMatrixList p{margin:0}
+.cgNext{background:var(--ds-surface-yellow);border-radius:12px;border:0;padding:22px}
+.cgNext ol{padding-left:20px}
+@media(max-width:850px){.cgMatrixList>div{grid-template-columns:1fr}.cgCards{grid-template-columns:1fr}}
+@media(max-width:600px){.cgGovernance{padding:16px}}
