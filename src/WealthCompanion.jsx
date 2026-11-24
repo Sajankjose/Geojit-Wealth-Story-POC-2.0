@@ -7,6 +7,7 @@ import {
  selectNextHelpfulAction,actionSummary,shouldOfferProactiveCheckIn
 } from './lib/wealthCompanion.js'
 import {fixtureIntelligence} from './lib/wealthIntelligence.js'
+import {composeExperience} from './lib/companionExperience.js'
 
 const storageKey=id=>'geojit-wealth-companion-poc3-'+id
 function readSession(id){
@@ -20,8 +21,9 @@ export default function WealthCompanion({clientId='C012',client,onNavigate}){
  const [notice,setNotice]=useState('')
  const model=useMemo(()=>fixtureIntelligence(clientId),[clientId])
  useEffect(()=>{setProfile(readSession(clientId));setStage(readSession(clientId).started?'home':'entry');setNotice('')},[clientId])
- const roadmap=useMemo(()=>createLearningRoadmap(profile),[profile])
- const next=selectNextHelpfulAction(profile)
+ const experience=useMemo(()=>composeExperience({kind:'existing',profile,portfolioAvailable:!!model}),[profile,model])
+ const roadmap=experience.roadmap
+ const next=experience.next
  const summary=actionSummary(profile)
  const proactivity=shouldOfferProactiveCheckIn({profile,materialChangeVerified:false,permission:false})
  const title=String(client?.alias||'Your').replace(/ \(fictional\)$/i,'')
@@ -38,7 +40,7 @@ export default function WealthCompanion({clientId='C012',client,onNavigate}){
   {stage==='entry'?<CompanionOnboarding clientId={clientId} client={client}
    onComplete={draft=>{save(draft,'Your educational roadmap is ready. This is a fictional browser-only activation, not a paid subscription.');setStage('home')}}
    onExit={()=>setStage('home')}/>:<>
-  <div className="wcDemo"><span>GEOJIT WEALTH COMPANION · PRODUCT CONCEPT POC 3.0</span><b>Fictional reviewer experience · Not an advisory service or active subscription</b></div>
+  <div className="wcDemo"><span>GEOJIT WEALTH COMPANION · SHARED EXPERIENCE ENGINE POC 3.3</span><b>Fictional reviewer experience · Not an advisory service or active subscription</b></div>
   <header className="wcHero">
    <div><div className="wcKicker">MY WEALTH JOURNEY</div><h2>{profile.started?'A clearer financial journey, '+title+'.':'A more thoughtful way to navigate your financial future.'}</h2>
     <p>{profile.started?'Explore the questions that matter to you. Your roadmap stays in your control and changes only when you choose.':'Understand your investments, explore goals and keep useful financial information together—without being told what to buy.'}</p>
@@ -65,7 +67,7 @@ export default function WealthCompanion({clientId='C012',client,onNavigate}){
   </section>}
   {stage==='home'&&<div className="wcHome">
     {profile.started?<><div className="wcHomeGrid"><section className="wcPanel wcFocusPanel"><div className="wcKicker">YOUR CURRENT FOCUS</div><h3>{next?next.title:'Nothing urgent to do right now.'}</h3><p>{next?next.reason:'You have explored the optional learning steps in this roadmap. Return when something matters to you.'}</p>
-      {next?<button type="button" className="wcMainBtn" onClick={()=>onNavigate?.(next.destination)}>{next.action} →</button>:<button type="button" onClick={()=>setStage('setup')}>Explore another topic</button>}<div className="wcFocusFoot">Why this? {next?'You selected a related educational topic. No product need has been inferred.':'No automatic action is required.'}</div></section>
+      {next?<button type="button" className="wcMainBtn" onClick={()=>onNavigate?.(next.destination)}>{next.action} →</button>:<button type="button" onClick={()=>setStage('setup')}>Explore another topic</button>}<div className="wcFocusFoot">Why this? {next?experience.reason:'No automatic action is required.'}</div></section>
      <section className="wcPanel wcMiniMap"><div className="wcKicker">YOUR ROADMAP</div><h3>Progress at your pace</h3><div className="wcStatRow"><div><strong>{summary.completed}</strong><span>Explored</span></div><div><strong>{summary.available}</strong><span>Available</span></div><div><strong>{summary.deferred}</strong><span>Later</span></div></div><p>Educational activity only—not a financial fitness score.</p><button type="button" onClick={()=>setStage('roadmap')}>See all steps →</button></section></div>
       <div className="wcInsights"><section className="wcPanel"><div className="wcKicker">YOUR FINANCIAL PICTURE</div><h3>See the investments in your wider story.</h3><p>{model?'The fictional Geojit in-scope view is '+model.valuation+'. Your financial life may include assets and responsibilities that are not visible here.':'You can explore your account information when it becomes available.'}</p><button type="button" onClick={()=>onNavigate?.('intelligence')}>Explore financial intelligence →</button></section>
        <section className="wcPanel"><div className="wcKicker">YOUR WEALTH STORY</div><h3>One useful chapter at a time.</h3><p>Understand what changed, why it may matter and what you might choose to explore next. Stories remain subject to editorial review and publication.</p><button type="button" onClick={()=>onNavigate?.('story')}>Read my Wealth Story →</button></section>
