@@ -34,7 +34,7 @@ export function sanitiseLifecycle(raw){
    Number.isInteger(goal.years)&&goal.years>=1&&goal.years<=40
    ?{label:goal.label.slice(0,60),target:goal.target,years:goal.years}:null;
  return {...base,stage:validPhase,selected:validChoice,
-  completed:[...new Set(Array.isArray(raw.completed)?raw.completed.filter(x=>['learn','goal_review','financial_picture'].includes(x)):[])],
+  completed:[...new Set(Array.isArray(raw.completed)?raw.completed.filter(x=>['learn','goal_review','financial_picture','picture','goals','protection','foundation','review','story'].includes(x)):[])],
   declaredGoal:safeGoal,illustrativeInvestment:raw.illustrativeInvestment===true&&validPhase==='invested',
   edition:['none','beginner','goal','activity'].includes(raw.edition)?raw.edition:'none'};
 }
