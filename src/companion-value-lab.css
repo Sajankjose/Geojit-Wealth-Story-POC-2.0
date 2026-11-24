@@ -1,0 +1,32 @@
+.cvLab{border:1px solid var(--ds-border-primary);border-radius:15px;background:white;padding:25px;color:var(--ds-text-primary)}
+.cvLab h2{font-size:clamp(24px,2.4vw,32px);font-weight:650;letter-spacing:-.7px;margin:9px 0}
+.cvIntro,.cvLab p{font-size:12px;line-height:1.8;color:var(--ds-text-secondary)}
+.cvScenario{display:flex;gap:12px;flex-wrap:wrap;margin:21px 0}
+.cvScenario label{display:grid;gap:8px;font-size:11px;font-weight:650;flex:1;min-width:205px}
+.cvScenario select{padding:12px;border-radius:8px;border:1px solid var(--ds-border-primary);background:white;min-height:44px;font-size:12px}
+.cvGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.cvGrid article{padding:21px;border:1px solid var(--ds-border-primary);border-radius:12px;min-width:0}
+.cvGrid h3,.cvPilot h3{font-size:20px;font-weight:650;letter-spacing:-.3px;margin:11px 0}
+.cvGrid h4{font-size:13px;font-weight:700;margin:20px 0 10px}
+.cvEngine{background:var(--ds-surface-green)}
+.cvFacts{display:grid;gap:7px;margin:15px 0}
+.cvFacts>span{display:flex;gap:11px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--ds-border-primary);padding:8px 0;font-size:10px;color:var(--ds-text-secondary)}
+.cvFacts b{font-size:11px;color:var(--ds-text-primary);font-weight:700}
+.cvAction{padding:12px;background:white;border:1px solid var(--ds-border-primary);border-radius:9px;display:grid;gap:6px;margin:8px 0}
+.cvAction b{font-size:12px}.cvAction small{font-size:11px;line-height:1.6;color:var(--ds-text-secondary)}
+.cvMetricGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cvMetricGrid>div{border-radius:9px;background:#F1F8F3;padding:15px;display:grid;gap:8px}
+.cvMetricGrid strong{font-size:25px;font-weight:650;font-variant-numeric:tabular-nums}
+.cvMetricGrid span{font-size:10px;color:var(--ds-text-secondary)}
+.cvFine{font-size:10px!important}
+.cvEventButtons{display:grid;gap:7px}
+.cvEventButtons button{display:flex;flex-direction:column;gap:4px;text-align:left;padding:11px;border:1px solid var(--ds-border-primary);background:white;border-radius:8px}
+.cvEventButtons b{font-size:11px}.cvEventButtons small{font-size:10px;color:var(--ds-text-secondary)}
+.cvEventButtons button:hover{border-color:var(--ds-primary-action)}
+.cvReset,.cvFoot button{border:1px solid var(--ds-border-primary);padding:12px 14px;border-radius:9px;background:white;margin-top:11px;font-weight:700;font-size:11px}
+.cvPilot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:13px;padding:22px;border-radius:12px;background:var(--ds-surface-yellow)}
+.cvPilot b{font-size:12px}.cvPilot p{margin-bottom:0}
+.cvFoot{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.cvFoot span{font-size:10px;color:var(--ds-text-secondary)}
+@media(max-width:900px){.cvGrid,.cvPilot{grid-template-columns:1fr}}
+@media(max-width:600px){.cvLab{padding:15px}.cvGrid article{padding:15px}}
