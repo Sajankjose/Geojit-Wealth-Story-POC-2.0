@@ -34,7 +34,7 @@ export default function WealthCompanion({clientId='C012',client,onNavigate}){
  function setDecision(id,state){save({...profile,decisions:{...profile.decisions,[id]:state}},state==='completed'?'You marked this learning step complete. This is not a financial milestone.':state==='later'?'You can return to this optional step whenever you wish.':'The step is available to explore again.')}
  function begin(){if(!profile.focus.length){setNotice('Choose at least one area you would like to explore.');return}save({...profile,started:true},'Your self-directed educational roadmap is ready. There is no product commitment or real subscription.');setStage('home')}
  return <div className="wcCompanion">
-  <div className="wcDemo"><span>GE0JIT WEALTH COMPANION · PRODUCT CONCEPT POC 3.0</span><b>Fictional reviewer experience · Not an advisory service or active subscription</b></div>
+  <div className="wcDemo"><span>GEOJIT WEALTH COMPANION · PRODUCT CONCEPT POC 3.0</span><b>Fictional reviewer experience · Not an advisory service or active subscription</b></div>
   <header className="wcHero">
    <div><div className="wcKicker">MY WEALTH JOURNEY</div><h2>{profile.started?'A clearer financial journey, '+title+'.':'A more thoughtful way to navigate your financial future.'}</h2>
     <p>{profile.started?'Explore the questions that matter to you. Your roadmap stays in your control and changes only when you choose.':'Understand your investments, explore goals and keep useful financial information together—without being told what to buy.'}</p>
