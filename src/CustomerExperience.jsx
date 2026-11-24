@@ -117,6 +117,7 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
    <div className="cxIdentityBar"><div className="cxIdentityLabel"><span className="cxMark">WS</span><div><strong>My Wealth Companion</strong><small>YOUR WEALTH JOURNEY, MADE CLEARER</small></div></div>
      <label>Preview as fictional client<select aria-label="Preview as fictional client" value={client?.client_id||''} onChange={e=>chooseCustomer(e.target.value)}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{name(c)} · {c.client_id}</option>)}</select></label>
    </div>
+   {view!=='companion'&&<>
    <section className="cxHero"><div className="cxEyebrow">A MORE CONNECTED VIEW OF YOUR FINANCIAL JOURNEY</div><h1>Welcome, {name(client)}.<br/><em>Your journey, made clearer.</em></h1>
      <p>A place to understand your investments, explore your own priorities and keep learning at your pace. Wealth Story brings you relevant chapters along the way.</p>
      <div className="cxHeroStats"><span><b>{availableCount}</b> published fictional editions</span><span><b>{subscribedCount}</b> optional editions subscribed</span></div>
@@ -126,6 +127,7 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
    <div className="cxChannelChooser" role="group" aria-label="Choose your story edition">
      {CHANNELS.map(ch=><button type="button" key={ch.id} className={editionType===ch.id?'selected':''} aria-pressed={editionType===ch.id} onClick={()=>chooseEdition(ch.id)}><small>{ch.rhythm}</small><strong>{ch.title}</strong><span>{ch.description}</span></button>)}
    </div>
+   </>}
    <div className="cxBody">
     <nav className="cxNav" aria-label="Customer experience sections">{[['companion','Wealth Companion'],['story','Your Wealth Story'],['intelligence','Financial picture'],['wealthmap','Wealth Map'],['pilot','Guided pilot'],['context','About this story'],['preferences','Preferences']].map(([id,label])=><button type="button" key={id} className={view===id?'selected':''} aria-current={view===id?'page':undefined} onClick={()=>setView(id)}>{label}</button>)}</nav>
     {view==='companion'?<WealthCompanion clientId={clientId} client={client} onNavigate={setView}/>:
