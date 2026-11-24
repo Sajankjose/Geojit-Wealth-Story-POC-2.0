@@ -15,7 +15,7 @@ export function composeExperience({kind='existing',profile,lifecycle,portfolioAv
   const hasActualGoal=!!l.declaredGoal
   // Use the same canonical roadmap rule set as existing accounts; the new
   // customer view adds stage-specific explanations and a verified-unknown state.
-  const roadmap=action.map(x=>({...x,source:'explicit_new_customer_choice',status:'educational'}))
+  const roadmap=action.map(x=>({...x,state:l.completed.includes(x.id)?'completed':'suggested',source:'explicit_new_customer_choice',status:'educational'}))
   return {version:EXPERIENCE_VERSION,kind:'new',stage:l.stage,topics,
     title:snap.title,story:snap.story,roadmap,
     next:roadmap.find(x=>x.state==='suggested')||null,
