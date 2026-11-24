@@ -3,6 +3,7 @@ import {supabase} from './lib/supabase'
 import WealthIntelligence from './WealthIntelligence.jsx'
 import WealthCreationMap from './WealthCreationMap.jsx'
 import GuidedJourney from './GuidedJourney.jsx'
+import WealthCompanion from './WealthCompanion.jsx'
 
 const CHANNELS=[
  {id:'daily_trading',title:'Daily Trading Brief',rhythm:'Trading days',description:'Your trading context, only when current and approved sources are available.'},
@@ -26,7 +27,7 @@ function ContextCard({item}) {
 export default function CustomerExperience({clients=[],initialClientId,onChooseClient,onBack,onOpenStudio}){
  const [clientId,setClientId]=useState(initialClientId||'C012')
  const [editionType,setEditionType]=useState('weekly_investing')
- const [view,setView]=useState('story')
+ const [view,setView]=useState('companion')
  const [data,setData]=useState({status:'loading',subscriptions:[],editions:[],events:[]})
  const [refreshKey,setRefreshKey]=useState(0)
  const [notice,setNotice]=useState('')
@@ -71,7 +72,7 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
  const subscribedCount=data.subscriptions.filter(s=>s.status==='subscribed').length
  const availableCount=data.editions.length
  function chooseCustomer(id){
-  setClientId(id);onChooseClient?.(id);setView('story');setNotice('');setError('');setExpandedExplore(null)
+  setClientId(id);onChooseClient?.(id);setView('companion');setNotice('');setError('');setExpandedExplore(null)
  }
  function chooseEdition(id){setEditionType(id);setView('story');setNotice('');setError('');setExpandedExplore(null)}
  async function changePreference(next,requestedEdition=editionType){
@@ -113,11 +114,11 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
  }
  return <div className="cxExperience">
    <div className="cxPreviewBar"><div><strong>Customer view · Reviewer simulation</strong><span>Only fictional accounts · No real customer login, email or financial advice</span></div><button type="button" onClick={onBack}>← Back to workspace</button></div>
-   <div className="cxIdentityBar"><div className="cxIdentityLabel"><span className="cxMark">WS</span><div><strong>My Wealth Story</strong><small>YOUR WEALTH JOURNEY, MADE CLEARER</small></div></div>
+   <div className="cxIdentityBar"><div className="cxIdentityLabel"><span className="cxMark">WS</span><div><strong>My Wealth Companion</strong><small>YOUR WEALTH JOURNEY, MADE CLEARER</small></div></div>
      <label>Preview as fictional client<select aria-label="Preview as fictional client" value={client?.client_id||''} onChange={e=>chooseCustomer(e.target.value)}>{clients.map(c=><option key={c.client_id} value={c.client_id}>{name(c)} · {c.client_id}</option>)}</select></label>
    </div>
-   <section className="cxHero"><div className="cxEyebrow">A MORE CONNECTED VIEW OF YOUR FINANCIAL JOURNEY</div><h1>Welcome, {name(client)}.<br/><em>Your story continues here.</em></h1>
-     <p>Explore useful context from your relationship with Geojit—at your own pace, with clarity on what we know and what still needs checking.</p>
+   <section className="cxHero"><div className="cxEyebrow">A MORE CONNECTED VIEW OF YOUR FINANCIAL JOURNEY</div><h1>Welcome, {name(client)}.<br/><em>Your journey, made clearer.</em></h1>
+     <p>A place to understand your investments, explore your own priorities and keep learning at your pace. Wealth Story brings you relevant chapters along the way.</p>
      <div className="cxHeroStats"><span><b>{availableCount}</b> published fictional editions</span><span><b>{subscribedCount}</b> optional editions subscribed</span></div>
    </section>
    {error&&<div className="cxAlert" role="alert">{error}</div>}
@@ -126,8 +127,9 @@ export default function CustomerExperience({clients=[],initialClientId,onChooseC
      {CHANNELS.map(ch=><button type="button" key={ch.id} className={editionType===ch.id?'selected':''} aria-pressed={editionType===ch.id} onClick={()=>chooseEdition(ch.id)}><small>{ch.rhythm}</small><strong>{ch.title}</strong><span>{ch.description}</span></button>)}
    </div>
    <div className="cxBody">
-    <nav className="cxNav" aria-label="Customer experience sections">{[['story','Your story'],['pilot','Guided pilot'],['intelligence','Your financial picture'],['wealthmap','Your Wealth Map'],['context','About this story'],['preferences','Your preferences']].map(([id,label])=><button type="button" key={id} className={view===id?'selected':''} aria-current={view===id?'page':undefined} onClick={()=>setView(id)}>{label}</button>)}</nav>
-    {view==='pilot'?<GuidedJourney onOpenWealthMap={()=>setView('wealthmap')}/>:
+    <nav className="cxNav" aria-label="Customer experience sections">{[['companion','Wealth Companion'],['story','Your Wealth Story'],['intelligence','Financial picture'],['wealthmap','Wealth Map'],['pilot','Guided pilot'],['context','About this story'],['preferences','Preferences']].map(([id,label])=><button type="button" key={id} className={view===id?'selected':''} aria-current={view===id?'page':undefined} onClick={()=>setView(id)}>{label}</button>)}</nav>
+    {view==='companion'?<WealthCompanion clientId={clientId} client={client} onNavigate={setView}/>:
+     view==='pilot'?<GuidedJourney onOpenWealthMap={()=>setView('wealthmap')}/>:
      data.status==='loading'?<div className="cxEmpty"><h2>Bringing your story together…</h2><p>Retrieving approved fictional editions and subscription preferences.</p></div>:
      data.status==='error'?<div className="cxEmpty"><h2>We couldn't load this preview.</h2><p>{data.message}</p><button className="cxMainButton" type="button" onClick={()=>setRefreshKey(x=>x+1)}>Try again</button></div>:
      view==='intelligence'?<WealthIntelligence clientId={clientId} editionType={editionType} onShowStory={()=>setView('story')}/>:
