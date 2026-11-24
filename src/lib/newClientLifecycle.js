@@ -57,12 +57,12 @@ export function lifecycleSnapshot(raw){
  ];
  const title=s.stage==='new'?'Your journey begins with understanding.':
   s.stage==='learning'?'You have taken a step toward financial clarity.':
-  s.stage==='goal'?'A goal gives your questions a clearer shape.':
+  s.stage==='goal'?(s.declaredGoal?'A goal gives your questions a clearer shape.':'You can give a personal goal a clearer shape.'):
   'Your first contribution adds a new chapter.';
  const story=s.stage==='new'?
   'There is no investment performance to report yet. Today, you can choose one subject to understand better. You set the pace.':
   s.stage==='learning'?'You have explored a financial concept you chose. The next useful step is deciding whether a financial goal matters to you—not selecting a product.':
-  s.stage==='goal'?'You have chosen a fictional goal for this demonstration. Its target and horizon are assumptions you can revisit; no investment has been assessed as suitable.':
+  s.stage==='goal'?(s.declaredGoal?'You have chosen a fictional goal for this demonstration. Its target and horizon are assumptions you can revisit; no investment has been assessed as suitable.':'A goal can help give direction to a financial journey. You have not yet shared a target or time horizon; that remains your decision.'):
   'The fictional account now contains a contribution. It is worth understanding how contributions and changes in market value differ; a single contribution does not establish returns.';
  return {phase,hasInvestment,fictionalInvestment,title,story,items,
   next:items.find(i=>!s.completed.includes(i.id))||null,
