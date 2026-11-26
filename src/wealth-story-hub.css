@@ -1,0 +1,52 @@
+/* Wealth Story 4.1 — source-aware companion layer built on Geojit design tokens */
+.wshSnapshot{margin:0 0 17px;padding:clamp(18px,3.4vw,29px);border:1px solid var(--ds-border-primary);border-radius:var(--ds-radius-lg);background:linear-gradient(115deg,var(--ds-surface-white),var(--ds-surface-yellow));box-shadow:var(--ds-shadow)}
+.wshSnapshotIntro h2{font:650 clamp(22px,2.8vw,29px)/1.25 var(--geojit-type);letter-spacing:-.5px;max-width:680px;margin:8px 0;color:var(--ds-text-primary)}
+.wshSnapshotIntro p{font-size:12px;color:var(--ds-text-secondary);line-height:1.65;margin:8px 0 15px}
+.wshSnapshotStats{display:flex;gap:10px;flex-wrap:wrap;margin:17px 0}
+.wshSnapshotStats>div{display:flex;align-items:center;gap:8px;background:var(--ds-surface-green);border:1px solid var(--ds-border-primary);padding:10px 14px;border-radius:10px}
+.wshSnapshotStats strong{font-size:25px;color:var(--ds-primary-action-pressed);line-height:1}
+.wshSnapshotStats span{font-size:10px;color:var(--ds-text-secondary);max-width:114px;line-height:1.35}
+.wshSnapshotChapters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.wshSnapshotChapters button{background:#fff;border:1px solid var(--ds-border-primary);border-radius:10px;text-align:left;padding:11px 9px;display:grid;gap:7px;cursor:pointer;min-width:0}
+.wshSnapshotChapters button:hover,.wshSnapshotChapters button:focus-visible{border-color:var(--ds-border-active)}
+.wshChapterIcon{width:30px;height:30px;background:var(--ds-surface-green);border-radius:9px;display:grid;place-items:center;color:var(--ds-primary-action);font-size:19px}
+.wshSnapshotChapters .isOpen .wshChapterIcon{background:var(--ds-surface-yellow);color:#AC781D}
+.wshSnapshotChapters b{font-size:11px;line-height:1.3;color:var(--ds-text-primary);display:block}
+.wshSnapshotChapters small{display:block;margin-top:5px;font-size:9px;line-height:1.35;color:var(--ds-text-secondary)}
+.wshSnapshotChapters button>span:last-child{justify-self:end;color:var(--ds-primary-action);font-size:14px}
+.wshSnapshotNote{font-size:10px;color:var(--ds-text-tertiary);line-height:1.6;margin:12px 0 0}
+.wshRM{background:var(--ds-surface-white);border:1px solid var(--ds-border-primary);border-radius:var(--ds-radius-lg);padding:18px;scroll-margin-top:90px}
+.wshRMHeading{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.wshDemoLabel{font-size:9px;color:var(--ds-warning);background:var(--ds-warning-light);border-radius:20px;padding:5px 8px}
+.wshRMTop{display:flex;align-items:center;gap:12px;padding:16px 0}
+.wshPortrait{width:75px;height:75px;border-radius:13px;flex:none;overflow:hidden}
+.wshRMTop h3{font-size:17px;color:var(--ds-text-primary);margin:0 0 5px;line-height:1.25}
+.wshRMTop p{font-size:11px;line-height:1.55;color:var(--ds-text-secondary);margin:0 0 6px}
+.wshRMTop small{font-size:10px;color:var(--ds-warning)}
+.wshRMContacts{border-top:1px solid var(--ds-border-primary);border-bottom:1px solid var(--ds-border-primary);padding:7px 0;display:grid;gap:1px}
+.wshRMContacts>div{display:flex;justify-content:space-between;gap:9px;padding:8px 0;font-size:10px}
+.wshRMContacts span{color:var(--ds-text-tertiary)}.wshRMContacts b{font-weight:650;color:var(--ds-text-secondary);text-align:right}
+.wshRMAction{border:1px solid var(--ds-border-action);background:var(--ds-surface-white);color:var(--ds-primary-action-pressed);border-radius:9px;padding:11px;font-weight:750;font-size:11px;width:100%;margin-top:13px;text-align:left;cursor:pointer}
+.wshRMDisclosure{margin-top:12px;border-radius:10px;padding:12px;background:var(--ds-surface-yellow);font-size:10px;line-height:1.65;color:var(--ds-text-secondary)}
+.wshRMDisclosure b{color:var(--ds-text-primary)}.wshRMDisclosure p{font-size:11px}.wshRMDisclosure small{font-size:10px}
+.wshGuide{position:fixed;right:18px;bottom:18px;z-index:80;display:flex;flex-direction:column;align-items:end;gap:10px;font-family:var(--geojit-type)}
+.wshChatLauncher{background:var(--ds-primary-action);color:var(--ds-on-dark);border:1px solid var(--ds-primary-action);border-radius:28px;padding:12px 17px;display:flex;align-items:center;gap:9px;box-shadow:0 9px 27px #02382d3f;font-size:12px;font-weight:750;cursor:pointer}
+.wshChatLauncher:hover{background:var(--ds-primary-action-pressed)}
+.wshChatLauncher>span:first-child{font-size:20px;line-height:1}
+.wshChatPanel{width:min(370px,calc(100vw - 28px));max-height:min(630px,calc(100dvh - 95px));display:flex;flex-direction:column;overflow:hidden;background:var(--ds-surface-white);border:1px solid var(--ds-border-primary);border-radius:16px;box-shadow:0 22px 75px #022f2d35;color:var(--ds-text-primary)}
+.wshChatPanel header{display:flex;align-items:center;justify-content:space-between;padding:15px;background:var(--ds-surface-green);border-bottom:1px solid var(--ds-border-primary)}
+.wshChatPanel header>div{display:flex;align-items:center;gap:10px}
+.wshChatOrb{width:37px;height:37px;background:var(--ds-primary-action);color:#fff;border-radius:11px;display:grid;place-items:center;font-size:22px}
+.wshChatPanel header b{display:block;font-size:12px}.wshChatPanel header small{display:block;color:var(--ds-text-secondary);font-size:9px;margin-top:3px}
+.wshChatPanel header>button{background:transparent;border:0;font-size:22px;color:var(--ds-text-secondary);cursor:pointer}
+.wshChatBody{overflow-y:auto;padding:15px;display:grid;gap:10px;align-content:start;min-height:110px}
+.wshChatBubble{font-size:11px;line-height:1.7;background:var(--ds-surface-green);padding:12px;border-radius:10px 10px 10px 3px;color:var(--ds-text-primary)}
+.wshChatBubble b{font-size:12px}.wshChatBubble p{margin:7px 0 0;font-size:11px}
+.wshChatUser{font-size:11px;justify-self:end;max-width:85%;background:var(--ds-surface-yellow);padding:10px;border:1px solid var(--ds-border-primary);border-radius:10px 10px 3px 10px}
+.wshChatBubble button{background:var(--ds-primary-action);color:#fff;border:0;padding:10px;border-radius:7px;font-size:10px;margin-top:9px;cursor:pointer}
+.wshChatPrompts{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px 13px;overflow:auto;border-top:1px solid var(--ds-border-primary)}
+.wshChatPrompts button{border:1px solid var(--ds-border-primary);background:#fff;color:var(--ds-text-primary);border-radius:8px;padding:9px 8px;font-size:10px;text-align:left;cursor:pointer;line-height:1.4}
+.wshChatPrompts button[aria-pressed=true]{border-color:var(--ds-border-active);background:var(--ds-surface-yellow)}
+.wshChatPanel footer{margin:0;padding:9px 13px;font-size:9px;color:var(--ds-text-tertiary);background:var(--ds-bg-page)}
+@media(max-width:850px){.wshSnapshotChapters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:570px){.wshSnapshotChapters{grid-template-columns:repeat(2,minmax(0,1fr))}.wshGuide{right:10px;bottom:10px}.wshChatPanel{width:calc(100vw - 20px);max-height:calc(100dvh - 83px)}.wshChatLauncher{padding:12px 14px}.wshRMTop{align-items:flex-start}}
