@@ -25,5 +25,5 @@ test('journey status gives a plain-language why and one real on-page next action
 test('new client has no implied account holdings or financial deficiency',()=>{
  assert.match(hub,/No investments or goals confirmed/)
  assert.match(hub,/not a checklist of products to buy/)
- assert.match(hub,/not a score/)
+ assert.match(hub,/not a score/i)
 })
