@@ -3,6 +3,7 @@ import {rupees,demoGoalFigures} from './lib/mobileWealthStory.js'
 import {STORY_PEOPLE,composeWealthStory,STORY_TOPICS,storyInsightOrder} from './lib/wealthStoryOrchestrator.js'
 import WealthIntelligence from './WealthIntelligence.jsx'
 import IllustrativeWealthMap from './IllustrativeWealthMap.jsx'
+import {WealthJourneySnapshot,StoryGuide,RMContactCard} from './WealthStoryHub.jsx'
 import {DEMO_PATHS} from './lib/demoRoutes.js'
 import './standalone-experiences.css'
 
@@ -86,9 +87,15 @@ export default function WealthStoryExperience(){
  })
  const [detail,setDetail]=useState(false)
  const [mapGoalOpen,setMapGoalOpen]=useState(false)
+ const [mapChapter,setMapChapter]=useState(null)
  const story=useMemo(()=>composeWealthStory(clientId),[clientId])
  const order=storyInsightOrder(story)
- const switchClient=id=>{setClientId(id);setDetail(false);setMapGoalOpen(false);try{window.history.replaceState(null,'',DEMO_PATHS.story+'?client='+encodeURIComponent(id))}catch{}}
+ const switchClient=id=>{setClientId(id);setDetail(false);setMapGoalOpen(false);setMapChapter(null);try{window.history.replaceState(null,'',DEMO_PATHS.story+'?client='+encodeURIComponent(id))}catch{}}
+ const goToSection=(destination)=>{
+  if(['foundation','protection','growth','goals','review'].includes(destination)){setMapChapter(destination);window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
+  else if(destination==='map'){window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
+  else if(destination==='contact'){window.requestAnimationFrame(()=>document.getElementById('wealth-story-contact')?.scrollIntoView({behavior:'smooth',block:'center'}))}
+ }
  if(!story)return <div className="srPage"><p>Fictional story unavailable.</p></div>
  const {person,model}=story
  return <div className="srPage">
@@ -98,6 +105,7 @@ export default function WealthStoryExperience(){
    <div className="srPersonaNav" aria-label="Preview different customer stories">{STORY_PEOPLE.map(p=><button key={p.id} type="button" className={clientId===p.id?'selected':''} onClick={()=>switchClient(p.id)} aria-pressed={clientId===p.id}><strong>{p.name}</strong><small>{p.description}</small></button>)}</div>
    <section className="srCover srCoverEditorial"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>ISSUE 01 · PERSONAL EDITION</span></div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p><div className="srCoverFoot"><span>One chapter today. A more informed journey tomorrow.</span><a className="srMapJump" href="#wealth-creation-map">See the chapters ahead ↗</a></div></section>
    <div className="srJourneyRibbon"><span>YOUR WEALTH CREATION JOURNEY</span><div><b>01</b> Understand your starting point <i>→</i> <b>02</b> Discover what matters <i>→</i> <b>03</b> Explore your next chapter</div></div>
+   <WealthJourneySnapshot key={clientId+'snapshot'} story={story} onExplore={goToSection}/>
    <div className="srContentGrid">
     <div className="srContentMain">
      {order.includes('service')&&<ServiceFollowUp key={clientId+'service'} story={story}/>}
@@ -109,11 +117,12 @@ export default function WealthStoryExperience(){
      {person.role==='new'&&<section className="srEditorialNote"><span className="srEyebrow">NO ASSUMPTIONS</span><h3>Your story can begin without a portfolio.</h3><p>There is no basis to infer investments elsewhere, savings capacity or financial responsibilities. Your first preference can guide future educational stories.</p></section>}
      {model&&<section className="srSecondary"><div><span className="srEyebrow">IF YOU'D LIKE TO EXPLORE DEEPER</span><h3>Your full financial picture</h3><p>Explore seven-week fictional valuations and the documented limitations of the cash-flow-adjusted comparison. Not required to enjoy the story.</p></div><button type="button" onClick={()=>setDetail(x=>!x)} aria-expanded={detail}>{detail?'Hide analysis −':'Show detailed analysis +'}</button>{detail&&<div className="srEvidence"><WealthIntelligence key={clientId} clientId={clientId}/></div>}</section>}
     </div>
-    <aside className="srSideRail"><ContactCard key={clientId+'contact'} story={story}/><div className="srEditorialCard"><span className="srEyebrow">SELECTED FOR YOUR STORY</span><h3>{story.content.title}</h3><p>{story.content.body}</p><small>Educational context · Based on the fictional scenario, not a recommendation.</small></div><div className="srSourceStamp"><b>How this edition was made</b><p>Evidence-linked synthetic account facts and editorial scenario rules. Only sections relevant to this fictional customer are prioritised.</p><details><summary>Sources & limitations</summary><p>{story.source_scope}</p><p>{story.signal.source}</p><p>No real Data Lake, CRM case, RM assignment, outbound newsletter or consent update is connected.</p></details></div></aside>
+    <aside className="srSideRail"><RMContactCard key={clientId+'rm'} story={story}/><div className="srEditorialCard"><span className="srEyebrow">SELECTED FOR YOUR STORY</span><h3>{story.content.title}</h3><p>{story.content.body}</p><small>Educational context · Based on the fictional scenario, not a recommendation.</small></div><div className="srSourceStamp"><b>How this edition was made</b><p>Evidence-linked synthetic account facts and editorial scenario rules. Only sections relevant to this fictional customer are prioritised.</p><details><summary>Sources & limitations</summary><p>{story.source_scope}</p><p>{story.signal.source}</p><p>No real Data Lake, CRM case, RM assignment, outbound newsletter or consent update is connected.</p></details></div></aside>
    </div>
-   <div id="wealth-creation-map" className="srMapSection"><IllustrativeWealthMap key={clientId+'map'} story={story} onExploreGoal={()=>setMapGoalOpen(v=>!v)}/>{mapGoalOpen&&<div className="srMapGoalExplorer"><GoalExplorer key={clientId+'map-goal'} story={story}/></div>}</div>
+   <div id="wealth-creation-map" className="srMapSection"><IllustrativeWealthMap key={clientId+'map-'+(mapChapter||'default')} initialChapter={mapChapter} story={story} onExploreGoal={()=>setMapGoalOpen(v=>!v)}/>{mapGoalOpen&&<div className="srMapGoalExplorer"><GoalExplorer key={clientId+'map-goal'} story={story}/></div>}</div>
    <Feedback key={clientId+'feedback'} clientId={clientId}/>
    <section className="srTomorrow"><span className="srEyebrow">AND YOUR JOURNEY CONTINUES</span><h2>Your journey does not end with this story.</h2><p>This is one chapter of your wealth creation journey. Keep exploring the topics that matter to you, and return as your questions and circumstances evolve. Wealth Companion is a separate, proposed Phase 2 service.</p><a href={DEMO_PATHS.companion}>Explore Wealth Companion · Phase 2 →</a></section>
+   <StoryGuide key={clientId+'guide'} story={story} onNavigate={goToSection}/>
    <footer className="srFooter">All customers, financial figures, service records and scenarios are fictional. Investment valuations dated 20 November 2026. Product relationship labels are explicitly invented demo fixtures, not live subscription records. No live market, Data Lake, customer care integration, assigned RM, outbound message or financial advice.</footer>
   </main></div>
 }
