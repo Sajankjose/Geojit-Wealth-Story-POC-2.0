@@ -1,5 +1,5 @@
 import React,{useMemo,useState} from 'react'
-import {meaningfulMoments} from './lib/momentsThatMatter.js'
+import {meaningfulMoments,MOMENT_REVIEW_DATE} from './lib/momentsThatMatter.js'
 import {rupees,demoGoalFigures} from './lib/mobileWealthStory.js'
 import {STORY_PEOPLE,composeWealthStory,STORY_TOPICS,storyInsightOrder} from './lib/wealthStoryOrchestrator.js'
 import WealthIntelligence from './WealthIntelligence.jsx'
@@ -127,7 +127,7 @@ export default function WealthStoryExperience(){
   <main className="srMain">
    <div className="srIssue"><span>PHASE 1 · PERSONALISED RELATIONSHIP EXPERIENCE</span><span>FICTIONAL REVIEW DEMONSTRATION</span></div>
    <div className="srPersonaNav" aria-label="Preview different customer stories">{STORY_PEOPLE.map(p=><button key={p.id} type="button" className={clientId===p.id?'selected':''} onClick={()=>switchClient(p.id)} aria-pressed={clientId===p.id}><strong>{p.name}</strong><small>{p.description}</small></button>)}</div>
-   <section className="srCover srCoverEditorial srCoverCompact"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>PERSONAL EDITION · FICTIONAL DEMO</span></div>
+   <section className="srCover srCoverEditorial srCoverCompact"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(MOMENT_REVIEW_DATE)}</span><span>INVESTMENT FIGURES AS AT {formatDate(story.as_of)}</span></div>
     <div className="srCoverHeadline"><div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p></div><span className="srCoverChapter">YOUR JOURNEY<br/>CONTINUES <span aria-hidden="true">✦</span></span></div>
     <StoryOpening key={clientId+'opening'} story={story} onMoments={()=>goToSection('moments')} onNext={()=>goToSection(story.service?'service':person.role==='goal'?'goals':person.role==='new'?'foundation':'protection-explorer')}/>
     <div className="srCoverFoot"><span>Made from fictional customer records. Each story is different.</span><a className="srMapJump" href="#wealth-creation-map">Explore my wealth map ↗</a></div>
