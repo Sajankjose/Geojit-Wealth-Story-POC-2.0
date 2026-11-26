@@ -1,0 +1,56 @@
+/* POC 4.2 — Geojit semantic-brand moments and self-directed protection explorer */
+.mtmSection{margin:18px 0;scroll-margin-top:30px;color:var(--ds-text-primary)}
+.mtmHead{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 2px 16px}
+.mtmHead h2{font:650 clamp(23px,3vw,31px)/1.27 var(--geojit-type);letter-spacing:-.7px;margin:8px 0}
+.mtmHead p{font-size:12px;line-height:1.65;color:var(--ds-text-secondary);margin:6px 0}
+.mtmReviewDate{font-size:10px;color:var(--ds-text-tertiary);white-space:nowrap}
+.mtmCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.mtmCard{min-width:0;border-radius:var(--ds-radius-lg);padding:20px;border:1px solid var(--ds-border-primary);background:var(--ds-surface-white);display:flex;flex-direction:column;align-items:start;gap:8px}
+.mtmCard-anniversary{background:linear-gradient(140deg,var(--ds-surface-green),var(--ds-surface-yellow))}
+.mtmCard-birthday{background:linear-gradient(140deg,#FFF2E4,var(--ds-surface-yellow))}
+.mtmCard-figure{background:linear-gradient(145deg,#F0F6FA,var(--ds-surface-white))}
+.mtmCard-protection{background:linear-gradient(145deg,#FEF3EA,var(--ds-surface-white))}
+.mtmEventIcon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--ds-surface-white);color:var(--ds-primary-action);font-size:22px}
+.mtmEventEyebrow{font-size:9px;letter-spacing:.7px;font-weight:750;color:var(--ds-primary-action)}
+.mtmNumber{font-size:clamp(27px,3vw,35px);color:var(--ds-text-primary);letter-spacing:-.75px;line-height:1.2;font-variant-numeric:tabular-nums}
+.mtmNumber small{font-size:13px;font-weight:600;color:var(--ds-text-secondary)}
+.mtmCard h3{font-size:16px;line-height:1.35;font-weight:750;margin:2px 0;color:var(--ds-text-primary)}
+.mtmCard p{font-size:11px;line-height:1.75;color:var(--ds-text-secondary);margin:0 0 6px}
+.mtmCard button,.mtmInterest button{background:var(--ds-primary-action);border:1px solid var(--ds-primary-action);border-radius:9px;color:var(--ds-on-dark);padding:10px 12px;font-size:11px;font-weight:750;cursor:pointer}
+.mtmCard button:hover,.mtmInterest button:hover{background:var(--ds-primary-action-pressed)}
+.mtmFootnote{font-size:9px;color:var(--ds-text-tertiary);margin-top:auto}
+.mtmEvidenceButton{background:transparent;border:0;padding:11px 0;font-size:11px;font-weight:700;color:var(--ds-primary-action);cursor:pointer}
+.mtmEvidence{background:var(--ds-surface-white);border:1px solid var(--ds-border-primary);border-radius:9px;padding:12px}
+.mtmEvidence p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary);margin:0}
+.mtmProtection{background:var(--ds-surface-white);border:1px solid var(--ds-border-primary);border-radius:var(--ds-radius-lg);padding:clamp(17px,3vw,27px);margin:14px 0;scroll-margin-top:25px}
+.mtmProtectionIntro h3{font-size:clamp(20px,2.5vw,27px);line-height:1.3;letter-spacing:-.4px;margin:8px 0}
+.mtmProtectionIntro p,.mtmScenario p,.mtmInterest p{font-size:11px;line-height:1.75;color:var(--ds-text-secondary)}
+.mtmAnswerGroup{border:0;padding:8px 0;margin:17px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.mtmAnswerGroup legend{font-size:12px;font-weight:700;color:var(--ds-text-primary);padding-bottom:9px}
+.mtmAnswerGroup label{display:flex;align-items:center;gap:9px;background:var(--ds-surface-white);border:1px solid var(--ds-border-primary);border-radius:10px;padding:11px;cursor:pointer;font-size:11px;color:var(--ds-text-primary)}
+.mtmAnswerGroup label.selected{background:var(--ds-surface-green);border-color:var(--ds-border-action)}
+.mtmAnswerGroup input{accent-color:var(--ds-primary-action);flex:none}
+.mtmProtectionRoutes{display:flex;gap:8px;margin:16px 0}
+.mtmProtectionRoutes button{padding:10px 14px;border:1px solid var(--ds-border-primary);border-radius:8px;background:#fff;color:var(--ds-text-secondary);font-size:11px;font-weight:700;cursor:pointer}
+.mtmProtectionRoutes button.selected{background:var(--ds-tab-active);border-color:var(--ds-border-action);color:var(--ds-text-primary)}
+.mtmScenario{background:var(--ds-surface-yellow);border:1px solid var(--ds-border-primary);border-radius:12px;padding:18px}
+.mtmScenario h4,.mtmInterest h4{font-size:15px;color:var(--ds-text-primary);margin:0 0 10px}
+.mtmScenarioInputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:15px 0}
+.mtmScenarioInputs label,.mtmScenario>label{display:grid;gap:7px;font-size:11px;color:var(--ds-text-secondary)}
+.mtmScenarioInputs input,.mtmScenario>label input{border:1px solid var(--ds-border-primary);border-radius:8px;background:#fff;padding:10px 12px;min-width:0;width:100%;color:var(--ds-text-primary);font-size:12px}
+.mtmCalcToggle{background:#fff;border:1px solid var(--ds-border-action);border-radius:9px;padding:11px 14px;font-size:11px;color:var(--ds-primary-action-pressed);font-weight:750;cursor:pointer}
+.mtmScenarioResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.mtmScenarioResults div{background:#fff;border:1px solid var(--ds-border-primary);border-radius:10px;padding:13px;display:grid;gap:7px}
+.mtmScenarioResults span{font-size:10px;color:var(--ds-text-secondary)}
+.mtmScenarioResults strong{font-size:20px;color:var(--ds-text-primary);font-variant-numeric:tabular-nums}
+.mtmScenarioResults p{grid-column:1/-1;font-size:10px;color:var(--ds-text-secondary);margin:3px 0}
+.mtmInterest{margin-top:18px;border-top:1px solid var(--ds-border-primary);padding-top:17px}
+.mtmInterest>label{display:flex;align-items:start;gap:9px;font-size:11px;line-height:1.6;color:var(--ds-text-secondary);margin:11px 0}
+.mtmInterest>label input{accent-color:var(--ds-primary-action);margin-top:4px;flex:none}
+.mtmInterest button:disabled{opacity:.5;cursor:not-allowed}
+.mtmLegal,.mtmLater,.mtmValidation,.mtmServiceNote{font-size:10px;color:var(--ds-text-secondary);line-height:1.7}
+.mtmLegal{margin:18px 0 0}
+.mtmServiceNote{background:var(--ds-warning-light);padding:10px;border-radius:8px}
+.mtmSuccess{border:1px solid var(--ds-border-primary);background:var(--ds-surface-green);padding:12px;border-radius:8px;font-size:11px!important;color:var(--ds-text-primary)!important}
+@media(max-width:830px){.mtmCards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.mtmCards{grid-template-columns:1fr}.mtmAnswerGroup,.mtmScenarioInputs,.mtmScenarioResults{grid-template-columns:1fr}.mtmProtectionRoutes{flex-wrap:wrap}}
