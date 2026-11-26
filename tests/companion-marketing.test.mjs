@@ -33,7 +33,7 @@ test('four service promises explicitly distinguish proposed expert access and de
  const expert=COMPANION_SERVICES.find(x=>x.id==='expert')
  assert.equal(expert.kind,'proposed')
  assert.match(expert.availability,/not yet approved/)
- assert.match(COMPANION_SERVICES.find(x=>x.id==='coach').availability,/scripted educational/)
+ assert.match(COMPANION_SERVICES.find(x=>x.id==='coach').availability,/scripted educational/i)
  assert.equal(DEMO_PERSONAS.length,2)
 })
 test('coach never promises a human connection or personalised trading recommendation',()=>{
