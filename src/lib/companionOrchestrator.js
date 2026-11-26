@@ -43,7 +43,7 @@ export function companionContext(inputId='C012'){
 }
 export function resolveCompanionFocus(id,requested){
  const ctx=companionContext(id)
- return ['money','journey','goals','learning','guide','support','explore'].includes(requested)?requested:ctx.focus
+ return ['money','journey','goals','learning','guide','support','explore','brokerage'].includes(requested)?requested:ctx.focus
 }
 export function companionSteps(context){
  const first=context.isService?'review':context.mode==='goal'?'goals':context.mode==='trader'||context.mode==='investor'?'growth':'foundation'
