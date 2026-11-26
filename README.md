@@ -1,6 +1,48 @@
-# Geojit Wealth Companion — Insight-Led W Discovery & Service Promise POC 3.5
+# Geojit Wealth Companion — Figure-Led Mobile Wealth Story POC 3.6
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.6 — Figure-led mobile Wealth Story: a real customer story from demo data
+
+**Management-demo goal:** Replace generic explanation-heavy copy with a coherent numerical financial story on the mobile One App W journey, using the **same** deterministic, synthetic inputs as the existing Financial Intelligence POC.
+
+### Thomas C012 — sourced numeric narrative
+
+The W mobile demo now **opens with Thomas** for new reviewer browser sessions (reviewers with a saved browser-session choice can use Reset and the persona selector to switch). Click **W → first insight** to see the synthetic portfolio evidence:
+
+- **Total fictitious Geojit investments:** ₹5,42,000, dated 20 November 2026.
+- **Equity:** ₹3,24,000 (~59.8%); **mutual funds:** ₹2,18,000 (~40.2%).
+- **Visuals:** a proportional allocation bar on the first-click hook, then a detailed allocation card and seven-week historical valuation chart after the demo is activated.
+- **Wealth Story:** open **Your Wealth Story** in the activated mobile companion. The narrative reconciles the previous weekly valuation, this week's **₹3,000 fictional net contribution**, the value change excluding flows and the resulting total of ₹5,42,000. It also displays a deterministic Modified Dietz-style weekly return estimate and the explicitly fictional, not portfolio-matched equity-market proxy.
+- **Clear distinction:** additions and withdrawals are not investment gains or a measure of success. The synthetic index is not a real market quote. Neither the number, trend nor percentage establishes performance suitability, holdings attribution or a financial goal.
+
+Every amount is calculated in `src/lib/mobileWealthStory.js` from the existing `fictionalFinancialInput('C012')` and `fixtureIntelligence('C012')`. There is **no duplicate hardcoded holdings dataset** or LLM-generated performance number. The fictional valuation dates and methodology are labelled; see source and calculation caveats on the story screen.
+
+### Arun — financial journey even without a portfolio
+
+Use the management panel's persona selector to choose **Arun · New to Geojit**, resetting the fictional W demonstration. Arun has no recorded holdings, contributions, market returns, investment goals or inferred needs.
+
+The mobile hook provides a simple, clearly hypothetical savings example. After activation, **Your journey in figures** presents a working three-slider scenario:
+- A target chosen by the demo user (default ₹6,00,000).
+- Years to explore (default 5).
+- Hypothetical monthly saving (default ₹5,000).
+- Live arithmetic progress at **0% growth** (₹3,00,000 after 60 months at the defaults), difference against the target, and the monthly arithmetic needed at 0% (₹10,000 at the defaults).
+
+This is not a forecast, suitability model, recommended monthly contribution or actual account performance. The user changes the numbers and can see the result directly. The same interactive scenario is shown within Arun's **Wealth Story**.
+
+### Where management should click
+
+1. Open the existing synthetic reviewer app at `https://wealthstory.netlify.app/` and **One App · W Journey**.
+2. Choose **Thomas** from the right-hand demo selector and use **Reset full demo** if a previous activation is saved.
+3. Tap the **W** feature tile. The first-click hook now shows the ₹5.42 lakh total and its equity/MF split, not only an abstract promise.
+4. Explore the service, select a hypothetical plan, confirm data scope, select interests, preview the roadmap and complete **Activate Wealth Companion · demo**.
+5. On the mobile Companion home, examine **Your journey in figures** and its seven-week trend, then tap **Understand what changed this week** or **Your Wealth Story** for the contribution-aware numeric story.
+6. Switch to **Arun**, complete the simulated enrolment and adjust the hypothetical target, timeline and monthly-savings sliders. Emphasise that the service remains useful without holdings or a financial plan.
+7. Return to **My Wealth Companion** for the broader experience and the existing Financial Intelligence module.
+
+**Validation:** `tests/mobile-wealth-story.test.mjs` reconciles Thomas's total with equity/MF values and the same seven-point valuation source, verifies the weekly contribution bridge, tests the absence of new-client portfolio values, and validates 0%-growth scenario calculations and their caveats. GitHub CI also runs the existing guidance/financial tests.
+
+**Implementation boundaries:** This remains a simulated mobile app, *not* a production One App integration. All valuations are invented for demonstration, not actual customer information or market data. A production service requires verified brokerage/MF data, validated valuation/flow methodology, product and advisory compliance review, real consent, expert-support operations and publishing controls. No new Supabase migration or Netlify variables are needed.
 
 ## POC 3.5 — The first-click “wow” moment and genuine four-part service promise
 
