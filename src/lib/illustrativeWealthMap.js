@@ -39,7 +39,7 @@ export function illustrativeMapForStory(story){
   serviceFirst:!!story.service&&story.service.status==='In progress',
   chapters:MAP_CHAPTERS.map(x=>({...x,
    evidence:x.id==='goals'&&role==='goal'?'Goal explicitly declared in this fictional account':x.id==='growth'&&story.model&&role!=='new'?'Investments recorded in fictional Geojit account':'Open to explore · Not assessed',
-   known:x.id==='goals'&&role==='goal'||x.id==='growth'&&story.model&&role!=='new'}))
+   known:Boolean((x.id==='goals'&&role==='goal')||(x.id==='growth'&&!!story.model&&role!=='new'))}))
  }
 }
 export function mayShowOptionalProductDiscovery(map,userOpened=false){
