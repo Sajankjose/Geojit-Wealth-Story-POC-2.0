@@ -3,6 +3,8 @@ import { configured, supabase, loadClients, loadClientRecords } from './lib/supa
 import OperatingStudio from './OperatingStudio.jsx'
 import CustomerExperience from './CustomerExperience.jsx'
 import OneAppDemo from './OneAppDemo.jsx'
+import WealthStoryExperience from './WealthStoryExperience.jsx'
+import {resolveDemoRoute,DEMO_PATHS} from './lib/demoRoutes.js'
 
 const sample = [
  ['C001','Arun','New explorer','Explore'],['C002','Anu','First SIP','Guide'],['C003','Meera','Regular SIP investor','Guide'],
@@ -79,6 +81,7 @@ function Story({records}){
  </div>
 }
 export default function App(){
+ const route=resolveDemoRoute(window.location.pathname)
  const [session,setSession]=useState(null),[authLoading,setAuthLoading]=useState(configured),[authError,setAuthError]=useState('')
  const [clients,setClients]=useState(configured?[]:preview),[records,setRecords]=useState([]),[loading,setLoading]=useState(configured)
  const [error,setError]=useState(''),[selected,setSelected]=useState('C012'),[query,setQuery]=useState(''),[tab,setTab]=useState('overview'),[workspace,setWorkspace]=useState('oneapp')
@@ -108,10 +111,12 @@ export default function App(){
  async function login(email,password){setAuthLoading(true);setAuthError('');const {error}=await supabase.auth.signInWithPassword({email,password});if(error)setAuthError(error.message);setAuthLoading(false)}
  if(configured&&authLoading&&!session)return <div className="loadingPage">Checking reviewer access…</div>
  if(configured&&!session)return <Login onLogin={login} error={authError} working={authLoading}/>
+ if(route==='story')return <WealthStoryExperience/>
+ if(route==='companion')return <div className="srPage"><div className="srHeader"><div className="srBrand"><span className="srLogo">W</span><div><strong>Geojit Wealth Companion</strong><small>PHASE 2 · GUIDED SERVICE EXPERIENCE</small></div></div><div className="srHeaderLinks"><a href={DEMO_PATHS.story}>Explore Phase 1 · Wealth Story</a><a href={DEMO_PATHS.lab}>Review workspace</a></div></div><OneAppDemo onReturn={()=>window.location.assign(DEMO_PATHS.lab)}/></div>
  return <div className="shell">
  <aside className="sidebar">
  <div className="brand"><div className="brand-symbol" aria-hidden="true">WS</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
- <div className="side-heading">REVIEW WORKSPACE</div><button type="button" className={"menu-item wsSideNav "+(workspace==="oneapp"?"active":"")} onClick={()=>setWorkspace("oneapp")}><span className="icon">W</span> One App · W Journey <em>3.4</em></button><button type="button" className={"menu-item wsSideNav "+(workspace==="intelligence"?"active":"")} onClick={()=>setWorkspace("intelligence")}><span className="icon">◫</span> Customer intelligence</button>
+ <div className="side-heading">REVIEW WORKSPACE</div><button type="button" className={"menu-item wsSideNav "+(workspace==="oneapp"?"active":"")} onClick={()=>setWorkspace("oneapp")}><span className="icon">W</span> One App · W Journey <em>3.6</em></button><button type="button" className={"menu-item wsSideNav "+(workspace==="intelligence"?"active":"")} onClick={()=>setWorkspace("intelligence")}><span className="icon">◫</span> Customer intelligence</button>
  <button type="button" className={"menu-item wsSideNav "+(workspace==="studio"?"active":"")} onClick={()=>setWorkspace("studio")}><span className="icon">◇</span> Wealth Story Studio <em>3.0</em></button>
  <button type="button" className={"menu-item wsSideNav "+(workspace==="customer"?"active":"")} onClick={()=>setWorkspace("customer")}><span className="icon">◈</span> My Wealth Companion <em>3.0</em></button>
  <div className="side-bottom"><span className="status-dot"/> {configured?'Supabase connected':'Local preview mode'}<div className="tiny">{configured?'Authenticated synthetic dataset':'Configure Netlify Supabase variables to activate live data'}</div>{session&&<button className="signout" onClick={()=>supabase.auth.signOut()}>Sign out</button>}</div>
