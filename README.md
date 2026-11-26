@@ -1,6 +1,21 @@
-# Geojit Wealth Story & Wealth Companion — POC 3.9
+# Geojit Wealth Story & Wealth Companion — POC 4.0
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 4.0 — A continuous wealth creation journey with evidence-labelled discovery
+
+The Wealth Story page at `https://wealthstory.netlify.app/wealth-story` now consistently frames each edition as part of a **wealth creation journey**, not a one-time investment newsletter. The hero leads into **Understand your starting point → Discover what matters → Explore your next chapter**. The Wealth Creation Map shows **YOUR JOURNEY** and five explorable dimensions.
+
+To make cross/upsell exploration meaningful rather than simply promoting products, the map now uses a **separate, explicitly fictional product relationship fixture** at `src/lib/illustrativeWealthMap.js`. It distinguishes:
+- **Recorded with Geojit** — a fictional product relationship has explicitly been provided.
+- **Not subscribed with Geojit (demo)** — only where a fictional product register explicitly states that status. This does not rule out outside holdings or financial approaches.
+- **Relationship not confirmed** — the default when reliable evidence is missing; never infer non-subscription from absence.
+
+For the fictional Thomas C012 example the mock register says mutual funds/equities recorded; Smartfolios and bonds not subscribed. The growing-wealth map provides an immediately visible, restrained curiosity cue: **“There is more you could discover”**, transparently identifying the limited in-scope subscriptions without implying that additional products are necessary, suitable or would have delivered better returns.
+
+Product-learning menus stay customer-controlled and initially collapsed. Opening one shows the evidence status, introductory education and the option to mark a topic explored **only within current page state**. No live lead, sales message, product subscription, lead eligibility or marketing consent is created. All optional product discovery remains suppressed when the fictional service request is open (Meera). The new customer's product relationships remain unknown (Arun). Per-client attributes are POC fixtures, not a connected Data Lake or a verified live account view.
+
+UI continues to use Geojit's approved semantic typography, teal CTA, mint/yellow surfaces and coral accent for active/callout states. Additional tests protect the product-relationship state distinctions and adaptive journey priority.
 
 ## POC 3.9 — Geojit design-system treatment and illustrated Wealth Creation Map
 
