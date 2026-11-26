@@ -1,6 +1,23 @@
-# Geojit Wealth Story & Wealth Companion — Separate Shareable Demos
+# Geojit Wealth Story & Wealth Companion — POC 3.9
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.9 — Geojit design-system treatment and illustrated Wealth Creation Map
+
+The **existing Phase 1** story is updated in place at `https://wealthstory.netlify.app/wealth-story` (no additional site or route). The design-system fidelity pass uses the **Geojit semantic tokens already defined in `src/geojit-experience.css`**: Radio Canada Big typography, Text/Primary `#022F2D`, primary CTA teal `#09877B`, mint `#E7F7F5` and pale yellow `#FAFAED` surfaces, coral `#FF7E4D` active highlights, and approved border/focus rules. Restrained blue, warm-gold and lavender tones distinguish **illustrative map chapters**, never CTA semantics or financial risk statuses.
+
+The newsletter now contains a full-width, responsive, illustrated five-stop **Wealth Creation Map** after the story and before preferences. Users can jump directly to it from the hero and explore five deliberately *non-scored* dimensions: Financial foundation, Protection, Growing wealth, Life goals, Review and adapt. The map:
+- Invites curiosity about possible chapters (without claiming the client is falling behind, missing returns or missing products).
+- Labels a dimension as recorded only where the synthetic scenario truly supports it (Thomas: holdings; George: declared goal). Otherwise displays **Open to explore · Not assessed**.
+- Shows one explanatory question and an educational learning action for each selected chapter.
+- Offers an **optional, initially collapsed, customer-initiated** section of related financial solutions/education for approved product categories such as mutual funds, Smartfolios, bonds/fixed income, insurance, systematic investing and financial reviews. These are generic topics, not recommendations or leads. Selecting a topic expands educational text; a demo-only interest button changes only page state and creates no lead, sales contact or consent.
+- **Suppresses all optional product discovery** for Meera's unresolved synthetic service request, giving service assistance priority.
+- Connects the Life goals chapter to an interactive, zero-growth goal illustration; no holdings are automatically counted toward goals.
+- Exposes no financial health score, gap diagnosis or urgency countdown. The story and map remain fictional.
+
+Implementation: `src/illustrative-wealth-map.css`, `src/IllustrativeWealthMap.jsx`, `src/lib/illustrativeWealthMap.js`, scoped design-system overrides in `src/standalone-experiences.css`, and integration in `src/WealthStoryExperience.jsx`. `tests/illustrative-wealth-map.test.mjs` checks five distinct chapters, evidence validity, new-client unknowns, opt-in product discovery and service-first suppression, alongside the existing POC automated tests.
+
+**Regulatory boundary:** Product discovery is for customer-requested education, not suitability. No urgency is created from unverified personal data or perceived product absence. Production cross/upsell needs consent, compliance-approved eligibility/suitability handling, current product information, a verified servicing handoff and appropriate advisory/distribution controls.
 
 ## POC 3.8 — Wealth Story as an adaptive relationship edition
 
