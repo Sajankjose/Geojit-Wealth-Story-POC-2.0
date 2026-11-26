@@ -13,11 +13,12 @@ export const STARTER_TOPICS=[
  {id:'protection',name:'Understand protection',detail:'Explore relevant concepts without assuming a need'}
 ]
 export function freshOneApp(){return {version:'oneapp_v3_4',activated:false,plan:'essential',focus:[],cadence:'on_demand',
- scopeReviewed:false,agreedSimulation:false,consentMarketing:false,stepsDone:[],openedAt:null}}
+ scopeReviewed:false,agreedSimulation:false,consentMarketing:false,stepsDone:[],openedAt:null,persona:'new'}}
 export function cleanOneApp(value){
  const base=freshOneApp()
  if(!value||value.version!==base.version)return base
  return {...base,activated:value.activated===true,
+  persona:value.persona==='thomas'?'thomas':'new',
   plan:PRICING_CONCEPTS.some(x=>x.id===value.plan)?value.plan:base.plan,
   focus:[...new Set(Array.isArray(value.focus)?value.focus.filter(id=>STARTER_TOPICS.some(t=>t.id===id)):[])],
   cadence:['on_demand','monthly','quarterly'].includes(value.cadence)?value.cadence:'on_demand',
@@ -36,12 +37,12 @@ export function buildOneAppRoadmap(p){
  const profile={...blankCompanion(),started:true,focus:x.focus,
   decisions:Object.fromEntries(x.stepsDone.map(k=>[k,'completed']))}
  const list=createLearningRoadmap(profile)
- return list.filter(item=>item.id!=='picture' || x.focus.includes('understand')).map(x=>({
-  ...x,
-  title:x.id==='picture'?'Understand your financial starting point':x.title,
-  reason:x.id==='picture'?'No investments are recorded in this fictional new account. You can still learn about the possibilities.':x.reason,
-  destination:x.id==='picture'?'learning':x.destination,
-  state:profile.decisions[x.id]||'suggested'
+ return list.filter(item=>item.id!=='picture' || x.focus.includes('understand')).map(item=>({
+  ...item,
+  title:item.id==='picture'?'Understand your financial starting point':item.title,
+  reason:item.id==='picture'?(x.persona==='thomas'?'Fictional Geojit equity and MF holdings give a partial, dated view. Learn what is and is not visible.':'No investments are recorded in this fictional new account. You can still learn about the possibilities.'):item.reason,
+  destination:item.id==='picture'?'learning':item.destination,
+  state:profile.decisions[item.id]||'suggested'
  }))
 }
 export function valueOfOneApp(p){
