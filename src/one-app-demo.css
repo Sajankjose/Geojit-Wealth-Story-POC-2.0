@@ -115,3 +115,45 @@
 .oaRegulatory{background:var(--ds-surface-yellow);padding:15px;border-radius:9px;font-size:11px!important;line-height:1.75!important}
 @media(max-width:950px){.oaDemoGrid{grid-template-columns:1fr}.oaPhoneOuter{margin:0 auto;width:100%}.oaNarrative{max-width:650px;margin:0 auto}.oaDemoIntro{display:block}.oaDemoIntro>button{margin-top:8px}}
 @media(max-width:520px){.oaExperience{padding:12px 8px}.oaPhoneOuter{padding:7px;border-radius:27px}.oaPhone{border-radius:21px;min-height:650px;max-height:760px}.oaDemoIntro h2{font-size:25px}.oaNarrative{padding:17px}.oaBottomNav small{font-size:8px}}
+
+/* POC 3.5: evidence-grounded first-click wow moment and four-part service promise */
+.oaHook{background:linear-gradient(165deg,#F2FAF4 0%,#FFFFFF 56%);}
+.oaHookMark{display:flex;align-items:center;gap:11px;margin:5px 0 22px}
+.oaHookMark .oaW{width:40px;height:40px;font-size:25px;border-radius:12px}
+.oaHookMark>span:last-child{font-size:10px;font-weight:780;color:#317457;letter-spacing:1px}
+.oaHook h3{font-size:clamp(26px,2.8vw,31px);line-height:1.2;letter-spacing:-1.1px;margin:13px 0 18px}
+.oaInsightEvidence{background:#E9F5EC;border:1px solid #CBE4D2;border-radius:12px;display:grid;gap:6px;padding:17px;margin:12px 0 16px}
+.oaInsightEvidence span{color:#37715A;font-size:10px;font-weight:750;letter-spacing:.55px}
+.oaInsightEvidence strong{color:#145A3D;font-size:22px;line-height:1.2;letter-spacing:-.5px}
+.oaInsightEvidence small{font-size:10px;color:#527361}
+.oaHook>blockquote{border-left:3px solid #27865D;padding:10px 0 10px 14px;font-size:17px;font-weight:670;line-height:1.5;color:#22583F;margin:19px 0}
+.oaEvidenceDetails{border-top:1px solid #DEEDE2;border-bottom:1px solid #DEEDE2;padding:12px 2px;margin:13px 0 20px}
+.oaEvidenceDetails summary{font-size:11px;font-weight:700;color:#347054;cursor:pointer}
+.oaEvidenceDetails p,.oaEvidenceDetails small{font-size:10px;line-height:1.75;color:#637B69}
+.oaHookPromise{padding:15px;border-radius:11px;background:#F8FAF5;border:1px solid #E4EBD9;display:grid;gap:8px}
+.oaHookPromise span{color:#347457;font-weight:750;letter-spacing:.7px;font-size:9px}
+.oaHookPromise b{font-size:14px}
+.oaHookPromise p{font-size:11px;color:#607462;line-height:1.65;margin:0}
+.oaServiceShowcase{display:grid;gap:9px;margin:20px 0 16px}
+.oaServiceShowcase article{display:flex;align-items:flex-start;gap:12px;border:1px solid #DCE8DE;border-radius:12px;padding:15px 13px;background:#FCFEFC}
+.oaServiceIcon{border-radius:11px;background:#E8F5E9;color:#12785B;width:40px;height:40px;flex:none;display:grid;place-items:center;font-size:25px}
+.oaServiceShowcase article>div{display:grid;gap:5px}
+.oaServiceShowcase b{font-size:13px;line-height:1.4}
+.oaServiceShowcase p{font-size:11px;color:#627968;line-height:1.65;margin:0}
+.oaServiceShowcase small{font-size:9px;color:#37745B;line-height:1.55}
+.oaServiceDisclaimer{background:#FFF8EA;border:1px solid #EFDFB9;padding:13px;border-radius:10px;font-size:10px;color:#73613D;line-height:1.75;margin:17px 0}
+.oaCompanionServices{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.oaCompanionServices button{display:grid;gap:6px;text-align:left;background:#F6FBF6;border:1px solid #DFEBE1;border-radius:11px;padding:13px 10px;color:#234B35}
+.oaCompanionServices button>span{font-size:23px;color:#18815D}
+.oaCompanionServices b{font-size:11px}
+.oaCompanionServices small{font-size:9px;line-height:1.5;color:#66816A}
+.oaCoachChoices{display:grid;gap:7px;margin:19px 0}
+.oaCoachChoices button{padding:11px 12px;border:1px solid #DDEAE0;background:#fff;color:#2F5B3E;border-radius:9px;text-align:left;font-size:11px}
+.oaCoachChoices button.active{background:#E7F6EB;border-color:#158065;font-weight:700}
+.oaCoachAnswer{background:#EEF7F0;border:1px solid #CEE5D2;border-radius:12px;padding:17px;margin:15px 0}
+.oaCoachAnswer span{font-size:10px;color:#21765A;letter-spacing:.6px;font-weight:760}
+.oaCoachAnswer p{font-size:12px;line-height:1.75;color:#24543A}
+.oaCoachAnswer small{font-size:10px;color:#68816C}
+.oaPersonaSelect{display:grid;gap:7px;margin:15px 0;font-size:11px;font-weight:750}
+.oaPersonaSelect select{background:#fff;border:1px solid #DDEAE0;border-radius:9px;padding:11px;min-height:43px;font-size:12px;color:#2B4D3B;width:100%}
+.oaPersonaNote{font-size:10px!important;background:#F3F9F3;border-radius:9px;padding:12px;line-height:1.6!important}
