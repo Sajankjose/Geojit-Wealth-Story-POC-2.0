@@ -1,12 +1,19 @@
-// Stable, public-facing URL paths for reviewer-only demonstrations.
-// Paths never contain real customer identifiers; synthetic client selection uses allowlisted C001-C020.
+// Stable paths for the synthetic reviewer demos on both Netlify (/)
+// and GitHub Pages (/Geojit-Wealth-Story-POC-2.0/). No customer identifiers in paths.
+export const APP_BASE_PATH=(()=>{
+ const raw=typeof import.meta.env?.BASE_URL==='string'?import.meta.env.BASE_URL:'/'
+ return '/'+String(raw).split('/').filter(Boolean).join('/')+(raw==='/'?'':'/')
+})()
+const child=part=>APP_BASE_PATH+part
 export const DEMO_PATHS=Object.freeze({
- story:'/wealth-story',companion:'/wealth-companion',lab:'/'
+ story:child('wealth-story'),companion:child('wealth-companion'),lab:APP_BASE_PATH
 })
 export function resolveDemoRoute(pathname='/'){
  const path=String(pathname||'/').replace(/\/+$/,'')||'/'
- if(path===DEMO_PATHS.story)return 'story'
- if(path===DEMO_PATHS.companion)return 'companion'
+ const prefix=APP_BASE_PATH.replace(/\/$/,'')
+ const internal=prefix&&path.startsWith(prefix+'/')?path.slice(prefix.length):path===prefix?'/':path
+ if(internal==='/wealth-story')return 'story'
+ if(internal==='/wealth-companion')return 'companion'
  return 'lab'
 }
 export function isSyntheticClientId(value){
