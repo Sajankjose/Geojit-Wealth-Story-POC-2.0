@@ -6,7 +6,6 @@ export function WealthJourneySnapshot({story,onExplore,onExploreProtection,onExp
  const map=illustrativeMapForStory(story)
  const hasInvestment=!!story.model
  const hasGoal=!!story.model?.goal&&story.person.role==='goal'
- const openCount=map.chapters.filter(x=>!x.known).length
  const caseOpen=map.serviceFirst
  const nextLabel=caseOpen?'Understand my service request':hasGoal?'Explore my retirement goal':hasInvestment?'Review my protection picture':'Choose my first financial topic'
  const nextChapter=caseOpen?'review':hasGoal?'goals':hasInvestment?'protection':'foundation'
@@ -24,9 +23,9 @@ export function WealthJourneySnapshot({story,onExplore,onExploreProtection,onExp
     <button type="button" onClick={nextAction}>{nextLabel} <span aria-hidden="true">→</span></button></div>
   </div>
   <div className="wshExploreChapters"><div><b>There’s more to your journey</b><p>These five areas are questions worth exploring, not a checklist of products to buy. We have some information; the rest is simply not yet understood.</p></div>
-   <div className="wshSnapshotChapters">{map.chapters.map(ch=><button type="button" key={ch.id} onClick={()=>onExplore(ch.id)} className={ch.known?'isKnown':'isOpen'} aria-label={'Explore '+ch.title+' · '+(ch.known?'Some information recorded':'Not yet reviewed')}><span className="wshChapterIcon">{ch.icon}</span><span><b>{ch.title}</b><small>{ch.known?'We have some information':'Not yet reviewed'}</small></span><span aria-hidden="true">↗</span></button>)}</div>
+   <div className="wshSnapshotChapters">{map.chapters.map(ch=><button type="button" key={ch.id} onClick={()=>onExplore(ch.id)} className={ch.known?'isKnown':'isOpen'} aria-label={'Explore '+ch.title+' · '+(ch.known?'Some information recorded':'Not yet reviewed')}><span className="wshChapterIcon">{ch.icon}</span><span><b>{{foundation:'Money for emergencies',protection:'Insurance & protection',growth:'Your investments',goals:'Future plans & goals',review:'Review & adjust'}[ch.id]||ch.title}</b><small>{ch.known?'We have some information':'Not yet reviewed'}</small></span><span className="wshExploreArrow" aria-hidden="true">↗</span></button>)}</div>
   </div>
-  <div className="wshJourneyFoot"><span>{openCount} areas without enough information to assess · Not a score</span><button type="button" onClick={onExploreMoments}>See the moments that make your story personal →</button></div>
+  <div className="wshJourneyFoot"><span>Not a score or product checklist · What we don’t know is not a financial gap</span><button type="button" onClick={onExploreMoments}>See the moments that make your story personal →</button></div>
  </section>
 }
 export function StoryGuide({story,onNavigate}){
