@@ -1,6 +1,22 @@
-# Geojit Wealth Companion — Figure-Led Mobile Wealth Story POC 3.6
+# Geojit Wealth Story & Wealth Companion — Separate Shareable Demos
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## Separate direct URLs — Phase 1 vs Phase 2 (POC 3.7)
+
+Two standalone, reviewer-authenticated URL paths now let management inspect each proposal without navigating through the combined research workspace:
+
+| Experience | Direct URL | What opens |
+| --- | --- | --- |
+| **Phase 1 · Wealth Story** | https://wealthstory.netlify.app/wealth-story | Dedicated responsive, editorially structured, figure-led fictional Wealth Story with dated portfolio values, allocation, cash flows, cautious comparison context and a clear next step. Synthetic reviewer examples: Thomas C012, George C014 and Arun C001. |
+| **Phase 2 · My Wealth Companion** | https://wealthstory.netlify.app/wealth-companion | The dedicated mobile One App W invitation → source-explained insight → service and indicative price → guided onboarding → Wealth Creation Roadmap → activation → permanent W app navigation, including educational coach and expert-service concept. |
+| **Full reviewer workspace** | https://wealthstory.netlify.app/ | Preserves the existing combined Wealth Story Studio, customer intelligence, synthetic accounts and One App W Journey lab. |
+
+Implemented with `src/lib/demoRoutes.js`, `src/WealthStoryExperience.jsx`, `src/standalone-experiences.css`, and explicit SPA rewrites in `netlify.toml`. Direct URL loading, browser refresh and mobile responsive presentation are supported by the shared Netlify SPA entry point, without creating new Netlify projects, domains, Supabase schemas or authentication systems.
+
+**Access:** both new experiences remain behind the existing synthetic reviewer sign-in when Supabase is configured; the direct links do not bypass access control. No personal URLs, account tokens, production client data, actual communication delivery or financial advice are introduced. The Phase 1 story is a carefully curated demo from **existing fictional financial intelligence fixtures**, not a claim that published individual newsletters have been created for live clients. The Phase 2 commercial service and pricing remain hypothetical. The paths link to each other for demonstrations.
+
+**Validation:** `tests/demo-routes.test.mjs` tests stable URL mapping, the preserved root reviewer workspace, trailing slash handling and synthetic client ID allowlisting. GitHub Actions also runs the complete existing financial, editorial, and consent-safety regression suite plus the Vite build.
 
 ## POC 3.6 — Figure-led mobile Wealth Story: a real customer story from demo data
 
