@@ -8,6 +8,7 @@ import {
 } from './lib/wealthCompanion.js'
 import {fixtureIntelligence} from './lib/wealthIntelligence.js'
 import {composeExperience} from './lib/companionExperience.js'
+import {COMPANION_SERVICES} from './lib/companionMarketing.js'
 
 const storageKey=id=>'geojit-wealth-companion-poc3-'+id
 function readSession(id){
@@ -48,6 +49,7 @@ export default function WealthCompanion({clientId='C012',client,onNavigate}){
      <div className="wcHeroActions"><button type="button" className="wcMainBtn" onClick={()=>setStage('setup')}>Build my learning roadmap →</button><button type="button" onClick={()=>setStage('plans')}>Explore service options</button></div>}
    </div><div className="wcHeroArt" aria-hidden="true"><div className="wcOrbit one"/><div className="wcOrbit two"/><div className="wcHeroCompass">◇</div><span>Understanding</span><span>Perspective</span><span>Progress</span></div>
   </header>
+  <section className="wcServiceOverview" aria-label="Wealth Companion service capabilities"><div className="wcKicker">MORE THAN A FINANCIAL PICTURE</div><h3>Support for every stage of understanding your wealth journey.</h3><div className="wcServicePromises">{COMPANION_SERVICES.map(service=><article key={service.id}><span>{service.icon}</span><strong>{service.name}</strong><p>{service.promise}</p><small>{service.availability}</small></article>)}</div><p className="wcServiceCaution">Expert support and real-time access are proposed, not available from this POC. The coach demonstrates educational help only; no advice, payment or communication is activated.</p></section>
   {notice&&<div className="wcNotice" role="status">{notice}</div>}
   {stage==='setup'&&<section className="wcPanel wcSetup"><div className="wcSectionTop"><div><span className="wcKicker">START WITH YOU</span><h3>What would you like to understand better?</h3><p>Select only what feels useful. These choices are not an assessment of your finances, and you can change them.</p></div><button type="button" onClick={()=>setStage('home')}>Close ×</button></div>
    <div className="wcFocusGrid">{FOCUS_AREAS.map(x=><button type="button" key={x.id} aria-pressed={profile.focus.includes(x.id)} className={'wcFocus '+(profile.focus.includes(x.id)?'active':'')} onClick={()=>changeFocus(x.id)}>
