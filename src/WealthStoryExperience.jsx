@@ -1,4 +1,5 @@
 import React,{useMemo,useState} from 'react'
+import {meaningfulMoments} from './lib/momentsThatMatter.js'
 import {rupees,demoGoalFigures} from './lib/mobileWealthStory.js'
 import {STORY_PEOPLE,composeWealthStory,STORY_TOPICS,storyInsightOrder} from './lib/wealthStoryOrchestrator.js'
 import WealthIntelligence from './WealthIntelligence.jsx'
@@ -82,6 +83,24 @@ function Feedback({clientId}){
   {saved&&<p className="srSaved" role="status">Demo preference for {clientId} captured on this screen only. No CRM preference, communication consent or customer profile was updated.</p>}
  </section>
 }
+function StoryOpening({story,onMoments,onNext}){
+ const moments=meaningfulMoments(story)
+ const occasion=moments?.events.find(x=>x.kind==='delight')
+ const role=story.person.role
+ const next=role==='service'?'Review my service update':role==='goal'?'Explore my retirement goal':role==='new'?'Explore my first financial topic':'Explore my protection options'
+ const highlight=occasion?.id==='anniversary'?{large:occasion.value+' years',label:'Together on your Geojit journey',copy:'Your fictional relationship began on 26 November 2014. A milestone worth remembering.'}:
+   occasion?.id==='birthday'?{large:'Happy birthday!',label:'A moment worth celebrating',copy:'Wishing you a wonderful year ahead. Your financial goals can evolve with you.'}:
+   story.service?{large:'In progress',label:'Your last service request',copy:'We remember your fictional statement request. The next update is not yet confirmed.'}:
+   story.model?{large:story.model.valuation,label:'Your investments with Geojit',copy:'A factual snapshot—not a claim about your overall wealth.'}:
+   {large:'Your first chapter',label:'The journey begins with your questions',copy:'No portfolio holdings or personal goals are confirmed in this fictional account.'}
+ return <div className="srOpeningMoments">
+   <div className="srOpeningPersonal"><span className="srOpeningEyebrow">{occasion?'A MOMENT JUST FOR YOU':'A MOMENT IN YOUR JOURNEY'}</span>
+    <strong>{highlight.large}</strong><b>{highlight.label}</b><p>{highlight.copy}</p><button type="button" onClick={onMoments}>See your personal story <span aria-hidden="true">↗</span></button>
+   </div>
+   <div className="srOpeningAction"><span className="srOpeningEyebrow">ONE USEFUL NEXT STEP</span><h2>{next}</h2><p>{role==='service'?'See what is known about the request before exploring more products.':role==='goal'?'Your declared goal deserves an exploration based on your own assumptions.':role==='new'?'Choose a subject that interests you. There is no obligation to buy anything.':'We have no confirmed picture of your insurance arrangements. Explore what you already have, if you wish.'}</p><button type="button" onClick={onNext}>{next} <span aria-hidden="true">→</span></button>
+   </div>
+ </div>
+}
 export default function WealthStoryExperience(){
  const [clientId,setClientId]=useState(()=>{
   try{const id=new URLSearchParams(window.location.search).get('client');return STORY_PEOPLE.some(p=>p.id===id)?id:'C012'}catch{return 'C012'}
@@ -96,6 +115,7 @@ export default function WealthStoryExperience(){
  const goToSection=(destination)=>{
   if(['foundation','protection','growth','goals','review'].includes(destination)){setMapChapter(destination);window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='protection-explorer'){setProtectionOpen(true);window.requestAnimationFrame(()=>document.getElementById('wealth-story-protection')?.scrollIntoView({behavior:'smooth',block:'start'}))}
+  else if(destination==='service'){window.requestAnimationFrame(()=>document.querySelector('.srService')?.scrollIntoView({behavior:'smooth',block:'center'}))}
   else if(destination==='moments'){window.requestAnimationFrame(()=>document.getElementById('wealth-story-moments')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='map'){window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='contact'){window.requestAnimationFrame(()=>document.getElementById('wealth-story-contact')?.scrollIntoView({behavior:'smooth',block:'center'}))}
@@ -107,7 +127,11 @@ export default function WealthStoryExperience(){
   <main className="srMain">
    <div className="srIssue"><span>PHASE 1 · PERSONALISED RELATIONSHIP EXPERIENCE</span><span>FICTIONAL REVIEW DEMONSTRATION</span></div>
    <div className="srPersonaNav" aria-label="Preview different customer stories">{STORY_PEOPLE.map(p=><button key={p.id} type="button" className={clientId===p.id?'selected':''} onClick={()=>switchClient(p.id)} aria-pressed={clientId===p.id}><strong>{p.name}</strong><small>{p.description}</small></button>)}</div>
-   <section className="srCover srCoverEditorial"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>ISSUE 01 · PERSONAL EDITION</span></div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p><div className="srCoverFoot"><span>One chapter today. A more informed journey tomorrow.</span><a className="srMapJump" href="#wealth-creation-map">See the chapters ahead ↗</a></div></section>
+   <section className="srCover srCoverEditorial srCoverCompact"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>PERSONAL EDITION · FICTIONAL DEMO</span></div>
+    <div className="srCoverHeadline"><div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p></div><span className="srCoverChapter">YOUR JOURNEY<br/>CONTINUES <span aria-hidden="true">✦</span></span></div>
+    <StoryOpening key={clientId+'opening'} story={story} onMoments={()=>goToSection('moments')} onNext={()=>goToSection(story.service?'service':person.role==='goal'?'goals':person.role==='new'?'foundation':'protection-explorer')}/>
+    <div className="srCoverFoot"><span>Made from fictional customer records. Each story is different.</span><a className="srMapJump" href="#wealth-creation-map">Explore my wealth map ↗</a></div>
+   </section>
    <div className="srJourneyRibbon"><span>YOUR WEALTH CREATION JOURNEY</span><div><b>01</b> Understand your starting point <i>→</i> <b>02</b> Discover what matters <i>→</i> <b>03</b> Explore your next chapter</div></div>
    <MomentsThatMatter key={clientId+'moments'} story={story} onExploreProtection={()=>goToSection('protection-explorer')}/>
    <WealthJourneySnapshot key={clientId+'snapshot'} story={story} onExplore={goToSection} onExploreProtection={()=>goToSection('protection-explorer')} onExploreMoments={()=>goToSection('moments')}/>
