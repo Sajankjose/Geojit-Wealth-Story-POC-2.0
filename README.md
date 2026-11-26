@@ -1,6 +1,32 @@
-# Geojit Wealth Story & Wealth Companion — POC 4.1
+# Geojit Wealth Story & Wealth Companion — POC 4.2
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 4.2 — Moments That Matter & Protection Explorer (Phase 1)
+
+The standalone Wealth Story at `https://wealthstory.netlify.app/wealth-story` now includes **Moments That Matter** immediately after the Wealth Journey Snapshot, plus a customer-led Protection Explorer linked from **both the moment card and the Protection chapter** of the Wealth Map.
+
+### Moments That Matter
+- A separate, explicitly invented, synthetic date registry `src/lib/momentsThatMatter.js` gives fictional example DOBs and relationship-enrolment dates. These are **not** retrieved from Data Lake, CRM or clients.
+- All age and relationship-anniversary calculations use a fixed POC review date, **26 November 2026**, and accurately account for birthday/year boundaries.
+- **Thomas C012:** illustrative 12-year Geojit relationship anniversary from fictional joining date 26 Nov 2014; plus existing fictional **₹5,42,000** in-scope recorded investment value dated 20 Nov 2026.
+- **George C014:** birthday moment on 26 Nov 2026 based on invented DOB 26 Nov 1982; age 44; plus fictional investment value.
+- **Meera C008:** a financial-milestone card and optional life-stage learning prompt, while unresolved service still takes priority for sales/discovery.
+- **Arun C001:** no DOB supplied in fictional example; the POC does **not invent an age or birthday**.
+- Expanding **How were these moments selected?** discloses the invented data provenance and calculation timing.
+
+### Protection Explorer
+- Accessible from a **Moments That Matter** card and the **Protection** chapter in the five-chapter map.
+- Customer-selected state: *already have insurance*, *no known cover*, *unsure*, or *explore later*; no claim of financial deficiency is inferred.
+- Separate **Term-life** and **Health** exploration.
+- **Term-life** has adjustable annual family expenditure, support period, obligations, earmarked assets and (when customer says they have cover) declared existing term cover. A voluntary Show the numbers action calculates simple illustrative expense-and-obligation arithmetic. It explicitly excludes inflation, taxes, underwriting, affordability, investment returns, medical information, other policy terms and professional suitability assessment. **A difference is never presented as an underinsurance diagnosis or a suitable recommended sum insured.**
+- **Health cover** may display a customer-entered amount without presenting any automated coverage target from DOB alone.
+- **Follow-up interest** and **independent contact permission** have separate unchecked checkboxes. No interaction creates a real lead, registered consent, policy record or contact request; a success message truthfully describes *on-screen preview only*. If the fictional service case remains in progress, product follow-up is disabled.
+- The customer can choose **explore later** and encounter no follow-up pressure.
+
+Implementation: `src/lib/momentsThatMatter.js`, `src/MomentsThatMatter.jsx`, `src/moments-that-matter.css`, existing Wealth Story and Map integration. CI tests `tests/moments-that-matter.test.mjs` verify date boundary logic, no invented DOB for Arun, the factual financial valuation fixture, self-directed scenario arithmetic and safe state handling.
+
+**Production constraints:** Real DOB, enrolment date and coverage status would need validated data source, identity/access and transparency; DOB and health/insurance information require appropriate privacy assessment and secure presentation (not merely open pre-login newsletter). Coverage advice and insurance needs assessments must follow authorised processes. This POC's fields never transmit customer declarations or consent to a CRM. Automated communications need approved marketing permissions and regulatory/compliance review.
 
 ## POC 4.1 — Wealth Journey Snapshot, personalised guide and human-support card
 
