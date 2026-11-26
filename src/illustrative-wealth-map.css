@@ -67,3 +67,9 @@
 .wmSRelationship-unknown{background:#F1F4F3;color:var(--ds-text-secondary)}
 .wmSProducts>button{align-items:center}
 .wmSProducts>button b{flex:none}
+
+.wmSUnexplored{display:flex;gap:12px;align-items:start;background:#fff;border:1px solid #EEDCBC;border-left:4px solid var(--ds-border-active);padding:14px;border-radius:10px;margin:13px 0}
+.wmSUnexploredIcon{font-size:23px;color:#AD7927;line-height:1}
+.wmSUnexplored strong{font-size:13px;color:var(--ds-text-primary)}
+.wmSUnexplored p{font-size:12px;line-height:1.65;color:var(--ds-text-secondary);margin:7px 0}
+.wmSUnexplored small{font-size:10px;line-height:1.65;color:var(--ds-text-tertiary)}
