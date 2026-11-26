@@ -2,6 +2,33 @@
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
 
+## POC 3.8 — Wealth Story as an adaptive relationship edition
+
+The Phase 1 URL `https://wealthstory.netlify.app/wealth-story` now contains an upgraded, highly personalised **fictional** customer newsletter/relationship story. It goes beyond portfolio analysis into evidence-supported discoveries, service continuity, one context-aware next step, educational tools, human-servicing concept and two-way preference/feedback UI.
+
+A four-persona selector is available at the top for the management demonstration:
+
+| Fictional client | Demonstrates | Confirmed evidence in POC |
+| --- | --- | --- |
+| **Thomas · C012** | A genuinely useful cash-flow insight, separately explaining a ₹3,000 contribution and change in investment valuation; educational next step | Source: `fictionalFinancialInput('C012')`, `fixtureIntelligence('C012')` |
+| **George · C014** | A fictional client-declared retirement goal, with an adjustable educational 0%-growth monthly savings illustration. **Does not** falsely equate all holdings with earmarked goal assets. | Goal and portfolio from existing synthetic C014 fixture; scenario calculator from `demoGoalFigures` |
+| **Meera · C008** | A service-first edition: a separately invented, clearly tagged 18 November fictional statement request, 20 November in-progress status, unknown next update and no verified assigned RM, with visible interaction timeline | Separately invented `SERVICE_DEMO` for the service-design POC; **not** sourced from real D365 or Supabase CRM |
+| **Arun · C001** | Beginning without financial data, no fictitious investment performance, customer-chosen educational topics and optional goal arithmetic | Fictional new-customer scenario; no holdings assumed |
+
+Each edition also supports:
+- **Why am I seeing this?**: expand a factual source/explanation for the personalised insight.
+- **One useful next action**: interactively explore a cash-flow reconciliation, goal scenario, service follow-up explanation, or learning topic, as relevant.
+- **Human contact concept**: explain how a verified RM/servicing team could be displayed once approved CRM routing is connected. No staff member, phone, callback or appointment is fabricated as live.
+- **Feedback and interest**: select a topic and say whether the edition was useful. All feedback is **local, temporary page state** only; no real CRM update, opt-in, message or consent occurs.
+- **A deeper financial picture on demand**, rather than long repetitive portfolio commentary by default.
+- **Adaptive editorial priority**: service update first for Meera, account evidence for Thomas, declared goal context for George and self-directed education for Arun. Explanations are concise and progressive.
+
+Source-driven narrative rules live in `src/lib/wealthStoryOrchestrator.js`, the React page in `src/WealthStoryExperience.jsx`, styling in `src/standalone-experiences.css`. `tests/wealth-story-orchestration.test.mjs` verifies scenario separation, figure derivation, absence of invented goal funding, service priority, unknown RM, and safety of the new-client experience. The GitHub CI builds and tests all existing workflows.
+
+### Future real-world requirements
+
+The POC is NOT wired to the Data Lake, customer-care CRM, real RM assignments or feedback analytics. Before use with live clients: consent and authentication, financial data freshness controls, source and reasoning audit, adviser's/distributor's appropriate boundaries, sensitive-service-event privacy, user-topic preferences, suppressions for unresolved service issues, editorial approvals, and compliance/Legal/InfoSec review. Essential transactions, security alerts and regulatory notices must remain separate from any discretionary campaign consolidation.
+
 ## Separate direct URLs — Phase 1 vs Phase 2 (POC 3.7)
 
 Two standalone, reviewer-authenticated URL paths now let management inspect each proposal without navigating through the combined research workspace:
