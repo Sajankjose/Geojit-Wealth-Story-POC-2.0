@@ -28,16 +28,36 @@ export const MAP_CHAPTERS=[
   learn:'Explore a self-directed review checklist',
   products:[{id:'review',name:'Understanding portfolio reviews',description:'Learn what an authorised financial review may consider and when professional advice may be appropriate.'}]}
 ]
+// Synthetic product-relationship records are an EXPLICIT demo-only fixture.
+// Absence from this table is UNKNOWN, never proof of non-subscription.
+// 'not_subscribed' is limited to Geojit records, not external relationships.
+export const DEMO_PRODUCT_RELATIONSHIPS={
+ C012:{mf:'recorded',equity:'recorded',smartfolios:'not_subscribed',bonds:'not_subscribed'},
+ C014:{mf:'recorded',smartfolios:'not_subscribed'},
+ C008:{mf:'recorded'},
+ C001:{}
+}
+export function productRelationship(clientId,productId){
+ const allowed=['recorded','not_subscribed']
+ const value=DEMO_PRODUCT_RELATIONSHIPS[clientId]?.[productId]
+ if(value&&!allowed.includes(value))return 'unknown'
+ return value||'unknown'
+}
+export function relationshipLabel(status){
+ return status==='recorded'?'Recorded with Geojit':status==='not_subscribed'?'Not subscribed with Geojit (demo)':'Relationship not confirmed'
+}
 export function illustrativeMapForStory(story){
  if(!story||story.synthetic!==true)return null
  const role=story.person?.role
  const active=role==='goal'?'goals':role==='investor'?'growth':role==='service'?'review':'foundation'
  return {
-  version:'illustrative_wealth_map_3_9',synthetic:true,active,
+  version:'illustrative_wealth_map_4_0',synthetic:true,active,
   hasVerifiedGoal:!!story.model?.goal&&role==='goal',
   hasPortfolio:!!story.model&&role!=='new',
   serviceFirst:!!story.service&&story.service.status==='In progress',
-  chapters:MAP_CHAPTERS.map(x=>({...x,
+  clientId:story.client_id,
+  journeyLine:role==='goal'?'A goal you have declared is one part of the journey. What else might be worth understanding?':role==='service'?'First, let us acknowledge your open request. Your wider financial journey can continue when you choose.':role==='new'?'Your first chapter starts with curiosity—not with a purchase.':'You already have an investment chapter underway. Your journey could include more questions worth exploring.',
+  chapters:MAP_CHAPTERS.map(x=>({...x,products:x.products.map(p=>({...p,relationship:productRelationship(story.client_id,p.id),relationshipLabel:relationshipLabel(productRelationship(story.client_id,p.id))})),
    evidence:x.id==='goals'&&role==='goal'?'Goal explicitly declared in this fictional account':x.id==='growth'&&story.model&&role!=='new'?'Investments recorded in fictional Geojit account':'Open to explore · Not assessed',
    known:Boolean((x.id==='goals'&&role==='goal')||(x.id==='growth'&&!!story.model&&role!=='new'))}))
  }
