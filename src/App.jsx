@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { configured, supabase, loadClients, loadClientRecords } from './lib/supabase'
 import OperatingStudio from './OperatingStudio.jsx'
 import CustomerExperience from './CustomerExperience.jsx'
+import OneAppDemo from './OneAppDemo.jsx'
 
 const sample = [
  ['C001','Arun','New explorer','Explore'],['C002','Anu','First SIP','Guide'],['C003','Meera','Regular SIP investor','Guide'],
@@ -80,7 +81,7 @@ function Story({records}){
 export default function App(){
  const [session,setSession]=useState(null),[authLoading,setAuthLoading]=useState(configured),[authError,setAuthError]=useState('')
  const [clients,setClients]=useState(configured?[]:preview),[records,setRecords]=useState([]),[loading,setLoading]=useState(configured)
- const [error,setError]=useState(''),[selected,setSelected]=useState('C012'),[query,setQuery]=useState(''),[tab,setTab]=useState('overview'),[workspace,setWorkspace]=useState('intelligence')
+ const [error,setError]=useState(''),[selected,setSelected]=useState('C012'),[query,setQuery]=useState(''),[tab,setTab]=useState('overview'),[workspace,setWorkspace]=useState('oneapp')
  useEffect(()=>{
   if(!supabase) return
   let active=true
@@ -110,13 +111,13 @@ export default function App(){
  return <div className="shell">
  <aside className="sidebar">
  <div className="brand"><div className="brand-symbol" aria-hidden="true">WS</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
- <div className="side-heading">REVIEW WORKSPACE</div><button type="button" className={"menu-item wsSideNav "+(workspace==="intelligence"?"active":"")} onClick={()=>setWorkspace("intelligence")}><span className="icon">◫</span> Customer intelligence</button>
+ <div className="side-heading">REVIEW WORKSPACE</div><button type="button" className={"menu-item wsSideNav "+(workspace==="oneapp"?"active":"")} onClick={()=>setWorkspace("oneapp")}><span className="icon">W</span> One App · W Journey <em>3.4</em></button><button type="button" className={"menu-item wsSideNav "+(workspace==="intelligence"?"active":"")} onClick={()=>setWorkspace("intelligence")}><span className="icon">◫</span> Customer intelligence</button>
  <button type="button" className={"menu-item wsSideNav "+(workspace==="studio"?"active":"")} onClick={()=>setWorkspace("studio")}><span className="icon">◇</span> Wealth Story Studio <em>3.0</em></button>
  <button type="button" className={"menu-item wsSideNav "+(workspace==="customer"?"active":"")} onClick={()=>setWorkspace("customer")}><span className="icon">◈</span> My Wealth Companion <em>3.0</em></button>
  <div className="side-bottom"><span className="status-dot"/> {configured?'Supabase connected':'Local preview mode'}<div className="tiny">{configured?'Authenticated synthetic dataset':'Configure Netlify Supabase variables to activate live data'}</div>{session&&<button className="signout" onClick={()=>supabase.auth.signOut()}>Sign out</button>}</div>
  </aside><main className="main">
- <header className="topline"><div className="breadcrumb">WEALTH STORY <span>/</span> {workspace==="studio"?"OPERATING STUDIO":workspace==="customer"?"WEALTH COMPANION":"CUSTOMER INTELLIGENCE"} <span>/</span> POC 3.0</div><div className="environment"><span className="environmentDot"/> SYNTHETIC DATA ONLY</div></header>
- {workspace==="studio"?<OperatingStudio clients={clients} onBack={()=>setWorkspace("intelligence")} onOpenClient={(clientId,view)=>{setSelected(clientId);setTab(view||"overview");setWorkspace("intelligence")}} onPreviewCustomer={clientId=>{setSelected(clientId);setWorkspace("customer")}}/>:workspace==="customer"?<CustomerExperience clients={clients} initialClientId={selected} onChooseClient={setSelected} onBack={()=>setWorkspace("intelligence")} onOpenStudio={()=>setWorkspace("studio")}/>:<>
+ <header className="topline"><div className="breadcrumb">WEALTH STORY <span>/</span> {workspace==="studio"?"OPERATING STUDIO":workspace==="customer"?"WEALTH COMPANION":workspace==="oneapp"?"ONE APP CUSTOMER EXPERIENCE":"CUSTOMER INTELLIGENCE"} <span>/</span> POC 3.4</div><div className="environment"><span className="environmentDot"/> SYNTHETIC DATA ONLY</div></header>
+ {workspace==="oneapp"?<OneAppDemo onReturn={()=>setWorkspace("intelligence")}/>:workspace==="studio"?<OperatingStudio clients={clients} onBack={()=>setWorkspace("intelligence")} onOpenClient={(clientId,view)=>{setSelected(clientId);setTab(view||"overview");setWorkspace("intelligence")}} onPreviewCustomer={clientId=>{setSelected(clientId);setWorkspace("customer")}}/>:workspace==="customer"?<CustomerExperience clients={clients} initialClientId={selected} onChooseClient={setSelected} onBack={()=>setWorkspace("intelligence")} onOpenStudio={()=>setWorkspace("studio")}/>:<>
  <section className="heading"><div className="eyebrow">CUSTOMER RELATIONSHIP INTELLIGENCE</div><h1>A clearer picture of<br/><i>every customer journey.</i></h1><p>Bring together product relationships, transactions, digital behaviour and human interactions to understand what matters next.</p></section>
  {!configured&&<Alert><b>Preview mode:</b> The live Supabase connection has not been configured. The 20 client labels are placeholders; no imported data or story is shown.</Alert>}
  {error&&<Alert><b>Data loading issue:</b> {error}. Confirm the SQL import, reviewer permissions and Netlify environment variables.</Alert>}
