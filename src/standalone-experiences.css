@@ -144,3 +144,11 @@
 .srMapGoalExplorer{background:var(--ds-surface-yellow);border:1px solid var(--ds-border-primary);border-radius:var(--ds-radius-lg);padding:19px;margin-top:11px}
 .srMapGoalExplorer .srTool{max-width:790px;margin:0 auto}
 .srPage button:focus-visible,.srPage a:focus-visible,.srPage input:focus-visible{outline:3px solid var(--ds-border-active)!important;outline-offset:3px}
+
+/* POC 4.0 — Wealth creation journey connecting each editorial module */
+.srJourneyRibbon{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border:1px solid var(--ds-border-primary);background:var(--ds-surface-white);border-radius:var(--ds-radius-md);padding:14px 18px;margin:0 0 16px}
+.srJourneyRibbon>span{font-size:10px;font-weight:800;letter-spacing:.7px;color:var(--ds-primary-action)}
+.srJourneyRibbon>div{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:11px;color:var(--ds-text-secondary)}
+.srJourneyRibbon b{border-radius:50%;background:var(--ds-tab-active);width:23px;height:23px;display:inline-grid;place-items:center;font-size:10px;color:var(--ds-primary-action-pressed)}
+.srJourneyRibbon i{font-style:normal;color:var(--ds-border-active);font-size:15px}
+@media(max-width:600px){.srJourneyRibbon{align-items:start;flex-direction:column}.srJourneyRibbon>div{font-size:10px;gap:5px}}
