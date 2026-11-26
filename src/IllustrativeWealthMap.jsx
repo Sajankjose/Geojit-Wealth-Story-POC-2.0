@@ -9,6 +9,7 @@ export default function IllustrativeWealthMap({story,onExploreGoal}){
  const [saved,setSaved]=useState(false)
  if(!map)return null
  const active=map.chapters.find(x=>x.id===(chosen||map.active))||map.chapters[0]
+ const unexplored=active.products.filter(x=>x.relationship==='not_subscribed')
  const choose=id=>{setChosen(id);setShowProducts(false);setSelectedProduct(null);setSaved(false)}
  return <section className="wmSExperience" aria-label="Illustrative Wealth Creation Map">
   <div className="wmSHero">
@@ -27,6 +28,7 @@ export default function IllustrativeWealthMap({story,onExploreGoal}){
    <div className="wmSDetailTop"><span className="wmSEyebrow">YOUR JOURNEY · CHAPTER {active.step} · {active.title.toUpperCase()}</span><span className="wmSStatus">{active.evidence}</span></div>
    <h3>{active.question}</h3><p>{active.body}</p>
    <div className="wmSFocus"><span>YOUR NEXT DISCOVERY</span><strong>{active.learn}</strong></div>
+   {!map.serviceFirst&&unexplored.length>0&&<div className="wmSUnexplored"><span className="wmSUnexploredIcon">✦</span><div><strong>There is more you could discover.</strong><p>{unexplored.map(x=>x.name).join(' and ')} {unexplored.length===1?'is':'are'} not subscribed to in this fictional Geojit account. Have you explored how {unexplored.length===1?'it works':'these approaches work'}?</p><small>Not subscribed ≠ missing out on returns. Suitability, external relationships and needs are not established.</small></div></div>}
    {active.id==='goals'&&<button type="button" className="wmSGoalLink" onClick={onExploreGoal}>Explore the illustrative goal calculator →</button>}
    {map.serviceFirst?<p className="wmSPrivacy">Your fictional service request is still in progress. Optional product discovery is held back in this scenario; support takes priority.</p>:
     <div className="wmSProductArea">
