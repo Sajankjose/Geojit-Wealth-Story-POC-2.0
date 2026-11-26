@@ -8,13 +8,16 @@ const child=part=>APP_BASE_PATH+part
 export const DEMO_PATHS=Object.freeze({
  story:child('wealth-story'),companion:child('wealth-companion'),lab:APP_BASE_PATH
 })
-export function resolveDemoRoute(pathname='/'){
+export function resolveDemoRouteAtBase(pathname='/',basePath='/'){
  const path=String(pathname||'/').replace(/\/+$/,'')||'/'
- const prefix=APP_BASE_PATH.replace(/\/$/,'')
+ const prefix=('/'+String(basePath||'/').split('/').filter(Boolean).join('/')).replace(/\/$/,'')
  const internal=prefix&&path.startsWith(prefix+'/')?path.slice(prefix.length):path===prefix?'/':path
  if(internal==='/wealth-story')return 'story'
  if(internal==='/wealth-companion')return 'companion'
  return 'lab'
+}
+export function resolveDemoRoute(pathname='/'){
+ return resolveDemoRouteAtBase(pathname,APP_BASE_PATH)
 }
 export function isSyntheticClientId(value){
  return /^C0(?:0[1-9]|1[0-9]|20)$/.test(String(value||''))
