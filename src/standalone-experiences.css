@@ -99,3 +99,48 @@
 @media(max-width:900px){.srContentGrid{grid-template-columns:minmax(0,1.55fr) minmax(200px,.85fr)}.srPersonaNav button{min-height:90px}}
 @media(max-width:710px){.srContentGrid{grid-template-columns:1fr}.srSideRail{grid-template-columns:1fr 1fr}.srSideRail .srSourceStamp{grid-column:1/-1}.srPersonaNav{grid-template-columns:repeat(2,minmax(0,1fr))}.srPersonaNav button{min-height:72px}}
 @media(max-width:480px){.srMain{padding:16px 12px 32px}.srCoverEditorial{padding:23px 18px}.srCoverEditorial h1{font-size:31px}.srCoverEditorial h1 em{font-size:31px}.srSideRail{grid-template-columns:1fr}.srSideRail .srSourceStamp{grid-column:auto}.srFinancialSummary,.srMoment,.srNext,.srEditorialNote,.srSecondary,.srFeedback{padding:18px}.srTopicOptions{grid-template-columns:1fr}.srCaseTimeline{gap:4px}.srCaseTimeline div{padding:8px 5px}}
+
+/* POC 3.9 design-system fidelity pass: existing Geojit Brand & Experience
+   Manual semantic tokens in geojit-experience.css are authoritative.
+   Teal is the only primary-action colour; mint/yellow/coral are highlights,
+   not conversion pressure or invented risk warnings. */
+.srPage{background:var(--ds-bg-page);color:var(--ds-text-primary);font-family:var(--geojit-type)}
+.srHeader{border-bottom:1px solid var(--ds-border-primary);background:var(--ds-surface-white)}
+.srLogo{background:var(--ds-surface-dark);color:var(--ds-on-dark)}
+.srBrand strong{color:var(--ds-text-primary)}
+.srBrand small,.srIssue,.srCoverTop>span:last-child{color:var(--ds-text-secondary)}
+.srHeaderLinks a,.srEyebrow,.srInlineAction{color:var(--ds-primary-action)!important}
+.srPersonaNav button{background:var(--ds-surface-white);border-color:var(--ds-border-primary);color:var(--ds-text-primary)}
+.srPersonaNav button.selected{background:var(--ds-tab-active);border-color:var(--ds-border-action);box-shadow:inset 0 0 0 1px var(--ds-border-action)}
+.srPersonaNav small{color:var(--ds-text-secondary)}
+.srCoverEditorial{border:1px solid var(--ds-border-primary);background:linear-gradient(115deg,var(--ds-surface-green),var(--ds-surface-yellow) 80%,#fff)}
+.srCoverEditorial h1,.srCoverEditorial h1 em{font-family:var(--geojit-type);color:var(--ds-text-primary)}
+.srCoverEditorial h1 em{color:var(--ds-primary-action-pressed);font-weight:650}
+.srCoverEditorial p,.srMoment>p,.srNext p,.srSupport p,.srFeedback>p,.srEditorialCard p,.srEditorialNote p,.srSecondary p{color:var(--ds-text-secondary)}
+.srCoverFoot{border-color:var(--ds-border-primary);color:var(--ds-text-secondary)}
+.srMapJump{color:var(--ds-primary-action-pressed);font-weight:750;text-decoration:none;border-bottom:1px solid var(--ds-border-active);padding-bottom:3px}
+.srMapJump:hover{text-decoration:underline}
+.srFinancialSummary,.srMoment,.srNext,.srSupport,.srEditorialCard,.srEditorialNote,.srSourceStamp,.srSecondary,.srFeedback{border-color:var(--ds-border-primary)}
+.srBigValue strong,.srSplitFigures strong,.srMoment h2,.srNext h2,.srFeedback h2,.srSupport h3,.srEditorialCard h3,.srEditorialNote h3,.srSecondary h3{color:var(--ds-text-primary)}
+.srAllocation{background:var(--ds-surface-green)}
+.srAllocation span:first-child,.srDot.equity{background:var(--ds-primary-action)}
+.srAllocation span:nth-child(2),.srDot.mf{background:#88D2C6}
+.srMomentFeatured{background:linear-gradient(135deg,var(--ds-surface-green),#fff);border-color:var(--ds-border-primary)}
+.srMomentIcon,.srSupportAvatar{background:var(--ds-tab-active);color:var(--ds-primary-action-pressed)}
+.srService{border-left:4px solid var(--ds-border-active);background:linear-gradient(100deg,var(--ds-surface-yellow),#fff 60%)}
+.srService .srMomentIcon{background:var(--ds-warning-light);color:var(--ds-warning)}
+.srCaseStatus{background:var(--ds-warning-light);color:var(--ds-warning)}
+.srCaseTimeline div,.srToolStats div{background:var(--ds-surface-green)}
+.srNext{background:linear-gradient(130deg,var(--ds-surface-green),var(--ds-surface-yellow));border-color:var(--ds-border-primary)}
+.srNextIntro>button,.srSavePref,.srTomorrow a,.srTool button:not(.srInlineAction){background:var(--ds-primary-action);border-color:var(--ds-primary-action);color:var(--ds-on-dark)}
+.srNextIntro>button:hover,.srSavePref:hover,.srTomorrow a:hover{background:var(--ds-primary-action-pressed)}
+.srEditorialCard{background:var(--ds-surface-yellow);border-top:4px solid var(--ds-border-active)}
+.srFeedback{background:var(--ds-surface-green)}
+.srTopicOptions button{border-color:var(--ds-border-primary);color:var(--ds-text-primary)}
+.srTopicOptions button.selected,.srFeedbackBottom button.selected{background:var(--ds-tab-active);border-color:var(--ds-border-active);color:var(--ds-text-primary)}
+.srTomorrow{background:linear-gradient(105deg,var(--ds-surface-green),var(--ds-surface-yellow));border-color:var(--ds-border-primary)}
+.srTomorrow h2{color:var(--ds-text-primary)}
+.srMapSection{margin:18px 0 20px;scroll-margin-top:16px}
+.srMapGoalExplorer{background:var(--ds-surface-yellow);border:1px solid var(--ds-border-primary);border-radius:var(--ds-radius-lg);padding:19px;margin-top:11px}
+.srMapGoalExplorer .srTool{max-width:790px;margin:0 auto}
+.srPage button:focus-visible,.srPage a:focus-visible,.srPage input:focus-visible{outline:3px solid var(--ds-border-active)!important;outline-offset:3px}
