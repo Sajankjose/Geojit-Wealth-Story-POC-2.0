@@ -113,7 +113,7 @@ export default function App(){
  if(configured&&authLoading&&!session)return <div className="loadingPage">Checking reviewer access…</div>
  if(configured&&!session)return <Login onLogin={login} error={authError} working={authLoading}/>
  if(route==='story')return <WealthStoryExperience/>
- if(route==='companion')return <div className="srPage"><div className="srHeader"><div className="srBrand"><span className="srLogo">W</span><div><strong>Geojit Wealth Companion</strong><small>PHASE 2 · GUIDED SERVICE EXPERIENCE</small></div></div><div className="srHeaderLinks"><a href={DEMO_PATHS.story}>Explore Phase 1 · Wealth Story</a><a href={DEMO_PATHS.lab}>Review workspace</a></div></div><WealthCompanionNext/></div>
+ if(route==='companion')return <WealthCompanionNext/>
  return <div className="shell">
  <aside className="sidebar">
  <div className="brand"><div className="brand-symbol" aria-hidden="true">WS</div><div><strong>Geojit</strong><small>WEALTH STORY / EXPERIENCE LAB</small></div></div>
