@@ -23,7 +23,7 @@ test('cash flow reconciliation never confuses additions with investment returns'
  assert.equal(w.changeExFlows,w.end-w.start-w.cashFlow)
  assert.equal(w.portfolioReturn,fixtureIntelligence('C012').weekly_return)
  assert.match(story.warnings,/modelled|estimate/i)
- assert.match(story.warnings,/not portfolio-matched/i)
+ assert.match(story.warnings,/not matched to the portfolio/i)
 })
 test('a new customer has no invented portfolio value or return',()=>{
  const a=mobileCustomerFigures('new')
