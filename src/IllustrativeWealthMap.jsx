@@ -1,9 +1,9 @@
 import React,{useMemo,useState} from 'react'
 import {illustrativeMapForStory,mayShowOptionalProductDiscovery} from './lib/illustrativeWealthMap.js'
 import './illustrative-wealth-map.css'
-export default function IllustrativeWealthMap({story,onExploreGoal}){
+export default function IllustrativeWealthMap({story,onExploreGoal,initialChapter}){
  const map=useMemo(()=>illustrativeMapForStory(story),[story])
- const [chosen,setChosen]=useState(null)
+ const [chosen,setChosen]=useState(initialChapter||null)
  const [showProducts,setShowProducts]=useState(false)
  const [selectedProduct,setSelectedProduct]=useState(null)
  const [saved,setSaved]=useState(false)
