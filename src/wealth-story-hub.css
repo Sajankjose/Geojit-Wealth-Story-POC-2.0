@@ -50,3 +50,24 @@
 .wshChatPanel footer{margin:0;padding:9px 13px;font-size:9px;color:var(--ds-text-tertiary);background:var(--ds-bg-page)}
 @media(max-width:850px){.wshSnapshotChapters{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:570px){.wshSnapshotChapters{grid-template-columns:repeat(2,minmax(0,1fr))}.wshGuide{right:10px;bottom:10px}.wshChatPanel{width:calc(100vw - 20px);max-height:calc(100dvh - 83px)}.wshChatLauncher{padding:12px 14px}.wshRMTop{align-items:flex-start}}
+
+/* POC 4.3 — layperson-first journey card, not a misleading completion score */
+.wshPersonalPicture{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:18px 0 21px}
+.wshPersonalPicture>div{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0;border-radius:12px;padding:21px}
+.wshKnownPicture{background:var(--ds-surface-green);border:1px solid var(--ds-border-primary)}
+.wshNextPicture{background:var(--ds-surface-yellow);border:1px solid #E8DBBF}
+.wshPictureLabel{font-size:10px;letter-spacing:.7px;font-weight:800;color:var(--ds-primary-action)}
+.wshPictureNumber{font-size:clamp(22px,3vw,35px);color:var(--ds-text-primary);letter-spacing:-.7px;font-variant-numeric:tabular-nums;line-height:1.2}
+.wshKnownPicture p,.wshNextPicture p{font-size:12px;line-height:1.6;color:var(--ds-text-secondary);margin:2px 0 3px}
+.wshKnownPicture small{font-size:10px;color:var(--ds-text-tertiary);line-height:1.55;margin-top:auto}
+.wshNextPicture>strong{font-size:19px;line-height:1.35;color:var(--ds-text-primary)}
+.wshNextPicture>button{background:var(--ds-primary-action);border:1px solid var(--ds-primary-action);color:var(--ds-on-dark);font-size:12px;font-weight:750;border-radius:9px;padding:12px 14px;cursor:pointer;text-align:left;margin-top:auto}
+.wshNextPicture>button:hover{background:var(--ds-primary-action-pressed)}
+.wshNextPicture>button span{padding-left:6px}
+.wshExploreChapters{border-top:1px solid var(--ds-border-primary);padding-top:19px}
+.wshExploreChapters>div:first-child b{font-size:16px;color:var(--ds-text-primary)}
+.wshExploreChapters>div:first-child p{font-size:11px;line-height:1.7;color:var(--ds-text-secondary);max-width:750px;margin:6px 0 14px}
+.wshJourneyFoot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px}
+.wshJourneyFoot>span{font-size:10px;color:var(--ds-text-tertiary)}
+.wshJourneyFoot>button{border:0;background:transparent;color:var(--ds-primary-action-pressed);font-size:11px;font-weight:750;cursor:pointer;padding:6px}
+@media(max-width:600px){.wshPersonalPicture{grid-template-columns:1fr}.wshPersonalPicture>div{padding:17px}.wshNextPicture>button{width:100%;text-align:center}}
