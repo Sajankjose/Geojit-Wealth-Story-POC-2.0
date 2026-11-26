@@ -13,7 +13,7 @@ export const STARTER_TOPICS=[
  {id:'protection',name:'Understand protection',detail:'Explore relevant concepts without assuming a need'}
 ]
 export function freshOneApp(){return {version:'oneapp_v3_4',activated:false,plan:'essential',focus:[],cadence:'on_demand',
- scopeReviewed:false,agreedSimulation:false,consentMarketing:false,stepsDone:[],openedAt:null,persona:'new'}}
+ scopeReviewed:false,agreedSimulation:false,consentMarketing:false,stepsDone:[],openedAt:null,persona:'thomas'}}
 export function cleanOneApp(value){
  const base=freshOneApp()
  if(!value||value.version!==base.version)return base
