@@ -1,6 +1,19 @@
-# Geojit Wealth Story & Wealth Companion — POC 4.2
+# Geojit Wealth Story & Wealth Companion — POC 4.3
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 4.3 — Plain-language UX correction and milestone visibility
+
+Based on a management-review screenshot, the Wealth Journey Snapshot previously had confusing counters (**“1 chapter with known context” / “4 open to understand”**) and five lookalike topic cards. A first-time customer could interpret these as an actual financial-progress score, despite the caveat at the bottom.
+
+**The Phase 1 page has been updated in place**:
+- **Moments That Matter appears directly after the hero/journey ribbon, before the snapshot**, so the personalised relationship anniversary, birthday and fictional portfolio milestone cannot be obscured by the lengthy five-chapter dashboard.
+- The snapshot now answers three customer questions in plain language: **What does Geojit know?** (for Thomas, fictional recorded ₹5.42 lakh), **what might I find useful?**, and **what should I do next?** A single highlighted CTA opens the related explanation/action. The primary recommendation is driven only by scenario constraints; no insurance need is inferred from age or missing products.
+- No “1 of 5 completed” metric. Replace the numerical unknown count with a non-scoring disclosure: **“Not a score or product checklist · What we don’t know is not a financial gap.”**
+- The supporting five areas use nontechnical names: **Money for emergencies**, **Insurance & protection**, **Your investments**, **Future plans & goals**, **Review & adjust**. Their subordinate status is **“We have some information”** or **“Not yet reviewed”**, not a verdict about financial readiness. Each directly opens its Wealth Map chapter.
+- A separate **“See the moments that make your story personal”** action returns to the milestone section. On the fictional service-first scenario, the prominent action prioritises understanding the service request rather than products.
+
+**Live validation limitation:** The external Netlify URL prompts for authorised reviewer authentication, so unauthenticated browser retrieval cannot inspect the signed-in page. Existing GitHub Actions automated tests and production Vite build verify code, syntax and the intended sequence. This is not equivalent to an authenticated mobile-browser visual QA pass. Test `tests/wealth-story-ux.test.mjs` asserts source order and customer-level labels/actions.
 
 ## POC 4.2 — Moments That Matter & Protection Explorer (Phase 1)
 
