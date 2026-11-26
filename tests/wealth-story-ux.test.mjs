@@ -27,3 +27,21 @@ test('new client has no implied account holdings or financial deficiency',()=>{
  assert.match(hub,/not a checklist of products to buy/)
  assert.match(hub,/not a score/i)
 })
+
+test('first-screen hero contains a real relationship moment and an actionable CTA',()=>{
+ assert.ok(page.indexOf('<StoryOpening')>0)
+ assert.ok(page.indexOf('<StoryOpening')<page.indexOf('<MomentsThatMatter'))
+ assert.match(page,/meaningfulMoments\(story\)/)
+ assert.match(page,/A MOMENT JUST FOR YOU/)
+ assert.match(page,/See your personal story/)
+ assert.match(page,/ONE USEFUL NEXT STEP/)
+ assert.match(page,/onNext=\{\(\)=>goToSection/)
+ assert.match(page,/onMoments=\{\(\)=>goToSection\('moments'\)\}/)
+})
+test('landing page visibly differentiates anniversary, birthday and verified financial scenario',()=>{
+ assert.match(page,/occasion\.value\+' years'/)
+ assert.match(page,/Happy birthday!/)
+ assert.match(page,/story\.model\.valuation/)
+ assert.match(page,/Review my service update/)
+ assert.match(page,/protection-explorer/)
+})
