@@ -1,6 +1,20 @@
-# Geojit Wealth Story & Wealth Companion — POC 4.3
+# Geojit Wealth Story & Wealth Companion — POC 4.4
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 4.4 — First-screen visibility correction (26 November 2026)
+
+Based on authenticated reviewer screenshots, the Phase 1 Wealth Story's hero was so tall that the customer had to scroll before seeing any actual personal evidence or relevant next action. The previous POC 4.3 reordering was functionally correct but invisible in the first viewport.
+
+**The opening has been redesigned in place**:
+- Compact the greeting typography, hero spacing and persona selector so the story can surface personal substance immediately.
+- Place **a real fictional source-linked moment directly inside the opening hero**: Thomas sees a 12-year Geojit relationship anniversary based on the explicitly fabricated 26 November 2014 joining date; George sees an invented birthday greeting for 26 November; a service-first customer sees the open statement-service request; a new customer starts without fabricated holdings; other customer perspectives may see the record-backed portfolio value.
+- Put **one clear contextual CTA next to the moment**, which scrolls to the relevant, customer-controlled protection explorer, goal chapter, service update or starting chapter; a second small action opens the fuller Moments That Matter section immediately below.
+- Date accuracy: the personal edition is **26 November 2026**, while the portfolio figures are independently marked **as at 20 November 2026**. No current market values are claimed.
+- Retain the full Moments That Matter, three-question wealth journey snapshot, detailed financial storytelling, Wealth Map, contextual coach, human-support concept and optional insurance exploration below the hero.
+- `tests/wealth-story-ux.test.mjs` asserts above-the-fold source-grounded hero structure, individual customer moments and actionable interaction.
+
+**Deployment verification:** the public link `https://wealthstory.netlify.app/wealth-story?client=C012` requires Supabase reviewer authentication. Public browser fetch confirms the sign-in barrier, not authenticated viewport rendering; GitHub Actions validates production build, not Netlify deployment status. Reviewer should sign in, refresh, and check that personal highlight and relevant action appear **inside the hero** without scrolling.
 
 ## POC 4.3 — Plain-language UX correction and milestone visibility
 
