@@ -17,6 +17,6 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
       - name: Test synthetic AI generation function
-        run: node --test tests/ai-generation.test.mjs tests/delivery-eligibility.test.mjs tests/story-editorial.test.mjs tests/wealth-intelligence.test.mjs tests/genuine-guidance.test.mjs tests/wealth-companion.test.mjs tests/companion-onboarding.test.mjs tests/new-client-lifecycle.test.mjs tests/companion-experience.test.mjs tests/one-app-demo.test.mjs tests/companion-marketing.test.mjs tests/mobile-wealth-story.test.mjs tests/demo-routes.test.mjs tests/wealth-story-orchestration.test.mjs tests/illustrative-wealth-map.test.mjs tests/wealth-story-guide.test.mjs tests/moments-that-matter.test.mjs
+        run: node --test tests/ai-generation.test.mjs tests/delivery-eligibility.test.mjs tests/story-editorial.test.mjs tests/wealth-intelligence.test.mjs tests/genuine-guidance.test.mjs tests/wealth-companion.test.mjs tests/companion-onboarding.test.mjs tests/new-client-lifecycle.test.mjs tests/companion-experience.test.mjs tests/one-app-demo.test.mjs tests/companion-marketing.test.mjs tests/mobile-wealth-story.test.mjs tests/demo-routes.test.mjs tests/wealth-story-orchestration.test.mjs tests/illustrative-wealth-map.test.mjs tests/wealth-story-guide.test.mjs tests/moments-that-matter.test.mjs tests/wealth-story-ux.test.mjs
       - name: Build Vite application
         run: npm run build
