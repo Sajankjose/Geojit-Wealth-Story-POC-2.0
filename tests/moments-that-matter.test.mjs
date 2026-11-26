@@ -1,0 +1,50 @@
+import {test} from 'node:test'
+import assert from 'node:assert/strict'
+import {composeWealthStory} from '../src/lib/wealthStoryOrchestrator.js'
+import {DEMO_RELATIONSHIP_RECORDS,yearsBetween,isCalendarAnniversary,meaningfulMoments,illustrativeTermCover,protectionEngagement,MOMENT_REVIEW_DATE} from '../src/lib/momentsThatMatter.js'
+test('customer moments are based on explicit invented dates, not real DOB or CRM data',()=>{
+ const x=meaningfulMoments(composeWealthStory('C012'))
+ assert.equal(x.reviewDate,'2026-11-26')
+ assert.equal(x.tenure,12)
+ assert.equal(x.isRelationshipAnniversary,true)
+ assert.equal(x.isBirthday,false)
+ assert.ok(x.events.some(e=>e.id==='anniversary'&&e.value===12))
+ assert.equal(x.events.find(e=>e.id==='investment').value,542000)
+ assert.match(x.source,/invented/i)
+ assert.equal(DEMO_RELATIONSHIP_RECORDS.C012.joinedDate,'2014-11-26')
+})
+test('birthday message appears only on matching fictional DOB and supports unknown DOB',()=>{
+ const george=meaningfulMoments(composeWealthStory('C014'))
+ const arun=meaningfulMoments(composeWealthStory('C001'))
+ assert.equal(george.isBirthday,true)
+ assert.equal(george.age,44)
+ assert.ok(george.events.some(x=>x.id==='birthday'))
+ assert.equal(arun.hasDob,false)
+ assert.equal(arun.age,null)
+ assert.equal(arun.events.some(x=>x.id==='birthday'),false)
+})
+test('financially meaningful dates are computed without guessing partial year',()=>{
+ assert.equal(yearsBetween('2014-11-26','2026-11-26'),12)
+ assert.equal(yearsBetween('2014-11-27','2026-11-26'),11)
+ assert.equal(yearsBetween('1985-04-19','2026-11-26'),41)
+ assert.equal(isCalendarAnniversary('2014-11-26',MOMENT_REVIEW_DATE),true)
+ assert.equal(isCalendarAnniversary('2014-11-25',MOMENT_REVIEW_DATE),false)
+ assert.equal(yearsBetween('invalid',MOMENT_REVIEW_DATE),null)
+})
+test('self-directed insurance arithmetic is transparent and not linked to age',()=>{
+ const a=illustrativeTermCover({annualFamilyExpense:600000,supportYears:10,liabilities:1000000,earmarkedAssets:200000,existingTermCover:2500000})
+ assert.equal(a.hypotheticalNeed,6800000)
+ assert.equal(a.unaddressed,4300000)
+ assert.match(a.assumption,/NOT evidence of underinsurance/i)
+ const b=illustrativeTermCover({annualFamilyExpense:600000,supportYears:10,liabilities:1000000,earmarkedAssets:200000,existingTermCover:8000000})
+ assert.equal(b.unaddressed,0)
+ assert.equal(illustrativeTermCover({annualFamilyExpense:-1}),null)
+ assert.equal(illustrativeTermCover({supportYears:41}),null)
+})
+test('interest responses are allowlisted and no live lead mechanism is created',()=>{
+ assert.equal(protectionEngagement('has_cover'),'has_cover')
+ assert.equal(protectionEngagement('no_cover'),'no_cover')
+ assert.equal(protectionEngagement('later'),'later')
+ assert.equal(protectionEngagement('untrusted'),'unsure')
+ assert.equal(meaningfulMoments({synthetic:false}),null)
+})
