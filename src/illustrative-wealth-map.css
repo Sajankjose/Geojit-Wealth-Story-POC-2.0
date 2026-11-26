@@ -1,0 +1,54 @@
+/* Wealth Story 3.9 / Wealth Creation Map: sourced from Geojit semantic design tokens
+   in geojit-experience.css (Radio Canada Big; teal action, mint/yellow surfaces,
+   coral active border). Additional blue, warm-gold and lavender are restrained
+   supporting accents within a fictional exploration graphic, not new CTA rules. */
+.wmSExperience{font-family:var(--geojit-type);background:var(--ds-surface-white);border:1px solid var(--ds-border-primary);border-radius:var(--ds-radius-lg);overflow:hidden;box-shadow:var(--ds-shadow);color:var(--ds-text-primary)}
+.wmSHero{display:flex;justify-content:space-between;gap:22px;align-items:center;padding:clamp(22px,4vw,39px);background:linear-gradient(112deg,var(--ds-surface-green) 0%,var(--ds-surface-yellow) 82%)}
+.wmSEyebrow{font-size:10px;letter-spacing:1px;color:var(--ds-primary-action);font-weight:800}
+.wmSHero h2{font:650 clamp(24px,3vw,34px)/1.25 var(--geojit-type);letter-spacing:-.9px;max-width:620px;margin:10px 0}
+.wmSHero p{color:var(--ds-text-secondary);line-height:1.75;font-size:12px;max-width:580px;margin:0}
+.wmSExploreLabel{white-space:nowrap;font-size:11px;font-weight:800;background:#fff;border:1px solid var(--ds-border-primary);padding:12px 14px;border-radius:25px;color:var(--ds-text-primary)}
+.wmSExploreLabel span{color:var(--ds-border-active);font-size:16px;margin-left:5px}
+.wmSMap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:34px 18px 27px;position:relative;background:#F9FCFB}
+.wmSRoute{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.wmSNode{appearance:none;display:flex;align-items:center;flex-direction:column;gap:7px;z-index:1;position:relative;min-width:0;padding:12px 7px;border:2px solid transparent;background:rgba(255,255,255,.87);border-radius:13px;min-height:172px;color:var(--ds-text-primary);cursor:pointer;text-align:center}
+.wmSNode:hover{background:#fff;border-color:var(--ds-border-primary)}
+.wmSNodeActive{background:#fff;border-color:var(--ds-border-active);box-shadow:0 7px 21px rgba(2,47,45,.07)}
+.wmSNodeCircle{width:60px;height:60px;display:grid;place-items:center;border-radius:50%;background:var(--ds-tab-active);border:4px solid white;box-shadow:0 0 0 1px var(--ds-border-primary)}
+.wmSNodeSymbol{font-size:26px;line-height:1;color:var(--ds-primary-action)}
+.wmSNode-coral .wmSNodeCircle{background:#FCE6D9}.wmSNode-coral .wmSNodeSymbol{color:#BD6549}
+.wmSNode-blue .wmSNodeCircle{background:#DDEEF6}.wmSNode-blue .wmSNodeSymbol{color:#336D9E}
+.wmSNode-gold .wmSNodeCircle{background:#FFF0CB}.wmSNode-gold .wmSNodeSymbol{color:#A16F22}
+.wmSNode-lavender .wmSNodeCircle{background:#EEE8F9}.wmSNode-lavender .wmSNodeSymbol{color:#7460A3}
+.wmSNodeStep{font-size:9px;letter-spacing:.65px;color:var(--ds-text-tertiary);font-weight:700}
+.wmSNode strong{font-size:12px;font-weight:750;line-height:1.25}
+.wmSNode small{font-size:9px;color:var(--ds-text-secondary);line-height:1.45}
+.wmSNodeKnown{font-size:9px;font-weight:750;background:var(--ds-surface-green);color:var(--ds-primary-action-pressed);border-radius:14px;padding:4px 7px;margin-top:auto}
+.wmSDetail{margin:0 22px 23px;background:var(--ds-surface-green);border:1px solid var(--ds-border-primary);border-radius:var(--ds-radius-md);padding:22px}
+.wmSDetail-coral{background:#FFF5F0;border-color:#F0D9CE}
+.wmSDetail-blue{background:#F0F7FB;border-color:#D7E9F3}
+.wmSDetail-gold{background:var(--ds-surface-yellow);border-color:#EDE6C6}
+.wmSDetail-lavender{background:#F6F3FC;border-color:#E7E0F3}
+.wmSDetailTop{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap}
+.wmSStatus{font-size:9px;color:var(--ds-text-secondary);border:1px solid var(--ds-border-primary);background:#fff;border-radius:18px;padding:6px 10px}
+.wmSDetail h3{font:650 clamp(19px,2.6vw,26px)/1.3 var(--geojit-type);letter-spacing:-.55px;margin:13px 0}
+.wmSDetail>p{font-size:12px;line-height:1.75;color:var(--ds-text-secondary);max-width:740px}
+.wmSFocus{border-left:3px solid var(--ds-border-active);padding:10px 13px;background:#ffffffba;display:grid;gap:6px;margin:17px 0;border-radius:0 9px 9px 0}
+.wmSFocus span{font-size:9px;letter-spacing:.55px;color:var(--ds-text-secondary);font-weight:750}
+.wmSFocus strong{font-size:13px;color:var(--ds-text-primary)}
+.wmSGoalLink,.wmSProductDetails button{border-radius:var(--ds-radius-sm);background:var(--ds-primary-action);color:var(--ds-on-dark);border:1px solid var(--ds-primary-action);font-size:11px;padding:11px 13px;font-weight:750;cursor:pointer}
+.wmSGoalLink:hover,.wmSProductDetails button:hover{background:var(--ds-primary-action-pressed)}
+.wmSDiscover{background:#fff;border:1px solid var(--ds-border-action);color:var(--ds-primary-action-pressed);font-size:11px;font-weight:750;padding:11px 13px;border-radius:var(--ds-radius-sm);cursor:pointer}
+.wmSProductArea{margin-top:13px}
+.wmSProducts{background:#fff;border:1px solid var(--ds-border-primary);padding:14px;border-radius:var(--ds-radius-md);margin-top:12px;display:grid;gap:8px}
+.wmSProducts>p{font-size:11px;color:var(--ds-text-secondary);line-height:1.7;margin:0 0 3px}
+.wmSProducts>button{display:flex;justify-content:space-between;gap:8px;text-align:left;border:1px solid var(--ds-border-primary);background:var(--ds-surface-white);color:var(--ds-text-primary);border-radius:8px;padding:11px 13px;font-size:11px;cursor:pointer}
+.wmSProducts>button.on{border-color:var(--ds-border-active);background:var(--ds-surface-yellow)}
+.wmSProducts>button b{color:var(--ds-primary-action)}
+.wmSProductDetails{background:var(--ds-surface-green);border:1px solid var(--ds-border-primary);border-radius:9px;padding:13px;display:grid;gap:9px}
+.wmSProductDetails strong{font-size:12px}.wmSProductDetails p{font-size:11px;color:var(--ds-text-secondary);line-height:1.6;margin:0}
+.wmSProductDetails button{justify-self:start}.wmSProductDetails small{font-size:10px;color:var(--ds-text-secondary)}
+.wmSPrivacy{padding:12px;border-radius:8px;background:var(--ds-surface-yellow);font-size:11px;color:var(--ds-text-secondary)!important}
+.wmSFoot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 24px 20px;color:var(--ds-text-tertiary);font-size:10px}
+@media(max-width:760px){.wmSHero{flex-direction:column;align-items:start}.wmSExploreLabel{align-self:start}.wmSMap{grid-template-columns:repeat(3,minmax(0,1fr));padding:20px 12px}.wmSRoute{display:none}.wmSNode{min-height:155px}.wmSNodeCircle{width:52px;height:52px}}
+@media(max-width:460px){.wmSMap{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.wmSNode{min-height:150px}.wmSDetail{margin:0 12px 17px;padding:16px}.wmSHero{padding:21px 17px}.wmSFoot{padding:0 14px 15px}.wmSNode small{font-size:9px}}
