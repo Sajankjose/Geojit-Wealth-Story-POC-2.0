@@ -1,7 +1,7 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
 import {composeWealthStory} from '../src/lib/wealthStoryOrchestrator.js'
-import {MAP_CHAPTERS,illustrativeMapForStory,mayShowOptionalProductDiscovery} from '../src/lib/illustrativeWealthMap.js'
+import {MAP_CHAPTERS,illustrativeMapForStory,mayShowOptionalProductDiscovery,productRelationship,relationshipLabel} from '../src/lib/illustrativeWealthMap.js'
 test('wealth map has five distinct educational chapters without a score or missing-product diagnosis',()=>{
  assert.deepEqual(MAP_CHAPTERS.map(x=>x.id),['foundation','protection','growth','goals','review'])
  assert.equal(new Set(MAP_CHAPTERS.map(x=>x.color)).size,5)
@@ -39,4 +39,25 @@ test('new client has no holdings or inferred gaps and product topics are user in
  assert.equal(mayShowOptionalProductDiscovery(m,false),false)
  assert.equal(mayShowOptionalProductDiscovery(m,true),true)
  assert.equal(illustrativeMapForStory({synthetic:false}),null)
+})
+
+test('not-subscribed status is used only for explicitly defined fictional Geojit records',()=>{
+ assert.equal(productRelationship('C012','smartfolios'),'not_subscribed')
+ assert.equal(relationshipLabel(productRelationship('C012','smartfolios')),'Not subscribed with Geojit (demo)')
+ assert.equal(productRelationship('C012','mf'),'recorded')
+ assert.equal(productRelationship('C012','insurance'),'unknown')
+ assert.equal(productRelationship('C001','smartfolios'),'unknown')
+ assert.equal(productRelationship('C008','bonds'),'unknown')
+ assert.equal(productRelationship('real-client','smartfolios'),'unknown')
+})
+test('journey map adapts to portfolio, declared goals and unresolved service priorities',()=>{
+ const thomas=illustrativeMapForStory(composeWealthStory('C012'))
+ const george=illustrativeMapForStory(composeWealthStory('C014'))
+ const meera=illustrativeMapForStory(composeWealthStory('C008'))
+ assert.match(thomas.journeyLine,/investment chapter/i)
+ assert.match(george.journeyLine,/goal you have declared/i)
+ assert.match(meera.journeyLine,/open request/i)
+ assert.equal(thomas.chapters.find(x=>x.id==='growth').products.find(x=>x.id==='smartfolios').relationship,'not_subscribed')
+ assert.equal(thomas.chapters.find(x=>x.id==='protection').products.find(x=>x.id==='insurance').relationship,'unknown')
+ assert.equal(mayShowOptionalProductDiscovery(meera,true),false)
 })
