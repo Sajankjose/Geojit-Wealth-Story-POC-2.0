@@ -96,6 +96,7 @@ export default function WealthStoryExperience(){
  const goToSection=(destination)=>{
   if(['foundation','protection','growth','goals','review'].includes(destination)){setMapChapter(destination);window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='protection-explorer'){setProtectionOpen(true);window.requestAnimationFrame(()=>document.getElementById('wealth-story-protection')?.scrollIntoView({behavior:'smooth',block:'start'}))}
+  else if(destination==='moments'){window.requestAnimationFrame(()=>document.getElementById('wealth-story-moments')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='map'){window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='contact'){window.requestAnimationFrame(()=>document.getElementById('wealth-story-contact')?.scrollIntoView({behavior:'smooth',block:'center'}))}
  }
@@ -108,8 +109,8 @@ export default function WealthStoryExperience(){
    <div className="srPersonaNav" aria-label="Preview different customer stories">{STORY_PEOPLE.map(p=><button key={p.id} type="button" className={clientId===p.id?'selected':''} onClick={()=>switchClient(p.id)} aria-pressed={clientId===p.id}><strong>{p.name}</strong><small>{p.description}</small></button>)}</div>
    <section className="srCover srCoverEditorial"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>ISSUE 01 · PERSONAL EDITION</span></div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p><div className="srCoverFoot"><span>One chapter today. A more informed journey tomorrow.</span><a className="srMapJump" href="#wealth-creation-map">See the chapters ahead ↗</a></div></section>
    <div className="srJourneyRibbon"><span>YOUR WEALTH CREATION JOURNEY</span><div><b>01</b> Understand your starting point <i>→</i> <b>02</b> Discover what matters <i>→</i> <b>03</b> Explore your next chapter</div></div>
-   <WealthJourneySnapshot key={clientId+'snapshot'} story={story} onExplore={goToSection}/>
-   <MomentsThatMatter key={clientId+'moments'} story={story} onExploreProtection={()=>{setProtectionOpen(true);window.requestAnimationFrame(()=>document.getElementById('wealth-story-protection')?.scrollIntoView({behavior:'smooth',block:'start'}))}}/>
+   <MomentsThatMatter key={clientId+'moments'} story={story} onExploreProtection={()=>goToSection('protection-explorer')}/>
+   <WealthJourneySnapshot key={clientId+'snapshot'} story={story} onExplore={goToSection} onExploreProtection={()=>goToSection('protection-explorer')} onExploreMoments={()=>goToSection('moments')}/>
    {protectionOpen&&<ProtectionExplorer key={clientId+'protection'} story={story}/>}
    <div className="srContentGrid">
     <div className="srContentMain">
