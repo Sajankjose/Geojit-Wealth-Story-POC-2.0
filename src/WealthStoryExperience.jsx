@@ -96,7 +96,8 @@ export default function WealthStoryExperience(){
   <main className="srMain">
    <div className="srIssue"><span>PHASE 1 · PERSONALISED RELATIONSHIP EXPERIENCE</span><span>FICTIONAL REVIEW DEMONSTRATION</span></div>
    <div className="srPersonaNav" aria-label="Preview different customer stories">{STORY_PEOPLE.map(p=><button key={p.id} type="button" className={clientId===p.id?'selected':''} onClick={()=>switchClient(p.id)} aria-pressed={clientId===p.id}><strong>{p.name}</strong><small>{p.description}</small></button>)}</div>
-   <section className="srCover srCoverEditorial"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>ISSUE 01 · PERSONAL EDITION</span></div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p><div className="srCoverFoot"><span>One useful perspective, not another campaign.</span><a className="srMapJump" href="#wealth-creation-map">Discover your Wealth Creation Map ↗</a></div></section>
+   <section className="srCover srCoverEditorial"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>ISSUE 01 · PERSONAL EDITION</span></div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p><div className="srCoverFoot"><span>One chapter today. A more informed journey tomorrow.</span><a className="srMapJump" href="#wealth-creation-map">See the chapters ahead ↗</a></div></section>
+   <div className="srJourneyRibbon"><span>YOUR WEALTH CREATION JOURNEY</span><div><b>01</b> Understand your starting point <i>→</i> <b>02</b> Discover what matters <i>→</i> <b>03</b> Explore your next chapter</div></div>
    <div className="srContentGrid">
     <div className="srContentMain">
      {order.includes('service')&&<ServiceFollowUp key={clientId+'service'} story={story}/>}
@@ -112,7 +113,7 @@ export default function WealthStoryExperience(){
    </div>
    <div id="wealth-creation-map" className="srMapSection"><IllustrativeWealthMap key={clientId+'map'} story={story} onExploreGoal={()=>setMapGoalOpen(v=>!v)}/>{mapGoalOpen&&<div className="srMapGoalExplorer"><GoalExplorer key={clientId+'map-goal'} story={story}/></div>}</div>
    <Feedback key={clientId+'feedback'} clientId={clientId}/>
-   <section className="srTomorrow"><span className="srEyebrow">AND YOUR JOURNEY CONTINUES</span><h2>One relevant story. One meaningful next step.</h2><p>Wealth Story is a Phase 1 communication and relationship concept. An optional Phase 2 Wealth Companion could build on the customer's chosen roadmap, learning and support needs.</p><a href={DEMO_PATHS.companion}>Explore Wealth Companion · Phase 2 →</a></section>
-   <footer className="srFooter">All customers, financial figures, service records and scenarios are fictional. Investment valuations dated 20 November 2026. No live market, Data Lake, customer care integration, assigned RM, subscription, outbound message or financial advice.</footer>
+   <section className="srTomorrow"><span className="srEyebrow">AND YOUR JOURNEY CONTINUES</span><h2>Your journey does not end with this story.</h2><p>This is one chapter of your wealth creation journey. Keep exploring the topics that matter to you, and return as your questions and circumstances evolve. Wealth Companion is a separate, proposed Phase 2 service.</p><a href={DEMO_PATHS.companion}>Explore Wealth Companion · Phase 2 →</a></section>
+   <footer className="srFooter">All customers, financial figures, service records and scenarios are fictional. Investment valuations dated 20 November 2026. Product relationship labels are explicitly invented demo fixtures, not live subscription records. No live market, Data Lake, customer care integration, assigned RM, outbound message or financial advice.</footer>
   </main></div>
 }
