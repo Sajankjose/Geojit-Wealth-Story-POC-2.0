@@ -1,6 +1,6 @@
 import {test} from 'node:test'
 import assert from 'node:assert/strict'
-import {DEMO_PATHS,resolveDemoRoute,isSyntheticClientId,syntheticClientIdFromQuery} from '../src/lib/demoRoutes.js'
+import {DEMO_PATHS,resolveDemoRoute,resolveDemoRouteAtBase,isSyntheticClientId,syntheticClientIdFromQuery} from '../src/lib/demoRoutes.js'
 test('phase 1 and phase 2 have stable independent URL paths',()=>{
  assert.equal(DEMO_PATHS.story,'/wealth-story')
  assert.equal(DEMO_PATHS.companion,'/wealth-companion')
@@ -25,4 +25,15 @@ test('only C001-C020 synthetic client IDs are accepted',()=>{
  assert.equal(isSyntheticClientId('any-real-account'),false)
  assert.equal(syntheticClientIdFromQuery('?client=C012'),'C012')
  assert.equal(syntheticClientIdFromQuery('?client=real'),'C012')
+})
+
+test('GitHub Pages project base correctly resolves independent demo pages and refresh',()=>{
+ const base='/Geojit-Wealth-Story-POC-2.0/'
+ assert.equal(resolveDemoRouteAtBase(base,base),'lab')
+ assert.equal(resolveDemoRouteAtBase(base+'wealth-story',base),'story')
+ assert.equal(resolveDemoRouteAtBase(base+'wealth-story/',base),'story')
+ assert.equal(resolveDemoRouteAtBase(base+'wealth-companion',base),'companion')
+ assert.equal(resolveDemoRouteAtBase(base+'wealth-companion/',base),'companion')
+ assert.equal(resolveDemoRouteAtBase(base+'unknown',base),'lab')
+ assert.equal(resolveDemoRouteAtBase('/wealth-story',base),'story')
 })
