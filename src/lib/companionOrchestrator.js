@@ -4,7 +4,7 @@ import {composeWealthStory} from './wealthStoryOrchestrator.js'
 export const COMPANION_PEOPLE=[
  ['C001','Arun','New explorer','new'],['C002','Anu','First SIP explorer','learn'],['C003','Meera','Regular SIP investor','investor'],
  ['C004','Dev','Failed SIP scenario','service'],['C005','Fathima','Paused SIP scenario','service'],['C006','Rahul','Mutual fund explorer','investor'],
- ['C007','Lakshmi','Equity explorer','learn'],['C008','Vikram','Active equity trader','trader'],['C009','Kiran','F&O beginner','learn'],
+ ['C007','Lakshmi','Equity explorer','learn'],['C008','Meera','Service continuity scenario','service'],['C009','Kiran','F&O beginner','learn'],
  ['C010','Suresh','Experienced F&O trader','trader'],['C011','Nisha','Commodity trader','trader'],['C012','Thomas','Investor and trader','investor'],
  ['C013','Priya','SIP and protection explorer','goal'],['C014','George','Retirement goal','goal'],['C015','Rehan','NRI prospect','new'],
  ['C016','Divya','Multi-product explorer','investor'],['C017','Joseph','Branch relationship','service'],['C018','Sneha','Re-engaging customer','new'],
