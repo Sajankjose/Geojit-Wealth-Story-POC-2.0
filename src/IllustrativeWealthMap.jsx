@@ -1,7 +1,7 @@
 import React,{useMemo,useState} from 'react'
 import {illustrativeMapForStory,mayShowOptionalProductDiscovery} from './lib/illustrativeWealthMap.js'
 import './illustrative-wealth-map.css'
-export default function IllustrativeWealthMap({story,onExploreGoal,initialChapter}){
+export default function IllustrativeWealthMap({story,onExploreGoal,onExploreProtection,initialChapter}){
  const map=useMemo(()=>illustrativeMapForStory(story),[story])
  const [chosen,setChosen]=useState(initialChapter||null)
  const [showProducts,setShowProducts]=useState(false)
@@ -29,6 +29,7 @@ export default function IllustrativeWealthMap({story,onExploreGoal,initialChapte
    <h3>{active.question}</h3><p>{active.body}</p>
    <div className="wmSFocus"><span>YOUR NEXT DISCOVERY</span><strong>{active.learn}</strong></div>
    {!map.serviceFirst&&unexplored.length>0&&<div className="wmSUnexplored"><span className="wmSUnexploredIcon">✦</span><div><strong>There is more you could discover.</strong><p>{unexplored.map(x=>x.name).join(' and ')} {unexplored.length===1?'is':'are'} not subscribed to in this fictional Geojit account. Have you explored how {unexplored.length===1?'it works':'these approaches work'}?</p><small>Not subscribed ≠ missing out on returns. Suitability, external relationships and needs are not established.</small></div></div>}
+   {active.id==='protection'&&<button type="button" className="wmSGoalLink" onClick={onExploreProtection}>Explore your insurance coverage →</button>}
    {active.id==='goals'&&<button type="button" className="wmSGoalLink" onClick={onExploreGoal}>Explore the illustrative goal calculator →</button>}
    {map.serviceFirst?<p className="wmSPrivacy">Your fictional service request is still in progress. Optional product discovery is held back in this scenario; support takes priority.</p>:
     <div className="wmSProductArea">
