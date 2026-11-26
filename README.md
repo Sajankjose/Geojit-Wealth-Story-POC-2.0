@@ -1,6 +1,39 @@
 # Geojit Wealth Story & Wealth Companion — POC 4.4
 
-**Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+**Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify (with a GitHub Pages alternative configured), with reviewer authentication via Supabase Auth.
+
+## GitHub Pages alternative hosting — POC 4.4
+
+GitHub Pages is an alternative to Netlify when production deploys are paused. It shares the same open-source React/Vite POC repository, uses existing Supabase reviewer sign-in and needs **no extra paid hosting**. GitHub Pages is static, so all React client routes use an SPA fallback.
+
+**Expected URLs after the GitHub repository Pages settings and reviewer-auth variables are configured and the deploy job succeeds:**
+
+- **Phase 1 Wealth Story:** `https://sajankjose.github.io/Geojit-Wealth-Story-POC-2.0/wealth-story?client=C012`
+- **Phase 2 Wealth Companion:** `https://sajankjose.github.io/Geojit-Wealth-Story-POC-2.0/wealth-companion`
+- **Full reviewer workspace:** `https://sajankjose.github.io/Geojit-Wealth-Story-POC-2.0/`
+
+These are intended URL formats, **not claims of active publication** until deployment succeeds. The existing Netlify URLs remain unchanged and supported.
+
+### GitHub repository setup (one time)
+
+1. Open [this repository's Pages settings](https://github.com/Sajankjose/Geojit-Wealth-Story-POC-2.0/settings/pages). Under **Build and deployment → Source**, select **GitHub Actions** instead of "Deploy from a branch". The existing automated `pages build and deployment` branch workflow indicates that GitHub Pages was previously configured, but that does not by itself mean the new Actions-based deployment is enabled.
+2. Open [repository Actions variables/secrets settings](https://github.com/Sajankjose/Geojit-Wealth-Story-POC-2.0/settings/secrets/actions). Set **either repository Variables or Secrets**:
+   - `VITE_SUPABASE_URL`: the existing Supabase project HTTPS origin (`https://<project-ref>.supabase.co`).
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`: the existing Supabase **publishable** or legacy **anon** key for the same project, **never the service_role or secret key**.
+   Retrieve these from the already configured Netlify project environment or Supabase project settings. GitHub Action explicitly blocks release when absent, rather than accidentally publishing the reviewer app unauthenticated. Vite embeds publishable/anon keys in public client JavaScript, so policies/RLS and reviewer account access must be correctly configured.
+3. Visit [Deploy Wealth Story to GitHub Pages](https://github.com/Sajankjose/Geojit-Wealth-Story-POC-2.0/actions/workflows/pages.yml) and click **Run workflow** on `main` after setting those values. Pushes to `main` also trigger future deploys automatically.
+4. In Supabase **Authentication → URL Configuration**, add `https://sajankjose.github.io/Geojit-Wealth-Story-POC-2.0/**` to allowed redirect URLs **only if using invitation, recovery, OAuth or email-link flows**. The current reviewer sign-in uses email/password, which does not generally need a redirect for basic sign-in. Keep any existing Netlify redirects.
+5. Once the workflow shows success, open all three URLs, log in using the existing approved fictional reviewer account, refresh the `/wealth-story` and `/wealth-companion` direct links, and verify the first-screen personalised milestones and map. No real client information should ever be put on these public GitHub Pages endpoints.
+
+### Implementation details
+
+- `vite.config.js`: switch `base` to `/Geojit-Wealth-Story-POC-2.0/` when `GITHUB_PAGES=true`; root `/` remains for Netlify.
+- `src/lib/demoRoutes.js`: derive all three internal links from Vite's effective base URL; route the React SPA correctly on either hosting platform.
+- `.github/workflows/pages.yml`: check required reviewer auth configuration, test, build, create `dist/404.html` to support direct SPA routes and reloads, upload Pages artifact and deploy via official GitHub Actions.
+- `.github/workflows/build.yml`: also validate the Pages-specific asset URL base and direct-link 404 fallback **without** any deployment credentials.
+- `tests/demo-routes.test.mjs`: ensure correct mapping for root and project-prefixed URLs.
+
+**Important:** The `.github/workflows/pages.yml` deployment cannot be made live by committing code alone if the repository Variables/Secrets are missing or Pages Source has not been switched to GitHub Actions. In that case only the owner/admin must finish the two repository settings above. Do not claim the site is published until the workflow succeeds.
 
 ## POC 4.4 — First-screen visibility correction (26 November 2026)
 
