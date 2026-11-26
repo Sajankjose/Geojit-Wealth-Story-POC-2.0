@@ -1,6 +1,42 @@
-# Geojit Wealth Companion — One App W Discovery & Activation POC 3.4
+# Geojit Wealth Companion — Insight-Led W Discovery & Service Promise POC 3.5
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.5 — The first-click “wow” moment and genuine four-part service promise
+
+The first click on the **W** icon no longer takes customers directly into a pricing card. It now reveals a thought-provoking, *source-explained insight*, intentionally distinct from direct sales copy:
+
+- **New fictional client Arun:** “Your investment journey hasn’t started here yet. Your financial future already has questions worth asking.” The app explicitly reports no Geojit investments recorded; it does not assume Arun has no assets or goals elsewhere.
+- **Existing fictional investor Thomas:** “You can see what your investments are worth. But do they tell your whole story?” A dated fictitious Geojit snapshot shows ₹5,42,000 across equity and mutual funds as of 20 November 2026, with source and completeness disclosures. It does **not** imply that Thomas needs to purchase or switch investments.
+
+A **Why am I seeing this?** disclosure expands source, date and limitations. Neither scenario draws from real data or silently uses digital-behaviour profiling. The management panel's persona selector changes the fictional insight scenario and resets simulated activation; it does not switch a real client account.
+
+### Clear value-added service promise
+
+The next screen presents four capabilities as one coherent experience:
+
+1. **Your Wealth Creation Roadmap** — a customer-controlled educational roadmap and optional next learning steps, interactive in the POC.
+2. **A dedicated expert when you need one** — proposed human support to clarify questions and navigate authorised service channels. **Not live in the POC; no actual expert, real-time access, 24/7 service guarantee, appointment or eligibility is promised.**
+3. **Your continuing Wealth Story** — insightful, editorially governed perspectives connected to verified facts and customer-selected themes. Existing synthetic story demonstrations are not a live subscribed editorial service.
+4. **A guiding coach whenever you explore** — a working scripted educational Q&A in the One App demo. It never provides investment advice, selects a product or creates a request for commercial follow-up.
+
+The mobile demonstration retains pricing, consent-neutral data review, self-directed profiling, roadmap reveal and post-activation W navigation. The activated Companion now contains **Guiding Coach** and **Expert Support Concept** views; the expert view has no live booking action. The broader existing-customer Wealth Companion home also lists all four propositions, with honest availability labels.
+
+### Reviewer demonstration
+
+1. Open the Netlify reviewer app and its default **One App · W Journey** workspace.
+2. Before enrolling, use the right-hand management panel to choose **Arun** or **Thomas**.
+3. Click **W** on My Watch or within More. Read the insight first, then expand **Why am I seeing this?**
+4. Tap **Discover what Wealth Companion can do**, review four services and their availability descriptions, then inspect the example plans.
+5. Complete the fictional educational enrolment, choose interests and activate W; inspect the permanent bottom-nav shortcut.
+6. From the activated Companion, open **Your guiding coach** and explore its scripted questions; open **Dedicated expert concept** to discuss the intended support pathway and why operational approval is needed.
+7. Revisit the roadmap and Wealth Story. Use **Reset full demo** to repeat the before/after experience.
+
+### Governance
+
+The hook is rendered by deterministic, allowlisted synthetic context rules from `src/lib/companionMarketing.js`, not open-ended AI generation. It must never invent a financial goal, need or portfolio figure; an external-asset gap is unknown, not a marketing opportunity. Four distinct service claims carry availability tags. Pricing remains hypothetical. Specialist availability, credentials, response time, client entitlement, advice/distribution segregation, AI coaching, publication workflows and customer permissions all require actual business and Compliance approval before any client-facing promise.
+
+The suite `tests/companion-marketing.test.mjs` checks factual hook evidence, dated Thomas figures, new-customer unknowns, explicit availability, coach limitations and no automatically created lead.
 
 ## POC 3.4 — One App mobile W icon → pricing → guided roadmap → persistent menu
 
