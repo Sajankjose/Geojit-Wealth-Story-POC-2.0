@@ -4,7 +4,7 @@
 export const MAP_CHAPTERS=[
  {id:'foundation',step:'01',icon:'◈',title:'Financial foundation',short:'How flexible is your financial life?',color:'teal',
   question:'What helps you stay financially flexible when plans change?',
-  body:'Accessible reserves and everyday liquidity can matter before selecting investments. The demo has no evidence of the customer's cash holdings or emergency savings.',
+  body:'Accessible reserves and everyday liquidity can matter before selecting investments. The demo has no evidence of the customer’s cash holdings or emergency savings.',
   learn:'Explore a simple emergency-reserve checklist',
   products:[{id:'banking',name:'Cash and liquidity basics',description:'Understand how accessibility, risk and time horizon affect where money is held. No product or amount is prescribed.'}]},
  {id:'protection',step:'02',icon:'◇',title:'Protection',short:'What deserves protection?',color:'coral',
