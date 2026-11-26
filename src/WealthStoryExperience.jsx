@@ -3,6 +3,7 @@ import {rupees,demoGoalFigures} from './lib/mobileWealthStory.js'
 import {STORY_PEOPLE,composeWealthStory,STORY_TOPICS,storyInsightOrder} from './lib/wealthStoryOrchestrator.js'
 import WealthIntelligence from './WealthIntelligence.jsx'
 import IllustrativeWealthMap from './IllustrativeWealthMap.jsx'
+import MomentsThatMatter,{ProtectionExplorer} from './MomentsThatMatter.jsx'
 import {WealthJourneySnapshot,StoryGuide,RMContactCard} from './WealthStoryHub.jsx'
 import {DEMO_PATHS} from './lib/demoRoutes.js'
 import './standalone-experiences.css'
@@ -88,11 +89,13 @@ export default function WealthStoryExperience(){
  const [detail,setDetail]=useState(false)
  const [mapGoalOpen,setMapGoalOpen]=useState(false)
  const [mapChapter,setMapChapter]=useState(null)
+ const [protectionOpen,setProtectionOpen]=useState(false)
  const story=useMemo(()=>composeWealthStory(clientId),[clientId])
  const order=storyInsightOrder(story)
- const switchClient=id=>{setClientId(id);setDetail(false);setMapGoalOpen(false);setMapChapter(null);try{window.history.replaceState(null,'',DEMO_PATHS.story+'?client='+encodeURIComponent(id))}catch{}}
+ const switchClient=id=>{setClientId(id);setDetail(false);setMapGoalOpen(false);setMapChapter(null);setProtectionOpen(false);try{window.history.replaceState(null,'',DEMO_PATHS.story+'?client='+encodeURIComponent(id))}catch{}}
  const goToSection=(destination)=>{
   if(['foundation','protection','growth','goals','review'].includes(destination)){setMapChapter(destination);window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
+  else if(destination==='protection-explorer'){setProtectionOpen(true);window.requestAnimationFrame(()=>document.getElementById('wealth-story-protection')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='map'){window.requestAnimationFrame(()=>document.getElementById('wealth-creation-map')?.scrollIntoView({behavior:'smooth',block:'start'}))}
   else if(destination==='contact'){window.requestAnimationFrame(()=>document.getElementById('wealth-story-contact')?.scrollIntoView({behavior:'smooth',block:'center'}))}
  }
@@ -106,6 +109,8 @@ export default function WealthStoryExperience(){
    <section className="srCover srCoverEditorial"><div className="srCoverTop"><span className="srEyebrow">YOUR WEALTH STORY · {formatDate(story.as_of)}</span><span>ISSUE 01 · PERSONAL EDITION</span></div><h1>Hello, {person.name}.<br/><em>{story.headline}</em></h1><p>{story.intro}</p><div className="srCoverFoot"><span>One chapter today. A more informed journey tomorrow.</span><a className="srMapJump" href="#wealth-creation-map">See the chapters ahead ↗</a></div></section>
    <div className="srJourneyRibbon"><span>YOUR WEALTH CREATION JOURNEY</span><div><b>01</b> Understand your starting point <i>→</i> <b>02</b> Discover what matters <i>→</i> <b>03</b> Explore your next chapter</div></div>
    <WealthJourneySnapshot key={clientId+'snapshot'} story={story} onExplore={goToSection}/>
+   <MomentsThatMatter key={clientId+'moments'} story={story} onExploreProtection={()=>{setProtectionOpen(true);window.requestAnimationFrame(()=>document.getElementById('wealth-story-protection')?.scrollIntoView({behavior:'smooth',block:'start'}))}}/>
+   {protectionOpen&&<ProtectionExplorer key={clientId+'protection'} story={story}/>}
    <div className="srContentGrid">
     <div className="srContentMain">
      {order.includes('service')&&<ServiceFollowUp key={clientId+'service'} story={story}/>}
