@@ -2,15 +2,31 @@ import React,{useState} from 'react'
 import {GUIDE_PROMPTS,guideResponse} from './lib/wealthStoryGuide.js'
 import {illustrativeMapForStory} from './lib/illustrativeWealthMap.js'
 import './wealth-story-hub.css'
-export function WealthJourneySnapshot({story,onExplore}){
+export function WealthJourneySnapshot({story,onExplore,onExploreProtection,onExploreMoments}){
  const map=illustrativeMapForStory(story)
- const evidenced=map.chapters.filter(x=>x.known).length
- const unknown=map.chapters.length-evidenced
- return <section className="wshSnapshot" aria-label="Your wealth journey snapshot">
-  <div className="wshSnapshotIntro"><span className="srEyebrow">YOUR WEALTH CREATION JOURNEY</span><h2>Every chapter you understand moves your story forward.</h2><p>Here's what this fictional Geojit record can show—and what you can still explore at your own pace.</p></div>
-  <div className="wshSnapshotStats"><div><strong>{evidenced}</strong><span>Chapters with known context</span></div><div><strong>{unknown}</strong><span>Open to understand</span></div></div>
-  <div className="wshSnapshotChapters">{map.chapters.map(ch=><button type="button" key={ch.id} onClick={()=>onExplore(ch.id)} className={ch.known?'isKnown':'isOpen'}><span className="wshChapterIcon">{ch.icon}</span><span><b>{ch.title}</b><small>{ch.known?'Recorded context':'Open for exploration'}</small></span><span aria-hidden="true">↗</span></button>)}</div>
-  <p className="wshSnapshotNote">This is a visibility snapshot, not an actual wealth-progress score. Unknown chapters do not mean missing cover, financial deficiencies, or required investments.</p>
+ const hasInvestment=!!story.model
+ const hasGoal=!!story.model?.goal&&story.person.role==='goal'
+ const openCount=map.chapters.filter(x=>!x.known).length
+ const caseOpen=map.serviceFirst
+ const nextLabel=caseOpen?'Understand my service request':hasGoal?'Explore my retirement goal':hasInvestment?'Review my protection picture':'Choose my first financial topic'
+ const nextChapter=caseOpen?'review':hasGoal?'goals':hasInvestment?'protection':'foundation'
+ const nextAction=()=>nextChapter==='protection'?onExploreProtection():onExplore(nextChapter)
+ return <section className="wshSnapshot" aria-label="What your Wealth Story tells you">
+  <div className="wshSnapshotIntro"><span className="srEyebrow">YOUR WEALTH JOURNEY · WHERE YOU ARE TODAY</span>
+   <h2>{caseOpen?'Let’s take care of what matters first.':hasGoal?'You have a goal. Let’s give the next step some meaning.':hasInvestment?'You’ve started investing. What else matters to your financial life?':'Every wealth journey starts somewhere. Choose what matters to you.'}</h2>
+   <p>{caseOpen?'Your fictional service request is still open. Let’s understand its status before exploring anything else.':hasGoal?'We can see your declared goal and some investments, but we cannot assume those investments are set aside for it.':hasInvestment?'We can see your investments with Geojit, but we haven’t established your protection arrangements, financial reserves or personal goals. You can explore these when you choose.':'We haven’t confirmed any investments or goals in this fictional account. You can start by choosing one financial question.'}</p></div>
+  <div className="wshPersonalPicture">
+   <div className="wshKnownPicture"><span className="wshPictureLabel">WHAT WE KNOW IN THIS DEMO</span>
+    {hasInvestment?<><strong className="wshPictureNumber">{story.model.valuation}</strong><p>Investments recorded in this fictional Geojit account</p></>:<><strong className="wshPictureNumber">Your starting point</strong><p>No investments or goals confirmed in this fictional scenario</p></>}
+    <small>Only the records shown here; investments and protection elsewhere are unknown</small>
+   </div>
+   <div className="wshNextPicture"><span className="wshPictureLabel">{caseOpen?'YOUR SERVICE PRIORITY':'ONE USEFUL NEXT STEP'}</span><strong>{nextLabel}</strong><p>{caseOpen?'An unresolved request deserves a clear answer.':hasInvestment?'Not because we know you need insurance—because we don’t yet know what protection you already have.':hasGoal?'Explore your own assumptions rather than guessing which investments fund your goal.':'Start with a topic, not a product purchase.'}</p>
+    <button type="button" onClick={nextAction}>{nextLabel} <span aria-hidden="true">→</span></button></div>
+  </div>
+  <div className="wshExploreChapters"><div><b>There’s more to your journey</b><p>These five areas are questions worth exploring, not a checklist of products to buy. We have some information; the rest is simply not yet understood.</p></div>
+   <div className="wshSnapshotChapters">{map.chapters.map(ch=><button type="button" key={ch.id} onClick={()=>onExplore(ch.id)} className={ch.known?'isKnown':'isOpen'} aria-label={'Explore '+ch.title+' · '+(ch.known?'Some information recorded':'Not yet reviewed')}><span className="wshChapterIcon">{ch.icon}</span><span><b>{ch.title}</b><small>{ch.known?'We have some information':'Not yet reviewed'}</small></span><span aria-hidden="true">↗</span></button>)}</div>
+  </div>
+  <div className="wshJourneyFoot"><span>{openCount} areas without enough information to assess · Not a score</span><button type="button" onClick={onExploreMoments}>See the moments that make your story personal →</button></div>
  </section>
 }
 export function StoryGuide({story,onNavigate}){
