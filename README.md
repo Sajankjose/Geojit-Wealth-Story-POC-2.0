@@ -1,6 +1,24 @@
-# Geojit Wealth Story & Wealth Companion — POC 4.0
+# Geojit Wealth Story & Wealth Companion — POC 4.1
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 4.1 — Wealth Journey Snapshot, personalised guide and human-support card
+
+The **existing** standalone Phase 1 Wealth Story URL now provides three connected management-demo interactions:
+
+1. **Wealth Journey Snapshot**, immediately after the hero, showing the five map chapters in a concise overview. Chapters with explicitly supported data are labelled **Recorded context**; all other chapters are **Open for exploration**. The two displayed counts describe data visibility, **not** financial health, journey completion or how many financial products the customer ought to hold. Clicking a chapter scrolls directly to the matching Wealth Map chapter. This is the initial landing-page hook, with the existing colour-coded, optional financial-solution discovery retained.
+2. **Your Wealth Story guide**, a floating, mobile-responsive assistant on the bottom right. It has five interactive, deterministic prompts: *Explain my story*, *What can I explore next?*, *Which products are not subscribed?*, *Help with a goal*, and *How can I reach my RM?*. Responses use the selected fictional client's existing account, goal or service context and preserve the distinction between **explicit synthetic non-subscription**, **recorded relationship**, and **unknown**. The assistant is scripted, not a connected AI model, and neither stores/transmits chat content nor creates recommendations, appointments, messages or leads. Service-first suppression remains enabled for Meera.
+3. **Human-support / RM concept card** in the story's side rail, showing a clearly labelled *illustrative staff portrait silhouette*, Geojit servicing-team identity, placeholders for RM phone/email/branch, and a working disclosure about future CRM integration. We **do not** invent an assigned staff member, authentic employee headshot, direct phone/email or live appointment booking. Real RM identity and contact information must come from an authorised, current RM directory or approved servicing routing API.
+
+Files: `src/WealthStoryHub.jsx`, `src/wealth-story-hub.css`, `src/lib/wealthStoryGuide.js`, integration in `src/WealthStoryExperience.jsx`, optional selected map chapter in `src/IllustrativeWealthMap.jsx`. Regression suite `tests/wealth-story-guide.test.mjs` checks financial grounding, personalised responses, lack of invented product relationships, service-first treatment, RM uncertainty and non-activation of real external actions.
+
+### Review walkthrough
+- Open `https://wealthstory.netlify.app/wealth-story?client=C012` and use the five-card snapshot to jump into a Wealth Map chapter.
+- Tap the floating **Ask about my story** button and explore the prompts. The scripted reply reflects Thomas's **₹5,42,000** fictional account and **₹3,000** cash contribution, if known.
+- For George `?client=C014`, ask about a goal and follow the linked map calculator. For Meera `?client=C008`, try the product prompt to observe service-first suppression. For Arun `?client=C001`, observe that the snapshot contains no recorded financial-context chapter and the assistant invents no investment history.
+- Use the **Geojit servicing team** side card to preview the future human handoff, noting that the portrait is illustrative and no RM/branch/phone/email assignment is verified.
+
+All design is scoped to the Geojit semantic design tokens defined in `src/geojit-experience.css` and inherits teal primary actions, mint/light-yellow secondary surfaces and coral active outlines. The experience remains an internal, fictional POC behind reviewer auth where configured. Production integration requires verified Data Lake and CRM datasets, consent/permission control, eligibility and regulated guidance approval, live customer-service routing, licensed adviser suitability processes where applicable, photo permissions and an auditable editorial review workflow.
 
 ## POC 4.0 — A continuous wealth creation journey with evidence-labelled discovery
 
