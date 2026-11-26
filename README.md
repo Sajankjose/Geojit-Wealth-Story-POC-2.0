@@ -1,6 +1,50 @@
-# Geojit Wealth Companion — Unified Customer Experience & Value Lab POC 3.3
+# Geojit Wealth Companion — One App W Discovery & Activation POC 3.4
 
 **Current phase:** Supabase-powered 20-client synthetic intelligence universe. The app is React + Vite, hosted through Netlify, with reviewer authentication via Supabase Auth.
+
+## POC 3.4 — One App mobile W icon → pricing → guided roadmap → persistent menu
+
+### What management can now demonstrate
+
+The experience starts **inside a simulated mobile One App** resembling the uploaded My Watch/Watchlist recording's navigation structure: watchlist context, compact trading-screen header and a bottom menu. The market watch is deliberately *illustrative* and does not claim to stream stock prices. The prominent **W / New: Wealth Companion** invitation is a real clickable entry.
+
+The top-level reviewer workspace now opens the **One App · W Journey** demo by default. Existing Customer Intelligence, Wealth Story Studio and My Wealth Companion modules remain accessible from the left sidebar.
+
+**Before activation**, W is a feature-discovery invitation:
+1. **Discover W** on the simulated One App watchlist, or through the **More** menu.
+2. **Explore the service and price concepts**: Essential (*Included concept*) or Journey Plus (*₹999/year hypothetical research price*). The fee is illustrative and has **not** been approved; no checkout or actual paid entitlement is provided.
+3. **Review data limits**: the new fictional Geojit account shows no portfolio holdings, transactions or declared goals, and makes no inference about holdings outside Geojit.
+4. **Select interests** (investing, financial goals, flexibility or protection), plus an on-demand/monthly/quarterly *review concept*; no risk-profiling, product diagnosis or actual communication permission.
+5. **See the Wealth Creation Roadmap and action plan**, selected through the existing common educational roadmap engine. An expandable explanation shows why each action appeared and that no product gap was inferred.
+6. **Activate Wealth Companion (demo)** only after explicitly confirming the fictional scope, selecting at least one topic and acknowledging simulation-only enrolment.
+
+**After activation**, the app visibly changes:
+- A persistent **W / Wealth** shortcut appears in the bottom app navigation.
+- The **More** menu changes to **My Wealth Companion**, replacing the pre-activation discovery item.
+- Opening W takes the customer directly to an ongoing Wealth Companion screen with the first educational next step, a small action plan, and an optional Wealth Story.
+- The customer can mark a step as explored or choose *Maybe later*. Their choices are saved to this browser tab's `sessionStorage`, so the experience survives refresh in the same tab but is not synced to a real account.
+- The right-hand manager panel provides **Show One App home**, **Show app menu**, and **Reset full demo**, allowing a before/after demonstration on demand.
+
+### Content and controls
+
+- The demo uses `src/OneAppDemo.jsx`, `src/one-app-demo.css` and `src/lib/oneAppDemo.js`. Financial roadmap selections reuse the same customer-chosen `createLearningRoadmap` engine as POC 3.3.
+- The fictional new customer begins with **no investment record or verifiable returns**. The W experience does not read the existing Thomas valuation fixture or manufacture personal financial performance.
+- **₹999/year** appears only as a clearly marked *hypothetical price research input*, not a published Geojit plan.
+- No card payment, subscription contract, real account activation, CRM lead, risk-profile inference, marketing permission, trading action or personalised securities recommendation is generated.
+- The first Wealth Story is a prewritten educational chapter, not a published or AI-generated real-customer edition.
+- The regression suite includes `tests/one-app-demo.test.mjs` for W activation gating, price disclosure, customer-selected roadmaps, absent account data, consent isolation and the distinction between educational actions and investment outcomes.
+
+### How to use it
+
+1. Sign into the existing reviewer-only Netlify POC at `https://wealthstory.netlify.app/`.
+2. The first workspace is **One App · W Journey**. Select the W feature tile within the simulated mobile app.
+3. Select Essential or inspect the hypothetical Plus price, continue to review data limits and choose interests.
+4. Preview the roadmap and confirm **Activate Wealth Companion · demo**.
+5. Use the mobile bottom navigation to visit Watchlist, then the new **W / Wealth** menu item. The post-enrolment customer home opens immediately.
+6. Open **More** to show the new permanent Wealth Companion item. Simulate learning progress and access a Wealth Story.
+7. Use **Reset full demo** to restore the pre-enrolment W invitation; no existing synthetic customer records are changed.
+
+This is a **management experience concept**, not a modification to the production One App. The visual styling is inspired by the attached watchlist video but does not replace or alter actual Geojit trading screens. A live implementation would require the One App design-system integration, legal classification of the service, approved subscription terms and data permissions, secure entitlement persistence, verified source connectivity and server-side guidance governance.
 
 ## POC 3.3 — Unified Companion Experience Engine & Continuing-Value Lab
 
