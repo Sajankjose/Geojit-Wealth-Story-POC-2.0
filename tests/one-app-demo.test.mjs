@@ -31,7 +31,7 @@ test('roadmap is derived from interests, not a fabricated portfolio or product g
  assert.ok(!x.some(s=>/buy now|sell shares|recommended fund/i.test(s.title+' '+s.reason)))
 })
 test('new customer with no record never gets an imaginary portfolio',()=>{
- const x=buildOneAppRoadmap(draft({focus:['understand']}))
+ const x=buildOneAppRoadmap(draft({focus:['understand'],persona:'new'}))
  assert.match(x[0].reason,/no investments are recorded/i)
  assert.equal(x[0].destination,'learning')
 })
