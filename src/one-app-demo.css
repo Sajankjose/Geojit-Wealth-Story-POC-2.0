@@ -157,3 +157,63 @@
 .oaPersonaSelect{display:grid;gap:7px;margin:15px 0;font-size:11px;font-weight:750}
 .oaPersonaSelect select{background:#fff;border:1px solid #DDEAE0;border-radius:9px;padding:11px;min-height:43px;font-size:12px;color:#2B4D3B;width:100%}
 .oaPersonaNote{font-size:10px!important;background:#F3F9F3;border-radius:9px;padding:12px;line-height:1.6!important}
+
+/* POC 3.6 — responsive financial figures and meaningful wealth journey stories */
+.oaFigures{border:1px solid #D9E8DC;background:#FFFFFF;border-radius:13px;padding:15px;margin:11px 0 16px;min-width:0}
+.oaFiguresCompact{background:#F3FAF5;padding:14px}
+.oaFiguresHeader{display:flex;justify-content:space-between;align-items:start;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.oaFiguresHeader span{font-size:9px;font-weight:800;letter-spacing:.6px;color:#267558}
+.oaFiguresHeader small{font-size:9px;color:#66816C}
+.oaTotal{font-size:clamp(25px,3vw,32px);font-weight:750;letter-spacing:-.7px;color:#1D4A35;display:block;margin-bottom:13px;font-variant-numeric:tabular-nums}
+.oaAllocationTrack{display:flex;height:11px;border-radius:11px;overflow:hidden;background:#DBECE1;margin:0 0 13px}
+.oaAllocationTrack span:first-child{background:#137455}.oaAllocationTrack span:last-child{background:#83C7A2}
+.oaAllocationLegend{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:5px}
+.oaAllocationLegend>div{display:flex;gap:7px;align-items:start}
+.oaSwatch{display:block;flex:none;width:9px;height:9px;border-radius:3px;margin-top:3px}
+.oaSwatch.equity{background:#137455}.oaSwatch.mf{background:#83C7A2}
+.oaAllocationLegend>div>div{display:grid;gap:4px;min-width:0}
+.oaAllocationLegend small{font-size:9px;color:#6A8572}
+.oaAllocationLegend b{font-size:12px;letter-spacing:-.2px;color:#1A5138;font-variant-numeric:tabular-nums}
+.oaMiniHeading{font-size:10px;color:#4C6D56;font-weight:700;margin-top:18px}
+.oaTrend svg{width:100%;height:auto;display:block;margin:7px 0 0}
+.oaTrendDates{display:flex;justify-content:space-between;color:#7B917F;font-size:9px;margin:0 6px 4px}
+.oaFigureCaveat{font-size:9px!important;line-height:1.65!important;color:#829385!important;margin:11px 0 2px!important}
+.oaHookWeekly{border:1px solid #E2EAD9;background:#FAFCF6;border-radius:10px;padding:12px;margin:12px 0}
+.oaHookWeekly span{font-size:9px;letter-spacing:.5px;font-weight:800;color:#4D7758}
+.oaHookWeekly b{display:block;font-size:15px;margin:8px 0;color:#315D40}
+.oaHookWeekly p{font-size:10px;line-height:1.6;color:#718374;margin:0}
+.oaFigureNext{border:1px solid #B7D8C1;background:#EBF7ED;border-radius:8px;color:#157856;padding:12px 14px;width:100%;font-weight:700;text-align:left;font-size:11px;margin-bottom:12px}
+.oaReconcile{border:1px solid #D8E8DA;background:#FBFDFB;border-radius:13px;padding:16px;margin:13px 0}
+.oaReconcile h4{font-size:17px;font-weight:750;letter-spacing:-.3px;margin:10px 0}
+.oaReconcileRows{display:grid;gap:0}
+.oaReconcileRows>div{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:10px 0;border-bottom:1px solid #E4EEE7}
+.oaReconcileRows span{font-size:10px;line-height:1.45;color:#667F6D;flex:1}
+.oaReconcileRows b{font-size:12px;font-variant-numeric:tabular-nums;color:#2A5137}
+.oaReconcileRows>.oaReconcileTotal{margin-top:7px;background:#E8F6EB;padding:12px 10px;border-radius:8px;border:0}
+.oaReconcileRows>.oaReconcileTotal b{font-size:16px}
+.oaPerformanceContext{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}
+.oaPerformanceContext>div{display:grid;gap:7px;background:#F1F8F2;border-radius:9px;padding:11px}
+.oaPerformanceContext span{font-size:9px;color:#698575;line-height:1.4}
+.oaPerformanceContext strong{font-size:18px;color:#236245}
+.oaGoalDemo{background:#F7FBF7;border:1px solid #DAE8DE;border-radius:13px;padding:16px;margin:12px 0 18px}
+.oaGoalDemo h4{font-size:18px;font-weight:750;letter-spacing:-.35px;margin:10px 0}
+.oaGoalDemo>p{font-size:11px;line-height:1.65;color:#658071}
+.oaGoalDemo label{display:grid;gap:8px;margin-top:14px}
+.oaGoalDemo label>span{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#5B7966}
+.oaGoalDemo label b{font-size:12px;color:#225D3F;white-space:nowrap}
+.oaGoalDemo input[type=range]{accent-color:#137455;width:100%;cursor:pointer}
+.oaGoalTop{border-top:1px solid #D9E9DC;padding-top:14px;margin-top:15px;display:grid;gap:7px}
+.oaGoalTop>span{font-size:10px;color:#567962}
+.oaGoalTop strong{font-size:25px;letter-spacing:-.5px;color:#1D6344;font-variant-numeric:tabular-nums}
+.oaGoalTop small{font-size:9px;color:#788C7C}
+.oaGoalTrack{width:100%;height:10px;overflow:hidden;border-radius:9px;background:#DCEAE0;margin:11px 0}
+.oaGoalTrack span{height:100%;display:block;background:#137455;border-radius:9px}
+.oaGoalNumbers{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.oaGoalNumbers>div{display:grid;gap:6px;background:#fff;border:1px solid #E1EAE3;padding:10px;border-radius:9px}
+.oaGoalNumbers small{font-size:9px;color:#6F8675;line-height:1.45}
+.oaGoalNumbers b{font-size:15px;color:#215A3F;font-variant-numeric:tabular-nums}
+.oaStoryLearning{background:#F0F8F0;border-radius:11px;padding:15px;margin:15px 0}
+.oaStoryLearning b{font-size:12px;color:#25583C}
+.oaStoryLearning p{font-size:11px;color:#64806C;line-height:1.7}
+.oaStoryLearning button{background:white;border:1px solid #CEE0D1;border-radius:9px;padding:10px 11px;color:#207553;font-size:10px;font-weight:750}
+@media(max-width:480px){.oaFigures,.oaGoalDemo,.oaReconcile{padding:12px}.oaAllocationLegend b{font-size:11px}.oaTotal{font-size:27px}}
